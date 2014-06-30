@@ -1,0 +1,4 @@
+Nebenbedingungen |c(i)-c(j)|>= f(d_ij), wobei f(x) = d - x.
+
+d = 3 entspricht L(2,1) Labeling 
+d = 4 entspricht L(3,2,1) Labeling
