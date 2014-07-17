@@ -183,16 +183,18 @@ void IP_Problem::setModel_IP(IloEnv& env, IloModel& model,
 	}
 
 	int M = (max_distance + 1) * n;
+	UB = M;
 
 	/* Objective */
 	model.add(IloMinimize(env, lambda));
 
 	/*Constrains*/
 	model.add(lambda - M <= 0);
+/*
 	model.add(
 			lambda - (inputData->maxGrad - 1) * (max_distance - 1)
 					- max_distance >= 0);
-
+*/
 	for (int i = 0; i < info.numAddVar; i++)
 	{
 		int u = info.ConstrIndex[i * 2];
@@ -249,9 +251,11 @@ void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
 
 	/*Constrains*/
 	model.add(lambda - M <= 0);
+/*
 	model.add(
 			lambda - (inputData->maxGrad - 1) * (max_distance - 1)
 					- max_distance >= 0);
+*/
 
 	// we solve the problem in this case without following conditions
 	/*
@@ -360,6 +364,11 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 	CSP_Problem spproblem(n, solution.lambda, d);
 	info.sp_runs = 1;
 
+	std::fstream fileLog;
+	fileLog.open("LOG.txt");
+	fileLog << inputData->getFileName()<< "\n";
+	fileLog.close();
+
 	while (spproblem.solve())
 	//while (finished)
 	{
@@ -404,6 +413,11 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 	// get solution from SCP-Solver
 	C = spproblem.get_c();
 	solution.lambda = spproblem.get_lambda();
+
+	fileLog.open("LOG.txt",
+				std::fstream::in | std::fstream::out | std::fstream::app);
+	fileLog << "\n";
+	fileLog.close();
 
 }
 
@@ -554,23 +568,97 @@ int IP_Problem::saveSolutionToFile(std::string _fileName)
 	return 0;
 }
 
+void solveCP(const CProblemData* inputData, int max_distance)
+{
+	unsigned int n = inputData->n;
+	int UB = (max_distance + 1) * n;
+	int LB = 0;
+	int lambda = (UB - LB) / 2;
+	double time = 0.;
+
+	MatrixDouble d;
+	VectorInt C;
+
+	d.resize(n);
+	for (unsigned int u = 0; u < n; u++)
+	{
+		d[u].resize(n);
+		for (unsigned int v = 0; v < u; v++)
+		{
+			double value = 1 + max_distance - inputData->distances[u][v];
+
+			d[u][v] = (value < 0) ? 0 : value;
+			d[v][u] = d[u][v];
+		}
+	}
+	std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
+	CSP_Problem spproblem(n, lambda, d);
+	while (UB - LB > 1)
+	{
+		int solved;
+		solved = spproblem.solve();
+		time += spproblem.solution.time;
+
+		if (solved==0)
+		{
+			UB = lambda;
+			spproblem.set_lambda(lambda);
+		}
+		else
+		{
+			LB = lambda;
+			spproblem.set_lambda(lambda);
+		}
+
+		std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
+		lambda = (LB + UB) / 2;
+		spproblem.set_lambda(lambda);
+	}
+
+	C = spproblem.get_c();
+
+	std::cout << std::endl << "=============================================";
+	if (lambda != UB)
+	{
+		spproblem.set_lambda(UB);
+		if (spproblem.solve()==0)
+		{
+			lambda = UB;
+			C = spproblem.get_c();
+		}
+	}
+
+	std::cout << std::endl << "=============================================";
+	std::cout << std::endl;
+	// print solution
+	std::cout << "Optimal L(G; d_1,d_2, ..., d_n) = " << lambda << std::endl;
+	std::cout << "with the optimal labeling:" << std::endl;
+	for (unsigned int u = 0; u < C.size(); u++)
+	{
+		std::cout << C[u] << " ";
+	}
+	std::cout << std::endl;
+	std::cout << "Spent time " << time << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	std::string fileName;
 
-	//if (argc > 5 || argc < 2)
-	if (argc != 5 )
+if (argc > 5 || argc < 3)
+//	if (argc != 5)
 	{
 		std::cerr
-				<< "LLabeling <d max> <lattice> <file name to open> <MIP|CP>\n";
+				<< "LLabeling <d max> <lattice>  [<file name to open>] <MIP|CP>\n";
 		std::cerr << "lattice: 0 read from file;\n";
 		std::cerr << "         1 hexagonal lattice;\n ";
-		std::cerr << "        2 triangular lattice;\n ";
-		std::cerr << "        3 square lattice\n";
+		std::cerr << "         2 triangular lattice;\n ";
+		std::cerr << "         3 square lattice\n";
 		return 1;
 	}
 
 	CProblemData* inputData;
+	int Verfahren;
 
 	if (atoi(argv[2]) == 0) // if we want read from file
 	{
@@ -585,23 +673,28 @@ int main(int argc, char **argv)
 		std::cout << "Start with the file " << fileName << "\n";
 
 		inputData = new CProblemData(fileName);
+		Verfahren = atoi(argv[4]);
 	}
 	else // we work with a lattice graph
 	{
+		Verfahren = atoi(argv[3]);
 		inputData = new CProblemData(atoi(argv[2]) /*lattice*/);
 	}
 
-	//inputData->print();
+inputData->print();
 
 	IP_Problem MipProblem(atoi(argv[1])/*d_max*/, inputData);
-	//MipProblem.print();
+//MipProblem.print();
 
-	if (atoi(argv[4]) == 0)
+	if (Verfahren == 0)
 		MipProblem.optimize_IP();
 	else
 		MipProblem.optimize_IP_SCP();
+
 	MipProblem.printSolution();
 	MipProblem.saveSolutionToFile(inputData->getFileName());
+
+	solveCP(inputData, atoi(argv[1])/*d_max*/);
 	return 0;
 } // END main
 

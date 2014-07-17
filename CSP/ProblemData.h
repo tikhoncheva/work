@@ -84,24 +84,60 @@ MatrixDouble triangularLattice(int n, int n1)
 	return coord;
 }
 
-MatrixDouble squareLattice(int n)
+MatrixDouble squareLattice(int n, int n1)
 {
 	MatrixDouble coord;
 
-	coord.resize(n);
-	/*
-	 for (int i = 0; i < sqrt(n); i++)
-	 {
-	 for (int j = 0; j < sqrt(n); j++)
-	 {
-	 coord[i * sqrt(n) + j].resize(2);
+	if (n % n1 != 0)
+	{
+		std::cerr << n / n1 << "x" << n1 << " is wrong square grid size!\n";
+		return coord;
+	}
 
-	 coord[i * sqrt(n) + j][0] = j;
-	 coord[i * sqrt(n) + j][1] = i;
-	 }
-	 }
-	 */
+	coord.resize(n);
+
+	for (int i = 0; i < n / n1; i++)
+	{
+		for (int j = 0; j < n1; j++)
+		{
+			coord[i * n1 + j].resize(2);
+			coord[i * n1 + j][0] = j;
+			coord[i * n1 + j][1] = i;
+		}
+	}
 	return coord;
+}
+
+MatrixDouble squareCoordToDist(MatrixDouble coord)
+{
+	// simply city block distance
+	MatrixDouble distance;
+	distance.resize(coord.size());
+
+	for (unsigned int u; u < coord.size(); u++)
+	{
+		distance[u].resize(coord.size());
+		for (unsigned int v; v < u; v++)
+		{
+			distance[u][v] = std::abs(coord[u][0] - coord[v][0])
+					+ std::abs(coord[u][1] - coord[v][1]);
+			//distance[v][u] = distance[u][v];
+		}
+
+		distance[u][u] = 0;
+	}
+
+	std::cout << "Distances: " << "\n";
+	for (unsigned int u = 0; u < distance.size(); u++)
+	{
+		for (unsigned int v = 0; v <  distance[u].size(); v++)
+		{
+			std::cout << std::setw(3) << distance[u][v] << " ";
+		}
+		std::cout << "\n";
+	}
+
+	return distance;
 }
 
 class CProblemData
@@ -155,6 +191,7 @@ public:
 	{
 	}
 	;
+
 };
 
 int CProblemData::readData()
@@ -227,7 +264,8 @@ int CProblemData::readData()
 		n = 25;
 		//diameter = 8;
 		maxGrad = 4;
-		distances = squareLattice(n);
+		distances = squareCoordToDist(squareLattice(n, sqrt(n)));
+
 		fileName = "square_lattice.dat";
 		break;
 

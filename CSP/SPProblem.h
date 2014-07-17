@@ -9,6 +9,7 @@
 #include <ilcp/cpext.h>	/* CP */
 
 typedef std::vector<int> VectorInt;
+typedef std::vector<VectorInt> MatrixInt;
 
 struct CSPSolution
 {
@@ -23,7 +24,9 @@ class CSP_Problem
 private:
 	unsigned int n;
 	int lambda;
+	VectorInt grade;
 	MatrixDouble d;
+	std::string fileName;
 
 	void setModel(IloEnv& env, IloModel& model, const IloIntVarArray c);
 	int solveModel(const IloEnv env, const IloModel model, IloIntVarArray& c);IlcGoal search();
@@ -80,7 +83,6 @@ ILOSTLBEGIN
 ILCGOAL2(MyGoalPhase, IlcInt, d, IlcIntVarArray, x)
 {
 	// First choose a variable to instantiate.
-
 	// choose variable with the smallest domain
 	IlcInt i = IlcChooseMinSizeInt(x);
 
@@ -89,10 +91,9 @@ ILCGOAL2(MyGoalPhase, IlcInt, d, IlcIntVarArray, x)
 		return 0;
 
 	// Now choose the best value.
-
 	// select smallest possible value from the domain
-	// USER INTERVENTION: Replace this with whatever you want.
 	IlcInt j = x[i].getMin();
+	//IlcInt j = g[i];
 
 	// branching
 	IlcGoal left = IlcAnd(x[i] == j, this);
@@ -108,13 +109,16 @@ ILCGOAL3(MyGoalSBS, IlcInt, d, IlcInt, maxD, IlcIntVarArray, x)
 {
 	IloCP cp = getCP();
 	if (d > maxD)
+	{
 		return IlcGoalFail(cp);
+	}
 	return IlcOr(MyGoalPhase(cp, d, x), MyGoalSBS(cp, d + 1, maxD, x));
 }
 
 ILOCPGOALWRAPPER2(MyGoalSBS, cp, IloInt, maxD, IloIntVarArray, x)
 {
 	return MyGoalSBS(cp, 0, maxD, cp.getIntVarArray(x));
+
 }
 
 int CSP_Problem::solveModel(const IloEnv env, const IloModel model,
@@ -133,19 +137,32 @@ int CSP_Problem::solveModel(const IloEnv env, const IloModel model,
 
 	IloTimer timer(env);
 
-	int success;
+	int success ;
+	std::fstream fileLog;
+	fileLog.open("LOG.txt",
+			std::fstream::in | std::fstream::out | std::fstream::app);
+	//fileLog << fileName << "\t";
+	int check = 0;
+	for (int depth = 2, i = 1; i <= 4; i++, depth *= 2)
+	{
+		timer.start();
+		success = cp.solve(MyGoalSBS(env, depth, c));
+		timer.stop();
+		if (cp.getStatus() == cp.Feasible) check++;
 
-	timer.start();
-	//success = cp.solve();
-	// use goals
-	success = cp.solve(MyGoalSBS(env, 9, c));
-	timer.stop();
+		cp.out() << "LAMBDA = " << lambda << std::endl;
+		cp.out() << "SOLUTION STATUS : " << cp.getStatus() << "\n";
+		solution.time = timer.getTime();
+		std::cout << "CSPent time " << solution.time << std::endl;
 
-	cp.out() << "SOLUTION STATUS : " << cp.getStatus() << "\n";
-	solution.time = timer.getTime();
-	std::cout << "CSPent time " << solution.time << std::endl;
 
-	if (success)
+		// write in LOG
+		fileLog << depth << " " << lambda  << " " << cp.getStatus() << "\t";
+	}
+	fileLog << "\n";
+	fileLog.close();
+	if (check>0)
+	//if (success)
 	{
 		// get solution from optimizer
 		solution.lambda = lambda;
@@ -153,11 +170,11 @@ int CSP_Problem::solveModel(const IloEnv env, const IloModel model,
 		{
 			solution.C[u] = cp.getIntValue(c[u]);
 		}
-
 	}
+
 	else
 	{
-		throw("CPOptimizer: Failed to solve CSP :( \n");
+		throw(std::string("CPOptimizer: Failed to solve CSP :( \n"));
 	}
 
 	return 0;
