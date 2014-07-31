@@ -47,23 +47,23 @@ struct MIPSolution
 	double time;
 };
 
-class IP_Problem
+class MIP_Problem
 {
 private:
-	void setModel_IP(IloEnv& env, IloModel& model, const IloNumVar lambda,
+	void setModel_MIP(IloEnv& env, IloModel& model, const IloNumVar lambda,
 			const IloIntVarArray c);
-	void setModel_IP_CSP(IloEnv& env, IloModel& model, const IloNumVar lambda,
+	void setModel_MIP_CSP(IloEnv& env, IloModel& model, const IloNumVar lambda,
 			const IloIntVarArray c);
-	void solve_IP(const IloEnv env, const IloModel model, IloNumVar& lambda,
+	void solve_MIP(const IloEnv env, const IloModel model, IloNumVar& lambda,
 			IloIntVarArray& c);
-	void solve_IP_CSP(const IloEnv env, const IloModel model, IloNumVar& lambda,
-			IloIntVarArray& c);
+	void solve_MIP_CSP(const IloEnv env, const IloModel model,
+			IloNumVar& lambda, IloIntVarArray& c);
 public:
 	// input data
 	CProblemData* inputData;
 	// parameters
 	MatrixDouble d; // use simply line-function
-	double UB; // lambda <= UB
+	//double UB; // lambda <= UB
 	double max_distance;
 
 	// Variables
@@ -79,13 +79,13 @@ public:
 	void print();
 	//void set_d();
 
-	int optimize_IP();
-	int optimize_IP_SCP();
+	int optimize_MIP();
+	int optimize_MIP_SCP();
 
 	void printSolution();
 	int saveSolutionToFile(std::string _FileName);
 
-	IP_Problem(int max_d, CProblemData* inputData_) :
+	MIP_Problem(int max_d, CProblemData* inputData_) :
 			max_distance(max_d) //, inputData(&inputData_)
 	{
 		inputData = inputData_;
@@ -96,12 +96,14 @@ public:
 		solved = 0;
 		solution.time = 0.;
 		solution.lambda = 0;
+		solution.LB = 0;
+		solution.UB = 0;
 
 		withCSP = 0;
 		set_d_function();
 	}
 
-	~IP_Problem()
+	~MIP_Problem()
 	{
 
 	}
@@ -111,14 +113,14 @@ private:
 	void set_d_function();
 };
 
-double IP_Problem::dist_linear(double x)
+double MIP_Problem::dist_linear(double x)
 {
 	double value = 1 + max_distance - x;
 	return (value < 0) ? 0 : value; /* linear function of distances*/
 	//return value;
 }
 
-void IP_Problem::set_d_function()
+void MIP_Problem::set_d_function()
 {
 
 	d.resize(inputData->n);
@@ -142,7 +144,7 @@ void IP_Problem::set_d_function()
 
 }
 
-void IP_Problem::print()
+void MIP_Problem::print()
 {
 	std::cout << " Distance Function d: " << "\n";
 	for (unsigned int u = 0; u < d.size(); u++)
@@ -158,7 +160,7 @@ void IP_Problem::print()
 	std::cout << "\n";
 }
 
-void IP_Problem::setModel_IP(IloEnv& env, IloModel& model,
+void MIP_Problem::setModel_MIP(IloEnv& env, IloModel& model,
 		const IloNumVar lambda, const IloIntVarArray c)
 {
 
@@ -188,19 +190,25 @@ void IP_Problem::setModel_IP(IloEnv& env, IloModel& model,
 		}
 	}
 
-	int M = (max_distance + 1) * n;
-	UB = M;
+	if (solution.UB == 0)
+		solution.UB = (max_distance + 1) * n;
 
 	/* Objective */
 	model.add(IloMinimize(env, lambda));
 
 	/*Constrains*/
-	model.add(lambda - M <= 0);
+	model.add(lambda - solution.UB <= 0);
 	/*
-	 model.add(
-	 lambda - (inputData->maxGrad - 1) * (max_distance - 1)
-	 - max_distance >= 0);
+	 if (solution.LB == 0)
+	 solution.LB = (inputData->maxGrad - 1) * (max_distance - 1) + max_distance;
+
+	 model.add(lambda - solution.LB >= 0);
+
 	 */
+
+	int M; // = solution.UB;
+	M = (max_distance + 1) * n;
+
 	for (int i = 0; i < info.numAddVar; i++)
 	{
 		int u = info.ConstrIndex[i * 2];
@@ -219,7 +227,7 @@ void IP_Problem::setModel_IP(IloEnv& env, IloModel& model,
 
 }
 
-void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
+void MIP_Problem::setModel_MIP_CSP(IloEnv& env, IloModel& model,
 		const IloNumVar lambda, const IloIntVarArray c)
 {
 
@@ -249,22 +257,25 @@ void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
 		}
 	}
 
-	int M = (max_distance + 1) * n;
-	UB = M;
+	if (solution.UB == 0)
+		solution.UB = (max_distance + 1) * n;
 
 	/* Objective */
 	model.add(IloMinimize(env, lambda));
 
 	/*Constrains*/
-	model.add(lambda - M <= 0);
+	model.add(lambda - solution.UB <= 0);
 	/*
-	 model.add(
-	 lambda - (inputData->maxGrad - 1) * (max_distance - 1)
-	 - max_distance >= 0);
+	 solution.LB = (inputData->maxGrad - 1) * (max_distance - 1) + max_distance;
+	 model.add(lambda - solution.LB >= 0);
+
 	 */
 
-	// we solve the problem in this case without following conditions
 	/*
+	 *  we solve the problem in this case without following conditions
+	 *
+	 int M = (max_distance + 1) * n;
+
 	 for (int i = 0; i < info.numAddVar; i++)
 	 {
 	 int u = info.ConstrIndex[i * 2];
@@ -275,6 +286,7 @@ void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
 	 model.add(z[u][v] = z[v][u]);
 	 }
 	 */
+
 	for (unsigned int v = 0; v < n; v++)
 	{
 		model.add(c[v] <= lambda);
@@ -283,7 +295,7 @@ void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
 
 }
 
-void IP_Problem::solve_IP(const IloEnv env, const IloModel model,
+void MIP_Problem::solve_MIP(const IloEnv env, const IloModel model,
 		IloNumVar& lambda, IloIntVarArray& c)
 {
 	unsigned int n = inputData->n;
@@ -293,7 +305,7 @@ void IP_Problem::solve_IP(const IloEnv env, const IloModel model,
 	IloTimer timer(env);
 
 	cplex.extract(model);
-	cplex.exportModel("L-Labeling.lp");
+	cplex.exportModel("L-LabelingMIP.lp");
 
 	std::cout << "========================================" << " Solving ";
 	std::cout << "========================================" << std::endl;
@@ -327,46 +339,24 @@ void IP_Problem::solve_IP(const IloEnv env, const IloModel model,
 	}
 }
 
-void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
+void MIP_Problem::solve_MIP_CSP(const IloEnv env, const IloModel model,
 		IloNumVar& lambda, IloIntVarArray& c)
 {
 	unsigned int n = inputData->n;
-	int solveError = 0;
-	//int lambda_old = 0;	// we need it for SCP
 
 	IloCplex cplex(env);
 	IloTimer timer(env);
 
 	cplex.extract(model);
-	cplex.exportModel("L-Labeling.lp");
+	cplex.exportModel("L-LabelingCSP.lp");
+
+	solution.lambda = solution.LB;
+
+	std::cout << "solution.lambda = " << solution.lambda << "\n";
 
 	std::cout << "========================================" << " Solving ";
 	std::cout << "========================================" << std::endl;
 
-	std::cout << std::endl << "==================  IP ======================"
-			<< std::endl << std::endl;
-	timer.start();
-	solveError = cplex.solve();
-	timer.stop();
-
-	if (!solveError)
-	{
-		std::cout << "STATUS : " << cplex.getStatus() << "\n";
-		env.error() << "MIPOptimizer: failed to solve IP ;( \n";
-		solved = 0;
-		throw(std::string("MIPOptimizer: failed to solve IP ;( \n"));
-	}
-
-	solved = 1;
-	solution.time = timer.getTime();
-
-	env.out() << "\nSolution status IP = " << cplex.getStatus() << "\n";
-	info.numConstr = cplex.getNrows();
-	env.out() << "Number of constraints = " << info.numConstr << "\n";
-	solution.lambda = cplex.getObjValue();
-	env.out() << "Solution value IP = " << solution.lambda << "\n";
-
-	// run SP to check the correctness of the solution
 	CSP_Problem spproblem(n, solution.lambda, d);
 	info.sp_runs = 1;
 
@@ -376,50 +366,19 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 	fileLog.close();
 
 	while (spproblem.solve())
-	//while (finished)
 	{
-		//int sol1 = spproblem.solve();
-
-		//lambda_old = solution.lambda;
 		solution.time += spproblem.solution.time;
 		info.sp_runs++;
-		std::cout << std::endl
-				<< "==================  IP ======================" << std::endl
-				<< std::endl;
-		model.add(lambda >= solution.lambda + 1);
 
-		// solve new IP Problem
-		timer.start();
-		solveError = cplex.solve();
-		timer.stop();
-
-		if (!solveError)
-		{
-			std::cout << "STATUS : " << cplex.getStatus() << "\n";
-			env.error() << "MIPOptimizer: failed to solve IP on the step"
-					<< info.sp_runs << ";( \n";
-			exit(1);
-		}
-
-		solved = 1;
-		solution.time += timer.getTime();
-
-		env.out() << "Solution status IP = " << cplex.getStatus() << "\n";
-		info.numConstr = cplex.getNrows();
-		env.out() << " Number of constraints = " << info.numConstr << "\n";
-		solution.lambda = cplex.getObjValue();
-		env.out() << "Solution value IP = " << solution.lambda << "\n";
+		solution.lambda += 1;
 
 		spproblem.set_lambda(solution.lambda);
-
-		//int sol2 = spproblem.solve();
-
 	}
 
-	C = spproblem.get_c();
-	solution.lambda = spproblem.get_lambda();
+	//C = spproblem.get_c();
 
 	solution.UB = spproblem.get_lambda();
+	solution.lambda = 0;
 
 	fileLog.open("LOG.txt",
 			std::fstream::in | std::fstream::out | std::fstream::app);
@@ -428,7 +387,7 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 
 }
 
-int IP_Problem::optimize_IP()
+int MIP_Problem::optimize_MIP()
 {
 	withCSP = 0;
 	unsigned int n = inputData->n;
@@ -447,8 +406,8 @@ int IP_Problem::optimize_IP()
 			std::string str = "c" + ss.str();
 			c[u] = IloIntVar(env, str.c_str());
 		}
-		setModel_IP(env, model, lambda, c); //	set constraints and all additional parameters
-		solve_IP(env, model, lambda, c); // solve problem
+		setModel_MIP(env, model, lambda, c); //	set constraints and all additional parameters
+		solve_MIP(env, model, lambda, c); // solve problem
 	} // end try
 	catch (IloException& e)
 	{
@@ -467,7 +426,7 @@ int IP_Problem::optimize_IP()
 	return 0;
 }
 
-int IP_Problem::optimize_IP_SCP()
+int MIP_Problem::optimize_MIP_SCP()
 {
 	withCSP = 1;
 	unsigned int n = inputData->n;
@@ -486,9 +445,8 @@ int IP_Problem::optimize_IP_SCP()
 			std::string str = "c" + ss.str();
 			c[u] = IloIntVar(env, str.c_str());
 		}
-		setModel_IP_CSP(env, model, lambda, c); //	set constraints and all addition parameters
-		solve_IP_CSP(env, model, lambda, c); // solve problem
-
+		setModel_MIP_CSP(env, model, lambda, c); //	set constraints and all addition parameters
+		solve_MIP_CSP(env, model, lambda, c); // solve problem
 	} // end try
 	catch (IloException& e)
 	{
@@ -503,13 +461,11 @@ int IP_Problem::optimize_IP_SCP()
 		solved = 0;
 		std::cerr << "Unknown exception caught" << std::endl;
 	}
-//	env.end();
 
 	// Verification
 	std::cout << std::endl << "==============  Verification =================="
 			<< std::endl << std::endl;
 
-//	IloEnv env;
 	try
 	{
 		IloModel model(env);
@@ -525,9 +481,9 @@ int IP_Problem::optimize_IP_SCP()
 			c[u] = IloIntVar(env, str.c_str());
 		}
 
-		setModel_IP(env, model, lambda, c); //	set constraints and all addition parameters
+		setModel_MIP(env, model, lambda, c); //	set constraints and all addition parameters
 		model.add(lambda <= solution.UB);
-		solve_IP(env, model, lambda, c); // solve problem
+		solve_MIP(env, model, lambda, c); // solve problem
 	} // end try
 	catch (IloException& e)
 	{
@@ -547,7 +503,7 @@ int IP_Problem::optimize_IP_SCP()
 	return 0;
 }
 
-void IP_Problem::printSolution()
+void MIP_Problem::printSolution()
 {
 	std::cout << std::endl << "==================================="
 			<< std::endl;
@@ -570,7 +526,7 @@ void IP_Problem::printSolution()
 			<< std::endl;
 }
 
-int IP_Problem::saveSolutionToFile(std::string _fileName)
+int MIP_Problem::saveSolutionToFile(std::string _fileName)
 {
 
 	std::ofstream outFile;
@@ -584,9 +540,9 @@ int IP_Problem::saveSolutionToFile(std::string _fileName)
 	outFileNameSolve += str;
 
 	if (withCSP)
-		outFileNameSolve += "_MIP_CSP_";
+		outFileNameSolve += "_MMIP_CSP_";
 	else
-		outFileNameSolve += "_MIP_";
+		outFileNameSolve += "_MMIP_";
 
 	outFileName = outFileNameSolve;
 
@@ -616,78 +572,80 @@ int IP_Problem::saveSolutionToFile(std::string _fileName)
 	return 0;
 }
 
-void solveCP(const CProblemData* inputData, int max_distance)
-{
-	unsigned int n = inputData->n;
-	int UB = (max_distance + 1) * n;
-	int LB = 0;
-	int lambda = (UB - LB) / 2;
-	double time = 0.;
+/*
+ void solveCP(const CProblemData* inputData, int max_distance)
+ {
+ unsigned int n = inputData->n;
+ int UB = (max_distance + 1) * n;
+ int LB = 0;
+ int lambda = (UB - LB) / 2;
+ double time = 0.;
 
-	MatrixDouble d;
-	VectorInt C;
+ MatrixDouble d;
+ VectorInt C;
 
-	d.resize(n);
-	for (unsigned int u = 0; u < n; u++)
-	{
-		d[u].resize(n);
-		for (unsigned int v = 0; v < u; v++)
-		{
-			double value = 1 + max_distance - inputData->distances[u][v];
+ d.resize(n);
+ for (unsigned int u = 0; u < n; u++)
+ {
+ d[u].resize(n);
+ for (unsigned int v = 0; v < u; v++)
+ {
+ double value = 1 + max_distance - inputData->distances[u][v];
 
-			d[u][v] = (value < 0) ? 0 : value;
-			d[v][u] = d[u][v];
-		}
-	}
-	std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
-	CSP_Problem spproblem(n, lambda, d);
-	while (UB - LB > 1)
-	{
-		int solved;
-		solved = spproblem.solve();
-		time += spproblem.solution.time;
+ d[u][v] = (value < 0) ? 0 : value;
+ d[v][u] = d[u][v];
+ }
+ }
+ std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
+ CSP_Problem spproblem(n, lambda, d);
+ while (UB - LB > 1)
+ {
+ int solved;
+ solved = spproblem.solve();
+ time += spproblem.solution.time;
 
-		if (solved == 0)
-		{
-			UB = lambda;
-			spproblem.set_lambda(lambda);
-		}
-		else
-		{
-			LB = lambda;
-			spproblem.set_lambda(lambda);
-		}
+ if (solved == 0)
+ {
+ UB = lambda;
+ spproblem.set_lambda(lambda);
+ }
+ else
+ {
+ LB = lambda;
+ spproblem.set_lambda(lambda);
+ }
 
-		std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
-		lambda = (LB + UB) / 2;
-		spproblem.set_lambda(lambda);
-	}
+ std::cout << std::endl << "LB = " << LB << "\nUB = " << UB << std::endl;
+ lambda = (LB + UB) / 2;
+ spproblem.set_lambda(lambda);
+ }
 
-	C = spproblem.get_c();
+ C = spproblem.get_c();
 
-	std::cout << std::endl << "=============================================";
-	if (lambda != UB)
-	{
-		spproblem.set_lambda(UB);
-		if (spproblem.solve() == 0)
-		{
-			lambda = UB;
-			C = spproblem.get_c();
-		}
-	}
+ std::cout << std::endl << "=============================================";
+ if (lambda != UB)
+ {
+ spproblem.set_lambda(UB);
+ if (spproblem.solve() == 0)
+ {
+ lambda = UB;
+ C = spproblem.get_c();
+ }
+ }
 
-	std::cout << std::endl << "=============================================";
-	std::cout << std::endl;
-	// print solution
-	std::cout << "Optimal L(G; d_1,d_2, ..., d_n) = " << lambda << std::endl;
-	std::cout << "with the optimal labeling:" << std::endl;
-	for (unsigned int u = 0; u < C.size(); u++)
-	{
-		std::cout << C[u] << " ";
-	}
-	std::cout << std::endl;
-	std::cout << "Spent time " << time << std::endl;
-}
+ std::cout << std::endl << "=============================================";
+ std::cout << std::endl;
+ // print solution
+ std::cout << "Optimal L(G; d_1,d_2, ..., d_n) = " << lambda << std::endl;
+ std::cout << "with the optimal labeling:" << std::endl;
+ for (unsigned int u = 0; u < C.size(); u++)
+ {
+ std::cout << C[u] << " ";
+ }
+ std::cout << std::endl;
+ std::cout << "Spent time " << time << std::endl;
+ }
+ */
 
 int main(int argc, char **argv)
 {
@@ -731,13 +689,13 @@ int main(int argc, char **argv)
 
 	inputData->print();
 
-	IP_Problem MipProblem(atoi(argv[1])/*d_max*/, inputData);
+	MIP_Problem MipProblem(atoi(argv[1])/*d_max*/, inputData);
 //MipProblem.print();
 
 	if (Verfahren == 0)
-		MipProblem.optimize_IP();
+		MipProblem.optimize_MIP();
 	else
-		MipProblem.optimize_IP_SCP();
+		MipProblem.optimize_MIP_SCP();
 
 	MipProblem.printSolution();
 	MipProblem.saveSolutionToFile(inputData->getFileName());
