@@ -137,31 +137,37 @@ int CSP_Problem::solveModel(const IloEnv env, const IloModel model,
 
 	IloTimer timer(env);
 
-	int success ;
+	//int success;
 	std::fstream fileLog;
 	fileLog.open("LOG.txt",
 			std::fstream::in | std::fstream::out | std::fstream::app);
-	//fileLog << fileName << "\t";
+
 	int check = 0;
-	for (int depth = 2, i = 1; i <= 4; i++, depth *= 2)
+	int depth = 3;
+	//for (int depth = 2, i = 1; i <= 4; i++, depth *= 2)
 	{
 		timer.start();
-		success = cp.solve(MyGoalSBS(env, depth, c));
+		//success =
+				cp.solve(MyGoalSBS(env, depth, c));
 		timer.stop();
-		if (cp.getStatus() == cp.Feasible) check++;
+		if (cp.getStatus() == cp.Feasible)
+		{
+			check++;
+			//break;
+		}
 
 		cp.out() << "LAMBDA = " << lambda << std::endl;
 		cp.out() << "SOLUTION STATUS : " << cp.getStatus() << "\n";
 		solution.time = timer.getTime();
 		std::cout << "CSPent time " << solution.time << std::endl;
 
-
 		// write in LOG
-		fileLog << depth << " " << lambda  << " " << cp.getStatus() << "\t";
+		fileLog << depth << " " << lambda << " " << cp.getStatus() << "\t";
 	}
+
 	fileLog << "\n";
 	fileLog.close();
-	if (check>0)
+	if (check > 0)
 	//if (success)
 	{
 		// get solution from optimizer

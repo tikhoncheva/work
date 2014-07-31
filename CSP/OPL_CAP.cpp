@@ -40,6 +40,8 @@ struct MIPSolution
 {
 	//double lambda_;
 	int lambda;
+	int UB;
+	int LB;
 	//double lambda_glob;
 	//int lambda_glob;
 	double time;
@@ -90,7 +92,11 @@ public:
 		info.numAddVar = 0;
 		info.numConstr = 0;
 		info.numVar = 1 + inputData->n; // lambda + all c;
+
 		solved = 0;
+		solution.time = 0.;
+		solution.lambda = 0;
+
 		withCSP = 0;
 		set_d_function();
 	}
@@ -190,11 +196,11 @@ void IP_Problem::setModel_IP(IloEnv& env, IloModel& model,
 
 	/*Constrains*/
 	model.add(lambda - M <= 0);
-/*
-	model.add(
-			lambda - (inputData->maxGrad - 1) * (max_distance - 1)
-					- max_distance >= 0);
-*/
+	/*
+	 model.add(
+	 lambda - (inputData->maxGrad - 1) * (max_distance - 1)
+	 - max_distance >= 0);
+	 */
 	for (int i = 0; i < info.numAddVar; i++)
 	{
 		int u = info.ConstrIndex[i * 2];
@@ -251,11 +257,11 @@ void IP_Problem::setModel_IP_CSP(IloEnv& env, IloModel& model,
 
 	/*Constrains*/
 	model.add(lambda - M <= 0);
-/*
-	model.add(
-			lambda - (inputData->maxGrad - 1) * (max_distance - 1)
-					- max_distance >= 0);
-*/
+	/*
+	 model.add(
+	 lambda - (inputData->maxGrad - 1) * (max_distance - 1)
+	 - max_distance >= 0);
+	 */
 
 	// we solve the problem in this case without following conditions
 	/*
@@ -307,7 +313,7 @@ void IP_Problem::solve_IP(const IloEnv env, const IloModel model,
 	}
 
 	solved = 1;
-	solution.time = timer.getTime();
+	solution.time = solution.time + timer.getTime();
 
 	env.out() << "\nSolution status IP = " << cplex.getStatus() << "\n";
 	info.numConstr = cplex.getNrows();
@@ -366,7 +372,7 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 
 	std::fstream fileLog;
 	fileLog.open("LOG.txt");
-	fileLog << inputData->getFileName()<< "\n";
+	fileLog << inputData->getFileName() << "\n";
 	fileLog.close();
 
 	while (spproblem.solve())
@@ -410,12 +416,13 @@ void IP_Problem::solve_IP_CSP(const IloEnv env, const IloModel model,
 
 	}
 
-	// get solution from SCP-Solver
 	C = spproblem.get_c();
 	solution.lambda = spproblem.get_lambda();
 
+	solution.UB = spproblem.get_lambda();
+
 	fileLog.open("LOG.txt",
-				std::fstream::in | std::fstream::out | std::fstream::app);
+			std::fstream::in | std::fstream::out | std::fstream::app);
 	fileLog << "\n";
 	fileLog.close();
 
@@ -440,7 +447,7 @@ int IP_Problem::optimize_IP()
 			std::string str = "c" + ss.str();
 			c[u] = IloIntVar(env, str.c_str());
 		}
-		setModel_IP(env, model, lambda, c); //	set constraints and all addition parameters
+		setModel_IP(env, model, lambda, c); //	set constraints and all additional parameters
 		solve_IP(env, model, lambda, c); // solve problem
 	} // end try
 	catch (IloException& e)
@@ -481,6 +488,46 @@ int IP_Problem::optimize_IP_SCP()
 		}
 		setModel_IP_CSP(env, model, lambda, c); //	set constraints and all addition parameters
 		solve_IP_CSP(env, model, lambda, c); // solve problem
+
+	} // end try
+	catch (IloException& e)
+	{
+		solved = 0;
+		std::cerr << "Concert exception caught: " << e << std::endl;
+	} catch (std::string& e)
+	{
+		solved = 0;
+		std::cerr << e << std::endl;
+	} catch (...)
+	{
+		solved = 0;
+		std::cerr << "Unknown exception caught" << std::endl;
+	}
+//	env.end();
+
+	// Verification
+	std::cout << std::endl << "==============  Verification =================="
+			<< std::endl << std::endl;
+
+//	IloEnv env;
+	try
+	{
+		IloModel model(env);
+		// Variables
+		IloNumVar lambda(env, "lambda");
+
+		IloIntVarArray c(env, n);
+		for (unsigned int u = 0; u < n; u++)
+		{
+			std::stringstream ss;
+			ss << u;
+			std::string str = "c" + ss.str();
+			c[u] = IloIntVar(env, str.c_str());
+		}
+
+		setModel_IP(env, model, lambda, c); //	set constraints and all addition parameters
+		model.add(lambda <= solution.UB);
+		solve_IP(env, model, lambda, c); // solve problem
 	} // end try
 	catch (IloException& e)
 	{
@@ -496,6 +543,7 @@ int IP_Problem::optimize_IP_SCP()
 		std::cerr << "Unknown exception caught" << std::endl;
 	}
 	env.end();
+
 	return 0;
 }
 
@@ -599,7 +647,7 @@ void solveCP(const CProblemData* inputData, int max_distance)
 		solved = spproblem.solve();
 		time += spproblem.solution.time;
 
-		if (solved==0)
+		if (solved == 0)
 		{
 			UB = lambda;
 			spproblem.set_lambda(lambda);
@@ -621,7 +669,7 @@ void solveCP(const CProblemData* inputData, int max_distance)
 	if (lambda != UB)
 	{
 		spproblem.set_lambda(UB);
-		if (spproblem.solve()==0)
+		if (spproblem.solve() == 0)
 		{
 			lambda = UB;
 			C = spproblem.get_c();
@@ -645,7 +693,7 @@ int main(int argc, char **argv)
 {
 	std::string fileName;
 
-if (argc > 5 || argc < 3)
+	if (argc > 5 || argc < 3)
 //	if (argc != 5)
 	{
 		std::cerr
@@ -681,7 +729,7 @@ if (argc > 5 || argc < 3)
 		inputData = new CProblemData(atoi(argv[2]) /*lattice*/);
 	}
 
-inputData->print();
+	inputData->print();
 
 	IP_Problem MipProblem(atoi(argv[1])/*d_max*/, inputData);
 //MipProblem.print();
@@ -694,7 +742,7 @@ inputData->print();
 	MipProblem.printSolution();
 	MipProblem.saveSolutionToFile(inputData->getFileName());
 
-	solveCP(inputData, atoi(argv[1])/*d_max*/);
+	//solveCP(inputData, atoi(argv[1])/*d_max*/);
 	return 0;
 } // END main
 
