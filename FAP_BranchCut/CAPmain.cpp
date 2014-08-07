@@ -9,6 +9,7 @@
 #include <iomanip>
 
 #include "CAP.cpp"
+#include "var.h"
 
 static void usage(const char *progname)
 {
@@ -36,6 +37,8 @@ int main(int argc, char **argv)
 			throw(-1);
 		}
 
+		max_dist = atoi(argv[1]);	// d_1
+
 		CProblemData* inputData;
 
 		if (atoi(argv[2]) == 0) // if we want read from file
@@ -49,9 +52,9 @@ int main(int argc, char **argv)
 			inputData = new CProblemData(atoi(argv[2]) /*lattice typ*/);
 		}
 
-		//	inputData->print();
+			inputData->print();
 
-		MIP_Problem CAP(atoi(argv[1])/*d_max*/, inputData);	// define new CAP Problem
+		MIP_Problem CAP(max_dist, inputData);	// define new CAP Problem
 		CAP.print();										// print problem
 		CAP.solve();										// solve problem
 		CAP.printSolution();								// print solution on the screen

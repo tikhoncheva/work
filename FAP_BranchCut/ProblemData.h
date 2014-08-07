@@ -3,9 +3,12 @@
 
 #include<string>
 #include<vector>
+#include"var.h"
 
-typedef std::vector<double> VectorDouble;
-typedef std::vector<VectorDouble> MatrixDouble;
+/*
+ typedef std::vector<double> VectorDouble;
+ typedef std::vector<VectorDouble> MatrixDouble;
+ */
 
 MatrixDouble hexagonalLattice(int n, int n1)
 {
@@ -47,7 +50,7 @@ MatrixDouble squareCoordToDist(MatrixDouble coord)
 	std::cout << "Distances: " << "\n";
 	for (unsigned int u = 0; u < distance.size(); u++)
 	{
-		for (unsigned int v = 0; v <  distance[u].size(); v++)
+		for (unsigned int v = 0; v < distance[u].size(); v++)
 		{
 			std::cout << std::setw(3) << distance[u][v] << " ";
 		}
@@ -65,11 +68,14 @@ private:
 	std::string fileName; // name of the file with distance matrix
 	int readData();
 	//void coordTOdist();
+	int dist_linear(int x);
+	void set_d_function();
+
 public:
 	unsigned int n; // number of vertices
 	//unsigned int diameter; // diameter of the graph
 	unsigned int maxGrad; // maximal grade of a graph
-	MatrixDouble distances; // distance matrix
+	MatrixDouble dist; // distance matrix
 
 	void print();
 	const std::string getFileName()
@@ -136,11 +142,11 @@ int CProblemData::readData()
 
 		std::getline(oFile, line);
 
-		distances.resize(n);
+		dist.resize(n);
 		for (unsigned int i = 0; i < n; i++)
 		{
-			distances[i].resize(n);
-			distances[i][i] = 0;
+			dist[i].resize(n);
+			dist[i][i] = 0;
 
 			std::getline(oFile, line);
 
@@ -151,8 +157,8 @@ int CProblemData::readData()
 			{
 				buf >> int_buf;
 				//distanceVektor.push_back(int_buf);
-				distances[i][j] = int_buf;
-				distances[j][i] = distances[i][j];
+				dist[i][j] = int_buf;
+				dist[j][i] = dist[i][j];
 			}
 			buf.clear(); //clear buf
 
@@ -163,7 +169,7 @@ int CProblemData::readData()
 
 	case 1:
 		n = 24;
-		distances = hexagonalLattice(n, 2); // number of vertices, number of vertices in first line
+		dist = hexagonalLattice(n, 2); // number of vertices, number of vertices in first line
 		//diameter = 7;
 		maxGrad = 3;
 		fileName = "hexagonal_lattice.dat";
@@ -171,7 +177,7 @@ int CProblemData::readData()
 
 	case 2:
 		n = 23;
-		distances = triangularLattice(n, 5); // number of vertices, number of vertices in first line
+		dist = triangularLattice(n, 5); // number of vertices, number of vertices in first line
 		// diameter = 6;
 		maxGrad = 6;
 		fileName = "triangular_lattice.dat";
@@ -181,7 +187,7 @@ int CProblemData::readData()
 		n = 25;
 		//diameter = 8;
 		maxGrad = 4;
-		distances = squareCoordToDist(squareLattice(n, sqrt(n)));
+		dist = squareCoordToDist(squareLattice(n, sqrt(n)));
 
 		fileName = "square_lattice.dat";
 		break;
@@ -190,6 +196,8 @@ int CProblemData::readData()
 		std::cerr << "Wrong lattice type\n";
 		exit(-1);
 	} //switch
+
+	set_d_function();
 
 	return 0;
 }
@@ -207,10 +215,39 @@ void CProblemData::print()
 	{
 		for (unsigned int v = 0; v < n; v++)
 		{
-			std::cout << std::setw(3) << distances[u][v] << " ";
+			std::cout << std::setw(3) << dist[u][v] << " ";
 		}
 		std::cout << "\n";
 	}
+}
+
+int CProblemData::dist_linear(int x)
+{
+	int value = 1 + max_dist - x;
+	return (value < 0) ? 0 : value; /* linear function of dist*/
+	//return value;
+}
+
+void CProblemData::set_d_function()
+{
+	d.resize(n);
+	for (unsigned int u = 0; u < n; u++)
+	{
+		d[u].resize(n);
+		for (unsigned int v = 0; v < u; v++)
+		{
+			d[u][v] = dist_linear(dist[u][v]);
+			d[v][u] = d[u][v];
+
+			if (dist[u][v] <= max_dist && u != v)
+			{ // save vertices for which interferent with each other
+				info.InterferenceVertices.push_back(u);
+				info.InterferenceVertices.push_back(v);
+			}
+
+		}
+	}
+
 }
 
 #endif /* PROBLEMDATA_H_ */

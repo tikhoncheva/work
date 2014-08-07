@@ -15,26 +15,22 @@
 #include <time.h>
 #include <ilcplex/ilocplex.h>	/* CPLEX */
 
+#include "var.h"
 #include "ProblemData.h"
 #include "MyBranchAndCut.cpp"
 
 ILOSTLBEGIN
 
-typedef std::vector<int> VectorInt;
-typedef std::vector<VectorInt> MatrixInt;
+/*
+ struct SInfo
+ {
+ int numConstr;
+ int numVar;
+ int numRedundantVar;
 
-typedef IloArray<IloIntVarArray> MatrixIloIntVar;
-typedef IloArray<IloNumArray> MatrixIloNum;
-
-struct SInfo
-{
-	int numConstr;
-	int numVar;
-	int numRedundantVar;
-
-	VectorInt ConstrIndex; // Indices of the vertices, that interferent to eachother
-};
-
+ VectorInt ConstrIndex; // Indices of the vertices, that interferent to eachother
+ };
+ */
 struct MIPSolution
 {
 	double UB;
@@ -47,31 +43,33 @@ struct MIPSolution
 class MIP_Problem
 {
 private:
-	double dist_linear(double x);
-	void set_d_function();
+//	int dist_linear(int x);
+//	void set_d_function();
 
 	void setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 			const IloArray<IloIntVarArray> x, const IloNumVarArray y);
 	void optimize(const IloEnv env, const IloModel model,
 			const IloIntVar lambda, const IloArray<IloIntVarArray> x,
-			const IloNumVarArray y);
+			const IloNumVarArray y, IloArray<IloNumArray> dist);
 
 public:
 	// input data
 	CProblemData* inputData;
 	// parameters
-	MatrixDouble d; // use simply line-function to calculate d from distance matrix
-	double max_distance;
+	//MatrixInt d; // use simply line-function to calculate d from distance matrix
+	int max_distance;
 
 	// Variables
-	VectorDouble C; // labeling
+	VectorInt C; // labeling
 
 	// Solution
 	int solved;
 	MIPSolution solution;
-	SInfo info;
+	//SInfo info;
 
 	// additional functions
+	//void set_d_function();
+
 	int solve();
 
 	void print();
@@ -87,7 +85,7 @@ public:
 		info.numRedundantVar = 0;
 		solved = 0;
 
-		set_d_function();
+		//set_d_function();
 	}
 
 	~MIP_Problem()
@@ -96,50 +94,30 @@ public:
 	}
 
 };
+/*
+ int MIP_Problem::dist_linear(int x)
+ {
+ int value = 1 + max_distance - x;
+ return (value < 0) ? 0 : value;
+ //return value;
+ }
 
-double MIP_Problem::dist_linear(double x)
-{
-	double value = 1 + max_distance - x;
-	return (value < 0) ? 0 : value; /* linear function of distances*/
-	//return value;
-}
+ void MIP_Problem::set_d_function()
+ {
 
-void MIP_Problem::set_d_function()
-{
+ d.resize(inputData->n);
+ for (unsigned int u = 0; u < inputData->n; u++)
+ {
+ d[u].resize(inputData->n);
+ for (unsigned int v = 0; v < u; v++)
+ {
+ d[u][v] = dist_linear(inputData->distances[u][v]);
+ d[v][u] = d[u][v];
+ }
+ }
 
-	d.resize(inputData->n);
-	for (unsigned int u = 0; u < inputData->n; u++)
-	{
-		d[u].resize(inputData->n);
-		for (unsigned int v = 0; v < u; v++)
-		{
-			d[u][v] = dist_linear(inputData->distances[u][v]);
-			d[v][u] = d[u][v];
-			if (d[u][v] <= max_distance && u != v)
-			{ // save vertices for which additional constraints to be created
-				info.ConstrIndex.push_back(u);
-				info.ConstrIndex.push_back(v);
-			}
-		}
-	}
-
-}
-
-void MIP_Problem::print()
-{
-	std::cout << " Distance Function d: " << "\n";
-	for (unsigned int u = 0; u < d.size(); u++)
-	{
-		for (unsigned int v = 0; v < d[u].size(); v++)
-		{
-			std::cout << std::setw(3) << d[u][v] << " ";
-		}
-		std::cout << "\n";
-	}
-	std::cout << "\n";
-	//std::cout << "max distance : " << max_distance;
-	std::cout << "\n";
-}
+ }
+ */
 
 void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 		const IloArray<IloIntVarArray> x, const IloNumVarArray y)
@@ -170,54 +148,33 @@ void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 		}
 
 		model.add(SumFreq == 1);
+		SumFreq.end();
 
 	}
 
 	// x[i][f]+x[j][g] <=1 |f-g|<d_ij
-
-	for (unsigned int i = 0; i < n; i++)
+	for (unsigned int i = 0; i < info.InterferenceVertices.size() / 2; i++)
 	{
-		for (unsigned int j = 0; j < n; j++)
+		int u = info.InterferenceVertices[i * 2];
+		int v = info.InterferenceVertices[i * 2 + 1];
+
+		for (int f = 0; f <= solution.UB; f++)
 		{
-			for (unsigned int f = 0; f <= solution.UB; f++)
+			for (int g = 0; g <= solution.UB; g++)
 			{
-				for (unsigned int g = 0; g <= solution.UB; g++)
+				if ((f - g < d[u][v]) && (f - g > -d[u][v]))
 				{
-					if ((f - g < d[i][j]) && (f - g > -d[i][j]))
-					{
-						model.add(x[i][f] + x[j][g] <= 1);
-					}
+					model.add(x[u][f] + x[v][g] <= 1);
 				}
 			}
 		}
 	}
-
-	// dominance criteria
-	for (unsigned int i = 0; i < n; i++)
-	{
-		for (unsigned int j = 0; j < n; j++)
-		{
-			if (d[i][j] == 0)
-			{
-				// it is possible to assign the same frequency to i and j
-				info.numRedundantVar++;
-				for (unsigned int f = 0; f <= solution.UB; f++)
-				{
-					model.add(x[i][f] + x[j][f] <= 2);
-				}
-
-			}
-		}
-	}
-
-	std::cout << " Number of possibly redundand vertices : "
-			<< info.numRedundantVar << "\n";
 
 }
 
 void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 		const IloIntVar lambda, const IloArray<IloIntVarArray> x,
-		const IloNumVarArray y)
+		const IloNumVarArray y, IloArray<IloNumArray> dist)
 {
 	unsigned int n = inputData->n;
 	int solveError = 0;
@@ -225,13 +182,12 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	IloCplex cplex(env);
 	IloTimer timer(env);
 
-	cplex.use(MyHeuristic(env, x, y));
+	cplex.use(MyHeuristic(env, x, y, dist));
 	//cplex.use(MyBranch(env, y));
 	//cplex.use(MySelect(env));
 
 	cplex.setParam(IloCplex::MIPSearch, IloCplex::Traditional);
 	//cplex.setParam(IloCplex::Cliques, 1);
-
 
 	cplex.extract(model);
 	cplex.exportModel("LLabelingIP.lp");
@@ -270,7 +226,10 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 		for (unsigned int f = 0; f <= solution.UB; f++)
 		{
 			if (cplex.getValue(x[i][f]) == 1)
+			{
+				std::cout << f << " ";
 				C[i] = f;
+			}
 		}
 	}
 
@@ -288,9 +247,19 @@ int MIP_Problem::solve()
 
 		solution.UB = (max_distance + 1) * n;
 
-		std::cout << "Size of the domain D : " << solution.UB << "\n";
+		// D_i = D = {0, 1,2,3,...UB}
+		std::cout << "Size of the domain D : " << 1 + solution.UB << "\n";
 
-		// D_i = D = {1,2,3,...UB}
+		// distances
+		MatrixIloNum IloD(env, n);
+		for (unsigned int i = 0; i < n; i++)
+		{
+			IloD[i] = IloNumArray(env, n);
+			for (unsigned int j = 0; j < n; j++)
+			{
+				IloD[i][j] = d[i][j];
+			}
+		}
 
 		MatrixIloIntVar x(env, n);
 		for (unsigned int i = 0; i < n; i++)
@@ -320,7 +289,7 @@ int MIP_Problem::solve()
 		setModel(env, model, lambda, x, y);
 
 		// solve problem
-		optimize(env, model, lambda, x, y);
+		optimize(env, model, lambda, x, y, IloD);
 	} // end try
 	catch (IloException& e)
 	{
@@ -337,6 +306,22 @@ int MIP_Problem::solve()
 	}
 	env.end();
 	return 0;
+}
+
+void MIP_Problem::print()
+{
+	std::cout << " Interference graph of the problem: " << "\n";
+	for (unsigned int u = 0; u < d.size(); u++)
+	{
+		for (unsigned int v = 0; v < d[u].size(); v++)
+		{
+			std::cout << std::setw(3) << d[u][v] << " ";
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
+	//std::cout << "max distance : " << max_dis;
+	std::cout << "\n";
 }
 
 void MIP_Problem::printSolution()
