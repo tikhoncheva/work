@@ -1,6 +1,7 @@
 //#include <ilcplex/ilocplex.h>
 #include <ilcplex/ilocplexi.h>
 #include "var.h"
+#include "AlgBronKerbosch.cpp"
 
 ILOSTLBEGIN
 
@@ -16,11 +17,16 @@ int checkIfAssigned(IloNumArray feas)
 
 }
 
-ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
-		const IloNumVarArray, varsY, MatrixIloNum, dist)
+
+/*
+ * Heuristic callback
+ */
+
+ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
+		IloNumVarArray, varsY)
 {
-	IloArray<IntegerFeasibilityArray> feasX;
-	IntegerFeasibilityArray feasY;
+	//IloArray<IntegerFeasibilityArray> feasX;
+	//IntegerFeasibilityArray feasY;
 
 	MatrixIloNum x;
 	IloNumArray y;
@@ -28,6 +34,7 @@ ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
 
 	try
 	{
+		//std::cout << "\nHeurestik solution"<<std::endl;
 		//IloNum lambda = getObjValue();
 
 		IloInt nLinks = varsX.getSize();
@@ -103,7 +110,7 @@ ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
 		while (numUnassignedLinks>0)
 		{
 			// find first unassigned frequency
-			int minNumOfFreq;
+			unsigned int minNumOfFreq;
 			int l;
 
 			for (unsigned int i = 0; i < assignedFreq.size(); i++)
@@ -171,7 +178,17 @@ ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
 			numUnassignedLinks--;
 
 		}
-
+		/*
+		 for (int i = 0; i < nLinks; ++i)
+		 {
+		 for (int j = 0; j < nFreq; ++j)
+		 {
+		 if (x[i][j]!=0)
+		 std::cout << "x["<< i << "][" << j << "]=1   ";
+		 }
+		 }
+		 std::cout << std::endl << std::endl;
+		 */
 		IloNumVarArray startVars(getEnv());
 		IloNumArray startVals(getEnv());
 		for (int i = 0; i < nLinks; ++i)
@@ -189,7 +206,9 @@ ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
 			startVals.add(y[j]);
 		}
 
-		setSolution(startVars, startVals);
+		//IloNum newObj = IloMax(y);
+
+		setSolution(startVars, startVals);//, newObj);
 	}
 	catch (...)
 	{
@@ -210,70 +229,258 @@ ILOHEURISTICCALLBACK3(MyHeuristic, MatrixIloIntVar, varsX,
  * Cut Callback
  */
 
-/*
- * Branch Selection Callback
- */
-ILOBRANCHCALLBACK1(MyBranch, IloNumVarArray, vars)
+ILOUSERCUTCALLBACK2(MyUserCutCallback, MatrixIloIntVar, varsX,
+		IloNumVarArray, varsY)
 {
-	if (getBranchType() != BranchOnVariable)
-	return;
-
-// Branch on var with largest objective coefficient
-// among those with largest infeasibility
-
-	IloNumArray x;
-	IloNumArray obj;
-	IntegerFeasibilityArray feas;
+	MatrixIloNum x;
+	IloNumArray y;
+	const IloIntVar lambda;
 
 	try
 	{
-		x = IloNumArray(getEnv());
-		obj = IloNumArray(getEnv());
-		feas = IntegerFeasibilityArray(getEnv());
-		getValues(x, vars);
-		getObjCoefs(obj, vars);
-		getFeasibilities(feas, vars);
 
-		IloInt bestj = -1;
-		IloNum maxinf = 0.0;
-		IloNum maxobj = 0.0;
-		IloInt cols = vars.getSize();
-		for (IloInt j = 0; j < cols; j++)
+		IloInt nLinks = varsX.getSize();
+		IloInt nFreq = varsX[0].getSize();
+
+		x = MatrixIloNum(getEnv(), nLinks);
+		for (int i = 0; i < x.getSize(); i++)
 		{
-			if (feas[j] == Infeasible)
+			x[i] = IloNumArray(getEnv(), nFreq);
+			for (int f = 0; f < x[i].getSize(); f++)
 			{
-				IloNum xj_inf = x[j] - IloFloor(x[j]);
-				if (xj_inf > 0.5)
-				xj_inf = 1.0 - xj_inf;
-				if (xj_inf >= maxinf
-						&& (xj_inf > maxinf || IloAbs(obj[j]) >= maxobj))
-				{
-					bestj = j;
-					maxinf = xj_inf;
-					maxobj = IloAbs(obj[j]);
-				}
+				x[i][f] = getValue(varsX[i][f]);
 			}
 		}
 
-		if (bestj >= 0)
+		y = IloNumArray(getEnv());
+		getValues(y, varsY);
+
+		for (int f = 0; f < y.getSize(); f++)
 		{
-			makeBranch(vars[bestj], x[bestj], IloCplex::BranchUp,
-					getObjValue());
-			makeBranch(vars[bestj], x[bestj], IloCplex::BranchDown,
-					getObjValue());
+			IloExpr sum_xf(getEnv());
+			for (int i = 0; i < x.getSize(); i++)
+			{
+				for (int j = 0; j < x.getSize(); j++)
+				{
+					if (d[i][j]==max_dist)
+					{
+						//sum_xf += x[i][f]+x[j][f];
+					}
+				}
+			}
+			add(sum_xf <= y[f]);
+			sum_xf.end();
+		}
+
+	}
+	catch (...)
+	{
+
+		x.end();
+		y.end();
+		throw;
+	}
+
+	x.end();
+	y.end();
+}
+
+/*
+ * Branch Selection Callback
+ */
+ILOBRANCHCALLBACK2(MyBranch, MatrixIloIntVar, varsX,
+		IloNumVarArray, varsY)
+{
+//IloArray<IntegerFeasibilityArray> feasX;
+//IntegerFeasibilityArray feasY;
+
+	MatrixIloNum x;
+	IloNumArray y;
+
+	try
+	{
+		//IloInt nLinks = varsX.getSize();
+		int nLinks = varsX.getSize();
+		//IloInt nFreq = varsX[0].getSize();
+		int nFreq = varsX[0].getSize();
+
+		/*
+		 feasX = IloArray<IntegerFeasibilityArray>(getEnv(), nLinks);
+		 for (int i = 0; i < feasX.getSize(); i++)
+		 {
+		 feasX[i] = IntegerFeasibilityArray(getEnv(), nFreq);
+		 getFeasibilities(feasX[i], varsX[i]);
+		 }
+
+		 feasY = IntegerFeasibilityArray(getEnv());
+		 getFeasibilities(feasY, varsY);
+		 */
+
+		// get current relaxation of the problem
+		x = MatrixIloNum(getEnv(), nLinks);
+		for (int i = 0; i < x.getSize(); i++)
+		{
+			x[i] = IloNumArray(getEnv(), nFreq);
+			for (int f = 0; f < x[i].getSize(); f++)
+			{
+				x[i][f] = getValue(varsX[i][f]);
+				if (x[i][f]<0.000001) x[i][f] = 0.;
+			}
+		}
+
+		y = IloNumArray(getEnv());
+		getValues(y, varsY);
+		for (int f = 0; f < y.getSize(); f++)
+		{
+			if (y[f]<0.000001) y[f]=0.0;
+		}
+
+		// find variable y with value closest to 1
+
+		double maxFractY = 0.;
+		int indMaxFractY = -1;
+
+		for (int f = 0; f<nFreq; f++)
+		{
+			//std::cout << y[f];
+			if (y[f]>maxFractY && (y[f]-std::floor(y[f])>0) )
+			{
+				maxFractY = y[f];
+				indMaxFractY = f;
+			}
+		}
+
+		if (indMaxFractY<0) // all variables y are integer
+		{
+			// find x[i][f] that will force the mist other variables to zero
+			int ii = -1;
+			int ff = -1;
+			int maxVorbiddenFreq = 0;
+
+			for (int i=0; i<nLinks; i++)
+			{
+				for (int f=0; f<nFreq; f++)
+				{
+					// calculate number of frequencies, that will be vorbidden
+					// for all other x-s if x[i][f] = 1;
+					int sumVorbidden = 0;
+					for (unsigned int j = 0; j < info.InterferenceVertices.size() / 2; j++)
+					{
+						unsigned int u = info.InterferenceVertices[j * 2];
+						unsigned int v = info.InterferenceVertices[j * 2 + 1];
+
+						if (j == u || j == v )
+						{
+							for (int g = std::max(f-d[u][v],0);
+									g <= std::min(f+d[u][v], nFreq );
+									g++)
+							{ // x[u][f] + x[v][g] <= 1
+								sumVorbidden ++;
+							}
+						}
+
+					}
+
+					if (sumVorbidden > maxVorbiddenFreq && (x[i][f]<1 && x[i][f]>0 ))
+					{
+						ii = i;
+						ff = f;
+						maxVorbiddenFreq = sumVorbidden;
+					}
+
+				}
+			}
+
+			// branch on the x[ii][ff]
+			if (ii>=0 && ff>=0)
+			{
+				//std::cout << "\nbranch on x[" << ii << "][" << ff << "]  " << x[ii][ff]<< std::endl;
+				makeBranch(varsX[ii][ff], 0, IloCplex::BranchDown, getObjValue());
+				makeBranch(varsX[ii][ff], 1, IloCplex::BranchUp, getObjValue());
+			}
+		}
+
+		else
+		{ // branch on the found vertex y[indMaxFractY]
+
+			//std::cout << "\nbranch on y[" << indMaxFractY << "]  " << y[indMaxFractY] << std::endl;
+
+			makeBranch(varsY[indMaxFractY], 0, IloCplex::BranchDown, getObjValue());
+			makeBranch(varsY[indMaxFractY], 1, IloCplex::BranchUp, getObjValue());
 		}
 	}
 	catch (...)
 	{
 		x.end();
-		obj.end();
-		feas.end();
+		y.end();
 		throw;
 	}
 	x.end();
-	obj.end();
-	feas.end();
+	y.end();
 }
+
+/*
+ {
+ if (getBranchType() != BranchOnVariable)
+ return;
+
+ // Branch on var with largest objective coefficient
+ // among those with largest infeasibility
+
+ IloNumArray x;
+ IloNumArray obj;
+ IntegerFeasibilityArray feas;
+
+ try
+ {
+ x = IloNumArray(getEnv());
+ obj = IloNumArray(getEnv());
+ feas = IntegerFeasibilityArray(getEnv());
+ getValues(x, vars);
+ getObjCoefs(obj, vars);
+ getFeasibilities(feas, vars);
+
+ IloInt bestj = -1;
+ IloNum maxinf = 0.0;
+ IloNum maxobj = 0.0;
+ IloInt cols = vars.getSize();
+ for (IloInt j = 0; j < cols; j++)
+ {
+ if (feas[j] == Infeasible)
+ {
+ IloNum xj_inf = x[j] - IloFloor(x[j]);
+ if (xj_inf > 0.5)
+ xj_inf = 1.0 - xj_inf;
+ if (xj_inf >= maxinf
+ && (xj_inf > maxinf || IloAbs(obj[j]) >= maxobj))
+ {
+ bestj = j;
+ maxinf = xj_inf;
+ maxobj = IloAbs(obj[j]);
+ }
+ }
+ }
+
+ if (bestj >= 0)
+ {
+ makeBranch(vars[bestj], x[bestj], IloCplex::BranchUp,
+ getObjValue());
+ makeBranch(vars[bestj], x[bestj], IloCplex::BranchDown,
+ getObjValue());
+ }
+ }
+ catch (...)
+ {
+ x.end();
+ obj.end();
+ feas.end();
+ throw;
+ }
+ x.end();
+ obj.end();
+
+ }
+ */
 
 /*
  * Node Selection Callback

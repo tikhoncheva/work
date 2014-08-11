@@ -37,8 +37,7 @@ int main(int argc, char **argv)
 			throw(-1);
 		}
 
-		max_dist = atoi(argv[1]);	// d_1
-
+		max_dist = atoi(argv[1]); // d_1
 		CProblemData* inputData;
 
 		if (atoi(argv[2]) == 0) // if we want read from file
@@ -52,14 +51,35 @@ int main(int argc, char **argv)
 			inputData = new CProblemData(atoi(argv[2]) /*lattice typ*/);
 		}
 
-			inputData->print();
+		//inputData->print();
 
-		MIP_Problem CAP(max_dist, inputData);	// define new CAP Problem
-		CAP.print();										// print problem
-		CAP.solve();										// solve problem
-		CAP.printSolution();								// print solution on the screen
-		CAP.saveSolutionToFile(inputData->getFileName());	// save solution in file
+		std::vector<std::set<int> > cliqueList = findMaxClique(d);
 
+		std::cout << "Maximal clique in the given Graph " << std::endl;
+
+		for (unsigned int i = 0; i < cliqueList.size(); i++)
+		{
+			std::set<int>::iterator itC;
+			std::set<int> C = cliqueList[i];
+
+			std::cout << "Clique " << i + 1 << ": ";
+
+			for (itC = C.begin(); itC != C.end(); itC++)
+			{
+				std::cout << *itC << "<->";
+			}
+			std::cout << "|" << std::endl;
+		}
+
+		/*
+		 MIP_Problem CAP(max_dist, inputData); // define new CAP Problem
+		 CAP.print(); // print problem
+
+		 CAP.solve(); // solve problem
+		 CAP.printSolution(); // print solution on the screen
+		 CAP.saveSolutionToFile(inputData->getFileName()); // save solution in file
+
+		 */
 	} // END try
 	catch (int& e)
 	{
