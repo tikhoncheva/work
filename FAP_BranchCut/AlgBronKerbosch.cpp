@@ -10,91 +10,54 @@ void enumirateCliques1(const std::vector<std::vector<int> > G,
 		std::set<int> & C, std::set<int> Cand, std::set<int> Not,
 		std::vector<std::set<int> >& listC)
 {
-	std::cout << "\nstart with Clique: ";
-	for (std::set<int>::iterator itC = C.begin(); itC != C.end(); itC++)
-	{
-		int v = *itC;
-		std::cout << v << " ";
-	}
-	std::cout << std::endl;
-
-	std::cout << "start with Cand: ";
-	for (std::set<int>::iterator itCand = Cand.begin(); itCand != Cand.end();
-			itCand++)
-	{
-		int ce = *itCand;
-		std::cout << ce << " ";
-	}
-	std::cout << std::endl;
-
-	std::cout << "start with Not: ";
-	for (std::set<int>::iterator itNot = Not.begin(); itNot != Not.end();
-			itNot++)
-	{
-
-		int ne = *itNot; // neighbor of ce in Cand
-		std::cout << ne << " ";
-	}
-	std::cout << std::endl;
-
 	if (Cand.empty() && Not.empty())
 	// If there is no extension candidates AND
 	// clique is not a part of other clique
 	{
-		// we found maximal clique
-		std::cout << "we found maximal clique : ";
-
-		for (std::set<int>::iterator itC = C.begin(); itC != C.end(); itC++)
-		{
-			std::cout << *itC << "<->";
-		}
-		std::cout << "|" << std::endl;
+		// we found maximal clique C
 		listC.push_back(C);
 	}
 	else
 	{
+		// If there is an element in Not, that is connected to all points
+		// in Cand, the extension of current clique will not lead to maximal
+		// subgraph => return
 
-		std::cout << "Cand or Not is not empty\n";
-		/*
-		 for (std::set<int>::iterator itNot = Not.begin(); itNot != Not.end();
-		 itNot++)
-		 {
+		for (std::set<int>::iterator itNot = Not.begin(); itNot != Not.end();
+				itNot++)
+		{
 
-		 int ne = *itNot; // neighbor of ce in Cand
-		 int accept = 0;
-		 for (std::set<int>::iterator itCand = Cand.begin();
-		 itCand != Cand.end(); itCand++)
-		 {
-		 int ce = *itCand;
+			int ne = *itNot; //
+			int accept = 0;
+			for (std::set<int>::iterator itCand = Cand.begin();
+					itCand != Cand.end(); itCand++)
+			{
+				int ce = *itCand;
 
-		 if (G[ce][ne] < max_dist)
-		 {
-		 accept = 1;
-		 break;
-		 }
-		 }
+				if (G[ce][ne] < max_dist)
+				{
+					accept = 1;
+					break;
+				}
+			}
 
-		 if (!accept)
-		 {
-		 std::cout << "return\n";
-		 return;
-		 }
-		 }
-		 */
+			if (!accept)
+			{
+				return;
+			}
+		}
+
 		//	else
-		//{
+		// try out all candidates in Cand
 		for (std::set<int>::iterator itCand = Cand.begin();
 				itCand != Cand.end(); itCand++)
 		{
-			int ce = *itCand;
+			int ce = *itCand; // new candidate
+
 			std::set<int> newCand; // new set of vertices to extend the clique
 			std::set<int> newNot; // new set of vertices that cannot be in clique
 
-			std::cout << "\n";
-			std::cout << "ce = " << ce << "\n";
-
 			// extend existed clique C
-			//Cand.erase(ce);
 			C.insert(ce);
 
 			// new set Not
@@ -121,18 +84,19 @@ void enumirateCliques1(const std::vector<std::vector<int> > G,
 
 			enumirateCliques1(G, C, newCand, newNot, listC);
 
-			// delete selected candidate from Cand
+			// delete selected candidate ce from Cand and clique C
 			Cand.erase(ce);
-			Not.insert(ce);
 			C.erase(ce);
+			// and add it to set Not
+			Not.insert(ce);
 
 		}
 	}
-
-	//}
 }
 
-int find_v(const std::vector<std::vector<int> > G, std::set<int> Cand)
+// select new candidate to be add in existed clique C as a vertex from Cand
+// with maximal number of cinnections to other vertices in Cand
+int findNewCandidate(const std::vector<std::vector<int> > G, std::set<int> Cand)
 {
 	int v = -1;
 	int N_v = 0;
@@ -174,7 +138,8 @@ void enumirateCliques2(const std::vector<std::vector<int> > G, std::set<int> C,
 
 	else
 	{
-		int ce = find_v(G, Cand);
+		int ce = findNewCandidate(G, Cand); // select first candidate as
+		// a vertex with maximum conntection to vetrices in Cand
 
 		while (ce >= 0)
 		{
@@ -206,139 +171,39 @@ void enumirateCliques2(const std::vector<std::vector<int> > G, std::set<int> C,
 				}
 			}
 
-			enumirateCliques2(G, C, newCand, newNot, listC);
+			enumirateCliques1(G, C, newCand, newNot, listC);
 
-			// delete selected candidate from Cand
-
+			// delete selected candidate ce from Cand and clique C
 			Cand.erase(ce);
 			C.erase(ce);
+			// and add it to set Not
 			Not.insert(ce);
 
-			ce = find_v(G, Cand);
+			ce = findNewCandidate(G, Cand); // new candidate
 		}
 	}
 }
-
-/*
- void enumerateCliques(const std::vector<std::vector<int> > G, std::set<int> & C,
- std::set<int> Cand, std::set<int> Not,
- std::vector<std::set<int> >& listC)
- {
- std::cout << "begin enumerate\n";
- if (Cand.empty() && Not.empty())
- {
- // we found maximal clique
- std::cout << "we found maximal clique : ";
-
- for (std::set<int>::iterator itC = C.begin(); itC != C.end(); itC++)
- {
- std::cout << *itC << "<->";
- }
- std::cout << "|" << std::endl;
- listC.push_back(C);
- }
-
- else
- {
- int v = find_v(G, Cand);
- //std::cout << "v = " << v << std::endl;
- while (v >= 0)
- {
- std::cout << "v = " << v << std::endl;
- std::cout << "Cand: ";
- for (std::set<int>::iterator itCand = Cand.begin();
- itCand != Cand.end(); itCand++)
- {
- std::cout << *itCand << " ";
- }
-
- std::cout << "  Not:";
-
- for (std::set<int>::iterator itNot = Not.begin();
- itNot != Not.end(); itNot++)
- {
- std::cout << *itNot << " ";
- }
-
- std::set<int> newCand; // new set of vertices to extend the clique
- std::set<int> newNot; // new set of vertices that cannot be in clique
-
- // extend existed clique C
- C.insert(v);
- Cand.erase(v);
-
- // new set of candidates (neighbors of selected vertex ce)
- for (std::set<int>::iterator itCand = Cand.begin();
- itCand != Cand.end(); itCand++)
- {
- int N_v = *itCand; // neighbor of ce in Cand
- if (G[v][N_v] == max_dist)
- {
- newCand.insert(N_v);
- }
- }
- // new set Not
- for (std::set<int>::iterator itNot = Not.begin();
- itNot != Not.end(); itNot++)
- {
- int ne = *itNot; // neighbor of ce in Not
- if (G[v][ne] == max_dist)
- {
- newNot.insert(ne);
- }
- }
-
- enumerateCliques(G, C, newCand, newNot, listC);
-
- // delete selected candidate from Cand
- //Cand.erase(v);
- Not.insert(v);
- //C.erase(ce);
-
-
- for (std::set<int>::iterator itCand = Cand.begin();
- itCand != Cand.end(); itCand++)
- {
- int w = *itCand; // neighbor of ce in Cand
- if (G[v][w] < max_dist && v != w)
- {
- v = w;
- break;
- }
- else
- {
- v = -1;
- }
- }
- //v = find_v(G, C);
- std::cout << "new v = " << v << std::endl;
-
- }
- }
-
- }
- */
 
 std::vector<std::set<int> > findMaxClique(std::vector<std::vector<int> > G)
 {
 	int n = G.size(); // number of vertices in input graph
 
 	std::set<int> Cand; // a set of vertices that are connected to all vertices
-// in C and can be added to C to make a larger clique
+						// in C and can be added to C to make a larger clique
 
 	std::set<int> Not; // a set of vertices that are connected to all vertices
-// in C can not be added to C (empty)
+					   // in C can not be added to C (empty)
 
 	std::vector<std::set<int> > cliqueList; // maximal clique
 
-// add all vertices ob G in N
+	// add all vertices ob G in N
 	for (int u = 0; u < n; u++)
 	{
 		Cand.insert(u);
 	}
 	std::set<int> C;
 
-// Recursion
+	// Recursion
 	//enumirateCliques1(G, C, Cand, Not, cliqueList);
 
 	enumirateCliques2(G, C, Cand, Not, cliqueList);
