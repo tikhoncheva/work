@@ -28,7 +28,7 @@ struct SSolutionInfo
 
 };
 
-MatrixDouble hexagonalLattice(int n, int n1) // n1 - number of vertices in first row
+MatrixDouble hexagonalLattice(int n, int n1)
 {
 	MatrixDouble coord;
 	int i = 0, l = 0, j = 0;
@@ -54,11 +54,11 @@ MatrixDouble hexagonalLattice(int n, int n1) // n1 - number of vertices in first
 				n_pro_level = n_pro_level - l % 2;
 			}
 			sum += n_pro_level;
-			y = y + (1 + (l + 1) % 2) * 1 /*/ 2.*/;
+			y = y + (1 + (l + 1) % 2) * 1 / 2.;
 		}
 
 		coord[i].resize(2);
-		coord[i][0] = -dx * sqrt(3)/* / 2.*/+ j * sqrt(3) * 2;
+		coord[i][0] = -dx * sqrt(3) / 2. + j * sqrt(3);
 		coord[i][1] = y;
 
 		j = (j + 1) % n_pro_level;
@@ -190,7 +190,7 @@ MatrixDouble triangularLattice(int n, int n1)
 	return coord;
 }
 
-MatrixDouble triangularLattice2(int n, int n1) // n1 - number of vertices in first row
+MatrixDouble triangularLattice2(int n, int n1)
 {
 	MatrixDouble coord;
 
@@ -278,35 +278,18 @@ MatrixDouble squareLattice(int n)
 	MatrixDouble coord;
 
 	coord.resize(n);
+
 	for (int i = 0; i < sqrt(n); i++)
 	{
 		for (int j = 0; j < sqrt(n); j++)
 		{
 			coord[i * sqrt(n) + j].resize(2);
 
-			coord[i * sqrt(n) + j][0] = 3 * j;
-			coord[i * sqrt(n) + j][1] = 3 * i;
+			coord[i * sqrt(n) + j][0] = j;
+			coord[i * sqrt(n) + j][1] = i;
 		}
 	}
-	return coord;
-}
 
-MatrixDouble squareLattice3(int n, int n1) // n1 - number of vertices in row
-{
-	MatrixDouble coord;
-
-	coord.resize(n);
-
-	for (int i = 0; i < n / n1; i++)
-	{
-		for (int j = 0; j < n1; j++)
-		{
-			coord[i * n1 + j].resize(2);
-
-			coord[i * n1 + j][0] = j;
-			coord[i * n1 + j][1] = i;
-		}
-	}
 	return coord;
 }
 
@@ -543,13 +526,15 @@ int CProblem::setProblem()
 
 	case 1:
 		n = 24;
-		coordinates = hexagonalLattice(n, 1); // number of vertices, number of vertices in first line
+		Info.numVar = 1 + n; // lambda + all c;
+		coordinates = hexagonalLattice(n, 2); // number of vertices, number of vertices in first line
 		diameter = 7;
 		fileName = "hexagonal_lattice.dat";
 		break;
 
 	case 2:
 		n = 23;
+		Info.numVar = 1 + n; // lambda + all c;
 		coordinates = triangularLattice(n, 5); // number of vertices, number of vertices in first line
 		diameter = 6;
 		fileName = "triangular_lattice.dat";
@@ -557,11 +542,14 @@ int CProblem::setProblem()
 
 	case 3:
 		n = 25;
-		coordinates = squareLattice(n);
 		diameter = 8;
+		//n = 4;
+		//diameter = 2;
+		Info.numVar = 1 + n; // lambda + all c;
+		coordinates = squareLattice(n);
 		fileName = "square_lattice.dat";
 		break;
-		
+
 	default:
 		std::cerr << "Wrong lattice type\n";
 		exit(-1);
@@ -634,22 +622,6 @@ int CProblem::setModel()
 			c[u] = IloNumVar(env, str.c_str());
 		}
 
-		IloArray<IloNumVarArray> z1(env, 2 * Info.numAddVar);
-		for (int i = 0; i < 2 * Info.numAddVar; i++)
-		{
-			z1[i] = IloNumVarArray(env, 2);
-			for (int j = 0; j < 2; j++)
-			{
-				std::stringstream ss;
-				ss << i;
-				ss << j;
-				std::string str = "z_" + ss.str();
-				z1[i][j] = IloNumVar(env, str.c_str());
-				//model.add(z1[i][j] >= 0);
-				//model.add(z1[i][j] >= 0);
-			}
-		}
-
 		IloIntVarArray z0(env, Info.numAddVar);
 		for (int i = 0; i < Info.numAddVar; i++)
 		{
@@ -660,8 +632,7 @@ int CProblem::setModel()
 		}
 
 		/*  Objective*/
-		model.add(IloMinimize(env, IloSum(c))); //model.add(IloMinimize(env, lambda));
-
+		model.add(IloMinimize(env, lambda));
 		/*Constrains*/
 		/* d=function of the distance */
 		IloArray<IloNumArray> Par_d(env, n);
@@ -684,40 +655,41 @@ int CProblem::setModel()
 			model.add(c[v] - c[u] + M * (1 - z0[i]) >= Par_d[u][v]);
 
 		}
-		
+
+		/*
 		// d(x) = 3 - x
-		if (max_distance == 3) 
+		if (max_distance == 2) 
 		{
-		  for (int i = 0; i < sqrt(n); i++)
+		  for (int i = 0; i < sqrt(n)-1; i++)
 		  {
-		    for (int j = 0; j < sqrt(n); j++)
+		    for (int j = 0; j < sqrt(n)-1; j++)
 		    {
-			  c[i * sqrt(n) + j] + c[i * sqrt(n) + j+1] +
-			  c[(i+1) * sqrt(n) + j] + c[(i+1) * sqrt(n) + j+1] >= 10.3431;
+			  model.add(c[i * sqrt(n) + j] + c[i * sqrt(n) + j+1] +
+			  c[(i+1) * sqrt(n) + j] + c[(i+1) * sqrt(n) + j+1] >= 10.3431);
 		    }
 		  }
 		}
 		
 		//d(x) = 4 - x
 		
-		if (max_distance == 4) 
+		if (max_distance == 3) 
 		{
-		  for (int i = 0; i < sqrt(n); i++)
+		  for (int i = 0; i < sqrt(n)-1; i++)
 		  {
-		    for (int j = 0; j < sqrt(n); j++)
+		    for (int j = 0; j < sqrt(n)-1; j++)
 		    {
-			  c[i * sqrt(n) + j] + c[i * sqrt(n) + j+1] +
-			  c[(i+1) * sqrt(n) + j] + c[(i+1) * sqrt(n) + j+1] >= 16.3431;
+			  model.add(c[i * sqrt(n) + j] + c[i * sqrt(n) + j+1] +
+			  c[(i+1) * sqrt(n) + j] + c[(i+1) * sqrt(n) + j+1] >= 16.3431);
 		    }
 		  }
 		}
+		*/
 		
+
 		for (unsigned int v = 0; v < n; v++)
 		{
-			IloExpr expr;
 			model.add(c[v] <= lambda);
 			model.add(c[v] >= 0);
-			expr.end();
 		}
 
 		std::cout << "Number of variables " << Info.numVar << "\n";
@@ -752,7 +724,6 @@ int CProblem::setModel()
 			C.push_back(cplex.getValue(c[u]));
 			std::cout << "c(" << u << ")=" << C[u] << " ";
 		}
-		std::cout << "\n";
 
 	} // end try
 	catch (IloException& e)
@@ -775,7 +746,7 @@ int CProblem::save_result(std::string _fileName)
 
 	std::stringstream ss;
 	ss << max_distance + 1;
-	std::string str = "d " + ss.str();
+	std::string str = "d" + ss.str();
 	outFileNameSolve += str;
 
 	outFileNameSolve += "_function_";
@@ -836,3 +807,4 @@ int main(int argc, char **argv)
 
 	return 0;
 } // END main
+
