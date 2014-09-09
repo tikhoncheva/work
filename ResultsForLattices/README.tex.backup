@@ -465,14 +465,11 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 	\begin{tabular}{|c|c|c|c|c|c|}
 	\hline Lattice& $d(x)=3-x$(new)  & $d(x)=3-x$(old) && $d(x)=4-x$(new)  & $d(x)=4-x$(old)\\ \hline 
 		Hexagonal	&  6.41699	& 6.41699 && 16.6243 & 16.6243 \\ 
-			& $5.18+21.59 =$ 	&  && $118061+139576 = $ &  \\ 
-			& $26.77$ sec	& $1.69$ sec && $257637$ sec &  $1838.73$ sec \\ \hline
+			& $5.18+21.59 = 26.77$ sec	& $1.69$ sec && $118061+139576 = 257637$ sec & $1838.73$ sec \\ \hline
 		Triangular	& 9.78029	&  9.78029 && 21.9068 & 21.9068 \\
-			& $105.8+253.17 = $ 	&  && &  \\ 
-			& $358.97$ sec	& $10.96$ sec && & $103898.60$ sec \\ \hline
+			& $105.8+253.17 = 358.97$ sec	& $10.96$ sec && & $103898.60$ sec \\ \hline
 		Square	& 8.63494	&   8.63494 &&  19.9067 & 19.9067\\
-			& $33.99+55.26 = $ sec &  &&  &  sec \\
-			& $89.25$ sec & $4.92$ sec &&  & $27793.8$ sec \\
+			& $33.99+55.26 = 89.25$ sec & $4.92$ sec &&  & $27793.8$ sec \\
 	\hline
 	\end{tabular}
 	\caption{ Ansatz der {\it binären Suche} für die Bestimmung oberer und unterer Schranken für $\lambda$. Die Lückengröße ist $0.5$. Der erste Summand in der Summe steht für die Zeit, die die Suche nach den besseren Schranken braucht, und der zweite Summand steht für die eigentliche Optimierung.} 
