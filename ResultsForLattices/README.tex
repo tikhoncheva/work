@@ -22,7 +22,7 @@
 \restylefloat{figure}
 
 \usepackage{tikz}
-\usepackage{color}
+\usepackage{color,colortbl}
 
 \usepackage{hyperref}
 
@@ -532,7 +532,8 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\\hline
 		Sechsecke mit der Seitenlänge $1$& $1.37$ sec	&  $1588.7$ sec \\ \hline
 		Sechsecke mit der Seitenlänge $1$, $2$	& $1.75$ sec	&  $1641.71$ sec \\ \hline
-		Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
+		%Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
+		\rowcolor{red} Trapez& $1.77$ sec  &  $1529.24$ sec \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
 	\label{Table:TG1}
@@ -547,7 +548,8 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\\hline
 		Dreiecke mit der Seitenlänge $1$& $12.59$ sec	& $46933$ sec \\ \hline
 		Dreiecke mit der Seitenlänge $1$,$2$,$3$& $10.02$ sec	& $92228.1$ sec \\ \hline
-		Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec {\color{red} $75.16$ sec}&  $42412$ sec {\color{red} $78910.6$ sec} \\ \hline
+		%Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec {\color{red} $75.16$ sec}&  $42412$ sec {\color{red} $78910.6$ sec} \\ \hline
+		\rowcolor{red}  Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec &  $42412$ sec  \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Dreiecken.}
 	\label{Table:TG2}
@@ -563,7 +565,8 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\ \hline
 		Vierecke mit der Seitenlänge $1$& $12.76$ sec	& $37945.53$ sec \\ \hline
 		Vierecke mit der Seitenlänge $1$,$2$,$3$ ohne Überlappen& $7.11$ sec	& $19619.38$ sec \\ \hline
-		Vierecke $1\times 2$ & $6.22$ sec {\color{red} $22.31$ sec}	& $28612.78$ sec  {\color{red} $51318.4$ sec}\\ \hline
+		%Vierecke $1\times 2$ & $6.22$ sec {\color{red} $22.31$ sec}	& $28612.78$ sec  {\color{red} $51318.4$ sec}\\ \hline
+		\rowcolor{red} Vierecke $1\times 2$ & $6.22$ sec& $28612.78$ sec  \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Vierecken.} 
 	\label{Table:TG3}
