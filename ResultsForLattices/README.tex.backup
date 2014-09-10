@@ -22,7 +22,7 @@
 \restylefloat{figure}
 
 \usepackage{tikz}
-\usepackage{color,colortbl}
+\usepackage{color}
 
 \usepackage{hyperref}
 
@@ -465,14 +465,11 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 	\begin{tabular}{|c|c|c|c|c|c|}
 	\hline Lattice& $d(x)=3-x$(new)  & $d(x)=3-x$(old) && $d(x)=4-x$(new)  & $d(x)=4-x$(old)\\ \hline 
 		Hexagonal	&  6.41699	& 6.41699 && 16.6243 & 16.6243 \\ 
-			& $5.18+21.59 =$ 	&  && $118061+139576 = $ &  \\ 
-			& $26.77$ sec	& $1.69$ sec && $257637$ sec &  $1838.73$ sec \\ \hline
+			& $5.18+21.59 = 26.77$ sec	& $1.69$ sec && $118061+139576 = 257637$ sec & $1838.73$ sec \\ \hline
 		Triangular	& 9.78029	&  9.78029 && 21.9068 & 21.9068 \\
-			& $105.8+253.17 = $ 	&  && &  \\ 
-			& $358.97$ sec	& $10.96$ sec && & $103898.60$ sec \\ \hline
+			& $105.8+253.17 = 358.97$ sec	& $10.96$ sec && & $103898.60$ sec \\ \hline
 		Square	& 8.63494	&   8.63494 &&  19.9067 & 19.9067\\
-			& $33.99+55.26 = $ sec &  &&  &  sec \\
-			& $89.25$ sec & $4.92$ sec &&  & $27793.8$ sec \\
+			& $33.99+55.26 = 89.25$ sec & $4.92$ sec &&  & $27793.8$ sec \\
 	\hline
 	\end{tabular}
 	\caption{ Ansatz der {\it binären Suche} für die Bestimmung oberer und unterer Schranken für $\lambda$. Die Lückengröße ist $0.5$. Der erste Summand in der Summe steht für die Zeit, die die Suche nach den besseren Schranken braucht, und der zweite Summand steht für die eigentliche Optimierung.} 
@@ -532,8 +529,7 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\\hline
 		Sechsecke mit der Seitenlänge $1$& $1.37$ sec	&  $1588.7$ sec \\ \hline
 		Sechsecke mit der Seitenlänge $1$, $2$	& $1.75$ sec	&  $1641.71$ sec \\ \hline
-		%Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
-		\rowcolor{red} Trapez& $1.77$ sec  &  $1529.24$ sec \\ \hline
+		Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
 	\label{Table:TG1}
@@ -548,8 +544,7 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\\hline
 		Dreiecke mit der Seitenlänge $1$& $12.59$ sec	& $46933$ sec \\ \hline
 		Dreiecke mit der Seitenlänge $1$,$2$,$3$& $10.02$ sec	& $92228.1$ sec \\ \hline
-		%Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec {\color{red} $75.16$ sec}&  $42412$ sec {\color{red} $78910.6$ sec} \\ \hline
-		\rowcolor{red}  Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec &  $42412$ sec  \\ \hline
+		Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec {\color{red} $75.16$ sec}&  $42412$ sec {\color{red} $78910.6$ sec} \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Dreiecken.}
 	\label{Table:TG2}
@@ -565,8 +560,7 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Teilgraphen & & \\ \hline
 		Vierecke mit der Seitenlänge $1$& $12.76$ sec	& $37945.53$ sec \\ \hline
 		Vierecke mit der Seitenlänge $1$,$2$,$3$ ohne Überlappen& $7.11$ sec	& $19619.38$ sec \\ \hline
-		%Vierecke $1\times 2$ & $6.22$ sec {\color{red} $22.31$ sec}	& $28612.78$ sec  {\color{red} $51318.4$ sec}\\ \hline
-		\rowcolor{red} Vierecke $1\times 2$ & $6.22$ sec& $28612.78$ sec  \\ \hline
+		Vierecke $1\times 2$ & $6.22$ sec {\color{red} $22.31$ sec}	& $28612.78$ sec  {\color{red} $51318.4$ sec}\\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Vierecken.} 
 	\label{Table:TG3}
