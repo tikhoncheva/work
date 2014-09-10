@@ -1,7 +1,7 @@
-File Name:	../data/square_lattice_d3.dat
+File Name:	data/square_lattice_d3.dat
 Optimal value	11
-Used time: 1.71sec
 Number of constraints: 397
-Number of variables: 26
+Number of variables: 199
+Used time: 0.68sec
 Labeling
-c[1]=1 c[2]=10 c[3]=7 c[4]=4 c[5]=1 c[6]=6 c[7]=3 c[8]=0 c[9]=11 c[10]=6 c[11]=11 c[12]=8 c[13]=5 c[14]=2 c[15]=9 c[16]=4 c[17]=1 c[18]=10 c[19]=7 c[20]=4 c[21]=9 c[22]=6 c[23]=3 c[24]=0 c[25]=11 
+c[1]=5 c[2]=10 c[3]=3 c[4]=8 c[5]=0 c[6]=8 c[7]=1 c[8]=6 c[9]=11 c[10]=4 c[11]=11 c[12]=4 c[13]=9 c[14]=2 c[15]=7 c[16]=2 c[17]=7 c[18]=0 c[19]=5 c[20]=10 c[21]=5 c[22]=10 c[23]=3 c[24]=8 c[25]=1 

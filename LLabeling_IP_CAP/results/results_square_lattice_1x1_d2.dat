@@ -1,0 +1,7 @@
+File Name:	../data/square_lattice_1x1_d2.dat
+Optimal value	4
+Used time: 0.02sec
+Number of constraints: 21
+Number of variables: 5
+Labeling
+c[1]=1 c[2]=4 c[3]=3 c[4]=0 
