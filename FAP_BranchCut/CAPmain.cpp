@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 
 		//inputData->print();
 
-/*
+		/*
 		 std::vector<std::set<int> > cliqueList = findMaxClique(d);
 
 		 std::cout << "Maximal clique in the given Graph " << std::endl;
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 		 }
 		 std::cout << "|" << std::endl;
 		 }
-*/
+		 */
 
 		MIP_Problem CAP(max_dist, inputData); // define new CAP Problem
 		//CAP.print(); // print problem

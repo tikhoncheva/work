@@ -18,6 +18,7 @@
 #include "var.h"
 #include "ProblemData.h"
 #include "MyBranchAndCut.cpp"
+#include "userCutCallback.cc"
 
 ILOSTLBEGIN
 
@@ -171,6 +172,57 @@ void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 		}
 	}
 
+	// add clique-constraints
+/*
+	IloIntVarArray c(env, n);
+	for (unsigned int i = 0; i < n; i++)
+	{
+		std::stringstream ss;
+		ss << i;
+		std::string str = "c" + ss.str();
+		c[i] = IloIntVar(env, 0, solution.UB, str.c_str());
+	}
+
+	for (unsigned int i = 0; i < n; i++)
+	{
+		IloExpr varLabels(env);
+
+		for (unsigned int f = 0; f <= solution.UB; f++)
+		{
+			IloInt ff = f;
+			varLabels += x[i][f] * ff;
+		}
+
+		model.add(c[i] == varLabels);
+		varLabels.end();
+
+	}
+
+	// first find maximal cliques in the given graph
+	std::vector<std::set<int> > cliqueList = findMaxClique(d);
+	info.numOfCliques = cliqueList.size();
+
+	for (unsigned int i = 0; i < cliqueList.size(); i++)
+	{
+		std::set<int>::iterator itC;
+		std::set<int> C = cliqueList[i];
+
+		IloExpr cliqueConst(env);
+		int sizeOfClique = 0;
+		for (itC = C.begin(); itC != C.end(); itC++)
+		{
+			cliqueConst += c[*itC];
+			sizeOfClique++;
+		}
+		model.add(
+				cliqueConst
+						>= max_distance * sizeOfClique * (sizeOfClique - 1)
+								/ 2.);
+		cliqueConst.end();
+
+	}
+	*/
+
 }
 
 void MIP_Problem::optimize(const IloEnv env, const IloModel model,
@@ -187,8 +239,6 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	//cplex.use(MyBranch(env, x, y));
 	//cplex.use(MySelect(env));
 
-
-
 	cplex.setParam(IloCplex::MIPSearch, IloCplex::Traditional);
 	//cplex.setParam(IloCplex::Cliques, 1);
 
@@ -204,18 +254,19 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	//makeCuts(env, cuts, x, cliqueList);
 	//cplex.addUserCuts(cuts);
 
-	IloExprArray lhs(env);
+	//IloRangeArray lhs(env);
 	//makeCuts2(env,lhs, x, cliqueList);
-	makeCuts3(env,lhs, x, cliqueList);
+	//makeCuts3(env,lhs, x, cliqueList);
 
 	//cplex.use(MyUserCutCallback1(env, x, y));
-	cplex.use(MyUserCutCallback2(env, lhs));
+	//cplex.use(MyUserCutCallback2(env, lhs));
 
 	cplex.exportModel("LLabelingIP.lp");
 
 	std::cout << "========================================" << " Solving ";
 	std::cout << "========================================" << std::endl;
 
+	//cplex.setParam(IloCplex::ClockType, 1);
 	timer.start();
 	//solveError = cplex.solve(MyBranchGoal(env, y));
 	solveError = cplex.solve();
@@ -257,7 +308,7 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	}
 
 	//cuts.end();
-	lhs.end();
+	//lhs.end();
 
 }
 

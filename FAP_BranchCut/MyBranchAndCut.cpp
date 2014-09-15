@@ -287,11 +287,14 @@ void makeCuts3(const IloEnv env, IloRangeArray& cuts,
 	for (unsigned int i = 0; i < cliqueList.size(); i++)
 	{
 		IloExpr sum_x_inClique(env);
+		std::set<int>::iterator itC;
+		std::set<int> C = cliqueList[i];
+
 		for (itC = C.begin(); itC != C.end(); itC++)
 		{
 			int ind = *itC;
 
-			double c_i = 0.;
+			//double c_i = 0.;
 			for (int f = 0; f < nFreq; f++)
 			{
 
@@ -306,6 +309,7 @@ void makeCuts3(const IloEnv env, IloRangeArray& cuts,
 
 }
 
+/*
 ILOUSERCUTCALLBACK1(MyUserCutCallback2, IloExprArray, lhs)
 {
 	std::cout << "add cutts\n";
@@ -390,7 +394,7 @@ ILOUSERCUTCALLBACK2(MyUserCutCallback1, MatrixIloIntVar, varsX,
 	x.end();
 	y.end();
 }
-
+*/
 /*
  * Branch Selection Callback
  */
