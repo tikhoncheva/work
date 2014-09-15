@@ -94,6 +94,7 @@ public:
 	}
 
 };
+
 /*
  int MIP_Problem::dist_linear(int x)
  {
@@ -182,14 +183,34 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	IloCplex cplex(env);
 	IloTimer timer(env);
 
-	cplex.use(MyHeuristic(env, x, y, dist));
-	//cplex.use(MyBranch(env, y));
+	//cplex.use(MyHeuristic(env, x, y));
+	//cplex.use(MyBranch(env, x, y));
 	//cplex.use(MySelect(env));
+
+
 
 	cplex.setParam(IloCplex::MIPSearch, IloCplex::Traditional);
 	//cplex.setParam(IloCplex::Cliques, 1);
 
 	cplex.extract(model);
+
+	// fill cuts-table
+
+	// first find maximal cliques in the given graph
+	std::vector<std::set<int> > cliqueList = findMaxClique(d);
+	info.numOfCliques = cliqueList.size();
+
+	//IloRangeArray cuts(env);
+	//makeCuts(env, cuts, x, cliqueList);
+	//cplex.addUserCuts(cuts);
+
+	IloExprArray lhs(env);
+	//makeCuts2(env,lhs, x, cliqueList);
+	makeCuts3(env,lhs, x, cliqueList);
+
+	//cplex.use(MyUserCutCallback1(env, x, y));
+	cplex.use(MyUserCutCallback2(env, lhs));
+
 	cplex.exportModel("LLabelingIP.lp");
 
 	std::cout << "========================================" << " Solving ";
@@ -213,12 +234,15 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 
 	env.out() << "\nSolution status IP = " << cplex.getStatus() << "\n";
 	env.out() << "Number of variables = " << info.numVar << "\n";
+	env.out() << "Frequency Range = " << info.frequencyRange << "\n";
 	env.out() << "Number of redundant variables = " << info.numRedundantVar
 			<< "\n";
 	info.numConstr = cplex.getNrows();
 	env.out() << "Number of constraints = " << info.numConstr << "\n";
+	env.out() << "Number of Cliques = " << info.numOfCliques << "\n";
 	solution.lambda = cplex.getObjValue();
-	env.out() << "Solution value IP = " << solution.lambda << "\n";
+
+	//env.out() << "Solution value IP = " << solution.lambda << "\n";
 
 	C.resize(n);
 	for (unsigned int i = 0; i < n; i++)
@@ -227,11 +251,13 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 		{
 			if (cplex.getValue(x[i][f]) == 1)
 			{
-				std::cout << f << " ";
 				C[i] = f;
 			}
 		}
 	}
+
+	//cuts.end();
+	lhs.end();
 
 }
 
@@ -248,7 +274,8 @@ int MIP_Problem::solve()
 		solution.UB = (max_distance + 1) * n;
 
 		// D_i = D = {0, 1,2,3,...UB}
-		std::cout << "Size of the domain D : " << 1 + solution.UB << "\n";
+
+		info.frequencyRange = 1 + solution.UB;
 
 		// distances
 		MatrixIloNum IloD(env, n);
@@ -285,11 +312,19 @@ int MIP_Problem::solve()
 		}
 
 		info.numVar = 1 + n * (solution.UB + 1) + (solution.UB + 1);
+
 		//	set constraints and all addition parameters
 		setModel(env, model, lambda, x, y);
 
 		// solve problem
 		optimize(env, model, lambda, x, y, IloD);
+
+		x.end();
+		y.end();
+		IloD.end();
+		lambda.end();
+		model.end();
+
 	} // end try
 	catch (IloException& e)
 	{
@@ -320,7 +355,7 @@ void MIP_Problem::print()
 		std::cout << "\n";
 	}
 	std::cout << "\n";
-	//std::cout << "max distance : " << max_dis;
+	std::cout << "max distance : " << max_dist;
 	std::cout << "\n";
 }
 

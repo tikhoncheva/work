@@ -204,9 +204,9 @@ std::vector<std::set<int> > findMaxClique(std::vector<std::vector<int> > G)
 	std::set<int> C;
 
 	// Recursion
-	//enumirateCliques1(G, C, Cand, Not, cliqueList);
+	enumirateCliques1(G, C, Cand, Not, cliqueList);
 
-	enumirateCliques2(G, C, Cand, Not, cliqueList);
+	//enumirateCliques2(G, C, Cand, Not, cliqueList);
 
 	return cliqueList;
 }

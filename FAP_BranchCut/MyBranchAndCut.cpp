@@ -14,9 +14,7 @@ int checkIfAssigned(IloNumArray feas)
 			break;
 		}
 	return -1;
-
 }
-
 
 /*
  * Heuristic callback
@@ -229,7 +227,115 @@ ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
  * Cut Callback
  */
 
-ILOUSERCUTCALLBACK2(MyUserCutCallback, MatrixIloIntVar, varsX,
+// add user cuts to the cut table before B&C process
+void makeCuts(const IloEnv env, IloRangeArray& cuts,
+		const MatrixIloIntVar& varsX, std::vector<std::set<int> > cliqueList)
+{
+
+	IloInt nFreq = varsX[0].getSize();
+
+	for (unsigned int i = 0; i < cliqueList.size(); i++)
+	{
+		IloExpr sum_x_inClique(env);
+		for (int f = 0; f < nFreq; f++)
+		{
+			std::set<int>::iterator itC;
+			std::set<int> C = cliqueList[i];
+
+			for (itC = C.begin(); itC != C.end(); itC++)
+			{
+				int ind = *itC;
+				sum_x_inClique += varsX[ind][f];
+			}
+		}
+		cuts.add(sum_x_inClique <= 1);
+		sum_x_inClique.end();
+	}
+}
+
+void makeCuts2(const IloEnv env, IloExprArray lhs, const MatrixIloIntVar& varsX,
+		std::vector<std::set<int> > cliqueList)
+{
+	IloInt nFreq = varsX[0].getSize();
+
+	for (unsigned int i = 0; i < cliqueList.size(); i++)
+	{
+		IloExpr sum_x_inClique(env);
+
+		for (int f = 0; f < nFreq; f++)
+		{
+
+			std::set<int>::iterator itC;
+			std::set<int> C = cliqueList[i];
+
+			for (itC = C.begin(); itC != C.end(); itC++)
+			{
+				int ind = *itC;
+				sum_x_inClique += varsX[ind][f];
+			}
+		}
+		lhs.add(sum_x_inClique);
+		//sum_x_inClique.end();
+	}
+}
+
+void makeCuts3(const IloEnv env, IloRangeArray& cuts,
+		const MatrixIloIntVar& varsX, std::vector<std::set<int> > cliqueList)
+{
+	IloInt nFreq = varsX[0].getSize();
+
+	for (unsigned int i = 0; i < cliqueList.size(); i++)
+	{
+		IloExpr sum_x_inClique(env);
+		for (itC = C.begin(); itC != C.end(); itC++)
+		{
+			int ind = *itC;
+
+			double c_i = 0.;
+			for (int f = 0; f < nFreq; f++)
+			{
+
+				sum_x_inClique += varsX[ind][f] * f;
+
+			}
+		}
+
+		cuts.add(sum_x_inClique <= 1);
+		sum_x_inClique.end();
+	}
+
+}
+
+ILOUSERCUTCALLBACK1(MyUserCutCallback2, IloExprArray, lhs)
+{
+	std::cout << "add cutts\n";
+	IloNum eps = 0.2;
+	IloInt n = lhs.getSize();
+	int numViolatedCliqueConst = 0;
+	for (IloInt i = 0; i < n; i++)
+	{
+		if ( getValue(lhs[i]) > 1 + eps )
+		{
+
+			numViolatedCliqueConst ++;
+			IloRange cut;
+			try
+			{
+				cut = (lhs[i] <= 1);
+				add(cut).end();
+			}
+			catch (...)
+			{
+				cut.end();
+				throw;
+			}
+		}
+	}
+
+	std::cout << "Number of violated Clique-Constraints : " << numViolatedCliqueConst<< std::endl;
+}
+
+ILOUSERCUTCALLBACK2(MyUserCutCallback1, MatrixIloIntVar, varsX,
 		IloNumVarArray, varsY)
 {
 	MatrixIloNum x;
@@ -299,9 +405,9 @@ ILOBRANCHCALLBACK2(MyBranch, MatrixIloIntVar, varsX,
 
 	try
 	{
-		//IloInt nLinks = varsX.getSize();
+//IloInt nLinks = varsX.getSize();
 		int nLinks = varsX.getSize();
-		//IloInt nFreq = varsX[0].getSize();
+//IloInt nFreq = varsX[0].getSize();
 		int nFreq = varsX[0].getSize();
 
 		/*
@@ -316,7 +422,7 @@ ILOBRANCHCALLBACK2(MyBranch, MatrixIloIntVar, varsX,
 		 getFeasibilities(feasY, varsY);
 		 */
 
-		// get current relaxation of the problem
+// get current relaxation of the problem
 		x = MatrixIloNum(getEnv(), nLinks);
 		for (int i = 0; i < x.getSize(); i++)
 		{
@@ -335,7 +441,7 @@ ILOBRANCHCALLBACK2(MyBranch, MatrixIloIntVar, varsX,
 			if (y[f]<0.000001) y[f]=0.0;
 		}
 
-		// find variable y with value closest to 1
+// find variable y with value closest to 1
 
 		double maxFractY = 0.;
 		int indMaxFractY = -1;
