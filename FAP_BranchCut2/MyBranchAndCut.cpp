@@ -19,7 +19,7 @@ int checkIfAssigned(IloNumArray feas)
 /*
  * Heuristic callback
  */
-
+/*
 ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
 		IloNumVarArray, varsY)
 {
@@ -38,17 +38,17 @@ ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
 		IloInt nLinks = varsX.getSize();
 		IloInt nFreq = varsX[0].getSize();
 
-		/*
-		 feasX = IloArray<IntegerFeasibilityArray>(getEnv(), nLinks);
-		 for (int i = 0; i < feasX.getSize(); i++)
-		 {
-		 feasX[i] = IntegerFeasibilityArray(getEnv(), nFreq);
-		 getFeasibilities(feasX[i], varsX[i]);
-		 }
+		//
+		// feasX = IloArray<IntegerFeasibilityArray>(getEnv(), nLinks);
+		// for (int i = 0; i < feasX.getSize(); i++)
+		// {
+		// feasX[i] = IntegerFeasibilityArray(getEnv(), nFreq);
+		// getFeasibilities(feasX[i], varsX[i]);
+		// }
 
-		 feasY = IntegerFeasibilityArray(getEnv());
-		 getFeasibilities(feasY, varsY);
-		 */
+		// feasY = IntegerFeasibilityArray(getEnv());
+		// getFeasibilities(feasY, varsY);
+		//
 
 		std::set<int> assignedLinks;
 
@@ -176,17 +176,7 @@ ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
 			numUnassignedLinks--;
 
 		}
-		/*
-		 for (int i = 0; i < nLinks; ++i)
-		 {
-		 for (int j = 0; j < nFreq; ++j)
-		 {
-		 if (x[i][j]!=0)
-		 std::cout << "x["<< i << "][" << j << "]=1   ";
-		 }
-		 }
-		 std::cout << std::endl << std::endl;
-		 */
+
 		IloNumVarArray startVars(getEnv());
 		IloNumArray startVals(getEnv());
 		for (int i = 0; i < nLinks; ++i)
@@ -222,7 +212,7 @@ ILOHEURISTICCALLBACK2(MyHeuristic, MatrixIloIntVar, varsX,
 	x.end();
 	y.end();
 }
-
+*/
 /*
  * Cut Callback
  */
@@ -616,54 +606,3 @@ ILONODECALLBACK0(MySelect)
 	selectNode(bestnode);
 }
 
-/*
- ILOCPLEXGOAL1(MyBranchGoal, IloNumVarArray, vars)
- {
- IloNumArray x;
- IloNumArray obj;
- IntegerFeasibilityArray feas;
-
- x = IloNumArray(getEnv());
- obj = IloNumArray(getEnv());
- feas = IntegerFeasibilityArray(getEnv());
- getValues(x, vars);
- getObjCoefs(obj, vars);
- getFeasibilities(feas, vars);
-
- IloInt bestj = -1;
- IloNum maxinf = 0.0;
- IloNum maxobj = 0.0;
- IloInt cols = vars.getSize();
- for (IloInt j = 0; j < cols; j++)
- {
- if ( feas[j] == Infeasible )
- {
- IloNum xj_inf = x[j] - IloFloor (x[j]);
- if ( xj_inf > 0.5 )
- xj_inf = 1.0 - xj_inf;
- if ( xj_inf >= maxinf &&
- (xj_inf > maxinf || IloAbs (obj[j]) >= maxobj) )
- {
- bestj = j;
- maxinf = xj_inf;
- maxobj = IloAbs (obj[j]);
- }
- }
- }
-
- IloCplex::Goal res;
- if ( bestj >= 0 )
- {
- res = AndGoal(OrGoal(vars[bestj] >= IloFloor(x[bestj])+1,
- vars[bestj] <= IloFloor(x[bestj])),
- this);
- }
-
- x.end();
- obj.end();
- feas.end();
-
- return res;
- }
-
- */

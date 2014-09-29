@@ -18,7 +18,7 @@ typedef IloArray<IloIntVarArray> MatrixIloIntVar;
 typedef IloArray<IloNumArray> MatrixIloNum;
 
 int max_dist;
-std::vector<std::vector<int> > d;
+std::vector<std::vector<int> > IG; /*Interference Graph*/
 
 //IloRangeArray cuts;
 

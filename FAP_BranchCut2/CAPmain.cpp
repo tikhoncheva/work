@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 			inputData = new CProblemData(atoi(argv[2]) /*lattice typ*/);
 		}
 
-		//inputData->print();
+		inputData->print();
 
 		/*
 		 std::vector<std::set<int> > cliqueList = findMaxClique(d);

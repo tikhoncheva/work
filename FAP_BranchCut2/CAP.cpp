@@ -17,8 +17,11 @@
 
 #include "var.h"
 #include "ProblemData.h"
-#include "MyBranchAndCut.cpp"
+//#include "MyBranchAndCut.cpp"
+#include "primalHeuristicCallback.cc"
 #include "userCutCallback.cc"
+#include "branchSelectionCallback.cc"
+#include "nodeSelectionCallback.cc"
 
 ILOSTLBEGIN
 
@@ -48,10 +51,10 @@ private:
 //	void set_d_function();
 
 	void setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
-			const IloNumVarArray c, IloArray<IloNumArray> dist);
+			const IloIntVarArray c, IloArray<IloNumArray>IG /*Interference Graph*/);
 	void optimize(const IloEnv env, const IloModel model,
-			const IloIntVar lambda, const IloNumVarArray c,
-			IloArray<IloNumArray> dist);
+			const IloIntVar lambda, const IloIntVarArray c,
+			IloArray<IloNumArray>IG /*Interference Graph*/);
 
 public:
 	// input data
@@ -124,7 +127,7 @@ public:
  */
 
 void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
-		const IloNumVarArray c, IloArray<IloNumArray> dist)
+		const IloIntVarArray c, IloArray<IloNumArray> IloIG)
 {
 
 	std::cout << "Set Model\n";
@@ -148,8 +151,8 @@ void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 	{
 		for (unsigned int v = 0; v < n; v++)
 		{
-			model.add(c[u] - c[v] + M * (z0[u][v]) >= dist[u][v]);
-			model.add(c[v] - c[u] + M * (1 - z0[u][v]) >= dist[u][v]);
+			model.add(c[u] - c[v] + M * (z0[u][v]) >= IloIG[u][v]);
+			model.add(c[v] - c[u] + M * (1 - z0[u][v]) >= IloIG[u][v]);
 		}
 	}
 
@@ -188,8 +191,8 @@ void MIP_Problem::setModel(IloEnv& env, IloModel& model, const IloIntVar lambda,
 }
 
 void MIP_Problem::optimize(const IloEnv env, const IloModel model,
-		const IloIntVar lambda, const IloNumVarArray c,
-		IloArray<IloNumArray> dist)
+		const IloIntVar lambda, const IloIntVarArray c,
+		IloArray<IloNumArray> IloIG /*Interference Graph*/)
 {
 	std::cout << "Start Optimization\n";
 	unsigned int n = inputData->n;
@@ -203,25 +206,35 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	VertexDegree.resize(n);
 	for (unsigned int u = 0; u < n; u++)
 	{
-		VertexDegree[u].resize(max_distance + 1);
-		for (int d = 0; d <= max_distance; d++)
+		VertexDegree[u].resize(max_distance);
+		for (int d = 1; d <= max_distance; d++)
 		{
-			VertexDegree[u][d] = 0;
+			VertexDegree[u][max_distance - d] = 0;
 			for (unsigned v = 0; v < n; v++)
 			{
-				if (dist[u][v] == d)
+				if (IloIG[u][v] == d)
 				{
-					VertexDegree[u][d]++;
+					VertexDegree[u][max_distance - d]++;
 				}
-
 			}
 		}
 	}
 
-//cplex.use(MyHeuristic(env, x, y));
-//cplex.use(MyBranch(env, x, y));
-//cplex.use(MySelect(env));
+	std::cout << "Generalized Degree\n";
+	for (unsigned int i = 0; i < VertexDegree.size(); i++)
+	{
+		for (unsigned int j = 0; j < VertexDegree[i].size(); j++)
+		{
+			std::cout << " " << VertexDegree[i][j];
+		}
+		std::cout << std::endl;
+	}
+	cplex.use(MyHeuristic(env, c, IloIG /*Interference Graph*/));
+	//cplex.use(MyBranch(env, c));
+	//cplex.use(MyBranch2(env, c, VertexDegree));
+	//cplex.use(MyNodeSelect(env, VertexDegree));
 
+	cplex.setParam(IloCplex::Threads, 1);
 	cplex.setParam(IloCplex::MIPSearch, IloCplex::Traditional);
 //cplex.setParam(IloCplex::Cliques, 1);
 
@@ -250,8 +263,8 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 	std::cout << "========================================" << std::endl;
 
 //cplex.setParam(IloCplex::ClockType, 1);
+
 	timer.start();
-//solveError = cplex.solve(MyBranchGoal(env, y));
 	solveError = cplex.solve();
 	timer.stop();
 
@@ -299,13 +312,13 @@ int MIP_Problem::solve()
 		/* Variables */
 		IloIntVar lambda(env, "lambda");
 
-		IloNumVarArray c(env, n); //
+		IloIntVarArray c(env, n); //
 		for (unsigned int u = 0; u < n; u++)
 		{
 			std::stringstream ss;
 			ss << u;
 			std::string str = "c" + ss.str();
-			c[u] = IloNumVar(env, str.c_str());
+			c[u] = IloIntVar(env, str.c_str());
 		}
 
 		solution.UB = (max_distance + 1) * n;
@@ -319,7 +332,7 @@ int MIP_Problem::solve()
 			IloD[i] = IloNumArray(env, n);
 			for (unsigned int j = 0; j < n; j++)
 			{
-				IloD[i][j] = d[i][j];
+				IloD[i][j] = IG[i][j];
 			}
 		}
 
@@ -358,11 +371,11 @@ int MIP_Problem::solve()
 void MIP_Problem::print()
 {
 	std::cout << " Interference graph of the problem: " << "\n";
-	for (unsigned int u = 0; u < d.size(); u++)
+	for (unsigned int u = 0; u < IG.size(); u++)
 	{
-		for (unsigned int v = 0; v < d[u].size(); v++)
+		for (unsigned int v = 0; v < IG[u].size(); v++)
 		{
-			std::cout << std::setw(3) << d[u][v] << " ";
+			std::cout << std::setw(3) << IG[u][v] << " ";
 		}
 		std::cout << "\n";
 	}

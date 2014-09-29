@@ -69,7 +69,7 @@ private:
 	int readData();
 	//void coordTOdist();
 	int dist_linear(int x);
-	void set_d_function();
+	void set_InterferenceGraph();
 
 public:
 	unsigned int n; // number of vertices
@@ -197,7 +197,7 @@ int CProblemData::readData()
 		exit(-1);
 	} //switch
 
-	set_d_function();
+	set_InterferenceGraph();
 
 	return 0;
 }
@@ -228,16 +228,17 @@ int CProblemData::dist_linear(int x)
 	//return value;
 }
 
-void CProblemData::set_d_function()
+void CProblemData::set_InterferenceGraph()
 {
-	d.resize(n);
+	/* Interference Graph */
+	IG.resize(n);
 	for (unsigned int u = 0; u < n; u++)
 	{
-		d[u].resize(n);
+		IG[u].resize(n);
 		for (unsigned int v = 0; v < u; v++)
 		{
-			d[u][v] = dist_linear(dist[u][v]);
-			d[v][u] = d[u][v];
+			IG[u][v] = dist_linear(dist[u][v]);
+			IG[v][u] = IG[u][v];
 
 			if (dist[u][v] <= max_dist && u != v)
 			{ // save vertices for which interferent with each other
