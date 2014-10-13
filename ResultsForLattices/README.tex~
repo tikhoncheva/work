@@ -533,7 +533,7 @@ Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
 		Sechsecke mit der Seitenlänge $1$& $1.37$ sec	&  $1588.7$ sec \\ \hline
 		Sechsecke mit der Seitenlänge $1$, $2$	& $1.75$ sec	&  $1641.71$ sec \\ \hline
 		%Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
-		Trapez& $2.5$ sec  &  $1538.48$ sec \\ \hline
+		Trapez& $2.47$ sec  &  $1538.48$ sec \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
 	\label{Table:TG1}
