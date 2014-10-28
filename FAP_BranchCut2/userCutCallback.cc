@@ -63,7 +63,7 @@ ILOUSERCUTCALLBACK2(MyUserCutCallback1, MatrixIloIntVar, varsX,
 			{
 				for (int j = 0; j < x.getSize(); j++)
 				{
-					if (d[i][j]==max_dist)
+					if (IG[i][j]==max_dist)
 					{
 						//sum_xf += x[i][f]+x[j][f];
 					}

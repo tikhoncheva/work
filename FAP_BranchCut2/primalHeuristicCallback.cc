@@ -86,7 +86,6 @@ ILOHEURISTICCALLBACK2(MyHeuristic, IloIntVarArray, varsC, const IloArray<IloNumA
 			// Round the fractional variable to zero
 			if ( feasC[i] == Infeasible )
 			{
-				objval += c[i];
 				c[i] = std::floor(c[i]);
 			}
 		}
@@ -155,6 +154,7 @@ ILOHEURISTICCALLBACK2(MyHeuristic, IloIntVarArray, varsC, const IloArray<IloNumA
 			std::cout << " " << c[i];
 		}
 		std::cout << std::endl;
+
 
 		objval = IloMax(c);
 

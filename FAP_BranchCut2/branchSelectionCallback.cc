@@ -67,6 +67,68 @@ ILOBRANCHCALLBACK1(MyBranch, IloIntVarArray, varsC)
 	feasC.end();
 }
 
+ILOBRANCHCALLBACK1(MyBranch_new, IloIntVarArray, varsC)
+{
+	IntegerFeasibilityArray feasC;
+	IloNumArray c;
+	int n;
+
+	try
+	{
+		n = varsC.getSize();
+		c = IloNumArray(getEnv());
+		feasC = IntegerFeasibilityArray(getEnv());
+
+		getValues(c, varsC);
+		//getObjCoefs(obj, varsC);
+		getFeasibilities(feasC, varsC);
+
+		std::cout << "Current Labeling: " << std::endl;
+		for (int i=0; i< n; i++)
+		{
+			std::cout << " " << c[i];
+		}
+		std::cout << std::endl;
+
+		std::cout << "Feasibilities: " << std::endl;
+		for (int i=0; i< n; i++)
+		{
+			std::cout << " " << feasC[i];
+		}
+		std::cout << std::endl;
+
+		IloInt i,j;
+
+		for ( i = 0; i < n; i++)
+		{
+			for ( j = 0; j < n; j++)
+			{
+				if ((c[i]-c[j]<IG[i][j] || c[i]-c[j]>-IG[i][j]) && i!=j)
+				break;
+			}
+		}
+
+		if ( i<n && j<n )
+		{
+
+			IloInt tmp1 = std::max(c[i]-IG[i][j], 0.0);
+			IloInt tmp2 = c[i]+IG[i][j];
+
+			makeBranch(varsC[j], tmp1, IloCplex::BranchDown, getObjValue());
+			makeBranch(varsC[j], tmp2, IloCplex::BranchUp, getObjValue());
+		}
+
+	}
+	catch (...)
+	{
+		c.end();
+		feasC.end();
+		throw;
+	}
+	c.end();
+	feasC.end();
+}
+
 ILOBRANCHCALLBACK2(MyBranch2, IloIntVarArray, varsC, const MatrixInt &, vDeg)
 {
 	IntegerFeasibilityArray feasC;

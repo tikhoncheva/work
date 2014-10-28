@@ -230,9 +230,10 @@ void MIP_Problem::optimize(const IloEnv env, const IloModel model,
 		std::cout << std::endl;
 	}
 	cplex.use(MyHeuristic(env, c, IloIG /*Interference Graph*/));
-	//cplex.use(MyBranch(env, c));
+	cplex.use(MyBranch_new(env, c));
 	//cplex.use(MyBranch2(env, c, VertexDegree));
-	//cplex.use(MyNodeSelect(env, VertexDegree));
+	cplex.use(MyNodeSelect(env, VertexDegree));
+	//cplex.use(MyNodeSelect1(env, c)); //not working
 
 	cplex.setParam(IloCplex::Threads, 1);
 	cplex.setParam(IloCplex::MIPSearch, IloCplex::Traditional);
