@@ -1,6 +1,9 @@
 #ifndef DATADEF_H_
 #define DATADEF_H_
 
+#include "datadef.h"
+
+#include <iostream>
 #include <vector>
 #include <utility>
 
@@ -70,8 +73,9 @@ struct Interviewer
 	unsigned int ID;
 };
 
-int N;		// number of households
-int K;		// number of interviewer
+unsigned int nH;		// number of households
+unsigned int nV;
+unsigned int K;		// number of interviewer
 
 std::vector<stVillage> Village;
 std::vector<stRoute> Route;

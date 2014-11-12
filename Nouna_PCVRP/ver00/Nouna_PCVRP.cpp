@@ -8,6 +8,7 @@
 #include <array>
 #include "datadef.h"
 #include "readdata.h"
+#include "graphics.h"
 
 /*
  * correct call format
@@ -17,10 +18,11 @@ void usage()
 
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	int error;
 
+	tets_opengl (argc, argv);
 	std::vector<std::string> fileName(3);
 	fileName[0] = "../data/villages.csv";
 	fileName[1] = "../data/routes.csv";

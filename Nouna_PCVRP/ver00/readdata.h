@@ -175,7 +175,8 @@ int readdata_csv(std::vector<std::string> fileName)
 	Route = readdata_routes(fileName[1]);
 	Houshold = readdata_households(fileName[2]);
 
-	N = Houshold.size();
+	nH = Houshold.size();
+	nV = Village.size();
 	std::cout << "finished!" << std::endl;
 	return 0;
 }
