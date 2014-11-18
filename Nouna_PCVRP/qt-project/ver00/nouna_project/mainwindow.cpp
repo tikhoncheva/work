@@ -1,13 +1,16 @@
 #include <QFileDialog>
 #include <QColor>
+#include <QPointF>
 #include <limits>
 //---------------------
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //---------------------
 #include "datadef.h"
+#include "distmatrix.h"
 #include "readdata.h"
 #include "add_func.h"
+
 
 
 
@@ -16,6 +19,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // configurate scrollbars
+    ui->horizontalScrollBar->setRange(-500, 500);
+    ui->verticalScrollBar->setRange(-500, 500);
+
+    // create connection between axes and scroll bars:
+    connect(ui->widget->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
+    connect(ui->widget->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
+
+    // initialize axis range (and scroll bar positions via signals we just connected):
+    ui->widget->xAxis->setRange(-4.1, -3.2, Qt::AlignCenter);
+    ui->widget->yAxis->setRange(12.4, 13, Qt::AlignCenter);
+
+    ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
 MainWindow::~MainWindow()
@@ -87,6 +104,8 @@ void MainWindow::on_buttonOpenHouseh_clicked()
 // plot original Graph
 void MainWindow::on_buttonPlot_clicked()
 {
+    ui->widget->clearGraphs();
+
     QCPScatterStyle myScatter;
     myScatter.setShape(QCPScatterStyle::ssCircle);
     myScatter.setPen(QPen(Qt::blue));
@@ -109,21 +128,7 @@ void MainWindow::on_buttonPlot_clicked()
     for (unsigned int i=0; i< nV; ++i)
     {
         x[i] = Village[i].coord.first;
-        if (x[i]<xmin)
-            xmin = x[i];
-        if (x[i]>xmax)
-            xmax = x[i];
         y[i] = Village[i].coord.second;
-
-        if (y[i]<ymin)
-            ymin = y[i];
-        if (y[i]>ymax)
-            ymax = y[i];
-
-        QCPItemText *textLabel = new QCPItemText(ui->widget);
-        textLabel->setText(QString::fromStdString(Village[i].name));
-        textLabel->position->setCoords(x[i], y[i]+0.007);
-        ui->widget->addItem(textLabel);
     }
 
     QVector<double>::iterator it_min =  std::min_element(x.begin(), x.end());
@@ -143,18 +148,155 @@ void MainWindow::on_buttonPlot_clicked()
 
 
     // plot edges
-
-    for (unsigned int i=0; i< nR; ++i)
-    {
-        unsigned int startId  = Route[i].start;
-        unsigned int endId  = Route[i].end;
-
-        QVector<double>::iterator it_start = std::find(Village.begin(),Village.end(), startId);
-
-        QVector<double>::iterator it_end = std::find(Village.begin(),Village.end(), endId);
-
-    }
+    //std::vector<std::vector<double> > distmatrix;
+    distmatrix = compute_distmatrix(Village, Route);
 
     // replot everything
     ui->widget->replot();
 }
+
+/*
+ * Show names of the villages on the map
+ */
+void MainWindow::on_checkBoxVillageNames_clicked()
+{
+
+    if (ui->checkBoxVillageNames->isChecked())
+    {
+        QVector<double> x(nV), y(nV); // initialize with entries 0..100
+
+        for (unsigned int i=0; i< nV; ++i)
+        {
+            x[i] = Village[i].coord.first;
+            y[i] = Village[i].coord.second;
+
+            QCPItemText *textLabel = new QCPItemText(ui->widget);
+            textLabel->setText(QString::fromStdString(Village[i].name));
+            textLabel->position->setCoords(x[i], y[i]+0.007);
+            ui->widget->addItem(textLabel);
+        }
+
+        // replot everything
+        ui->widget->replot();
+    } else {
+        ui->widget->clearItems();
+        if (ui->checkBoxShowRoutes->isChecked())
+        {
+            QPointF p1, p2;
+
+            for (unsigned int i=0; i< nV; ++i)
+            {
+                p1.setX(Village[i].coord.first);
+                p1.setY(Village[i].coord.second);
+
+                for (unsigned int j=0; j<nV; ++j)
+                {
+                    if (distmatrix[i][j]!=0)
+                    {
+                        p2.setX(Village[j].coord.first);
+                        p2.setY(Village[j].coord.second);
+
+                        QCPItemLine *arrow = new QCPItemLine(ui->widget);
+                        ui->widget->addItem(arrow);
+                        arrow->start->setCoords(p1);
+                        arrow->end->setCoords(p2);
+                    }
+                }
+            }
+        }
+        ui->widget->replot();
+    }
+}
+
+/*
+ * Show Routes on the map
+ */
+void MainWindow::on_checkBoxShowRoutes_clicked()
+{
+    if (ui->checkBoxShowRoutes->isChecked())
+    {
+        QPointF p1, p2;
+
+        for (unsigned int i=0; i< nV; ++i)
+        {
+            p1.setX(Village[i].coord.first);
+            p1.setY(Village[i].coord.second);
+
+            for (unsigned int j=0; j<nV; ++j)
+            {
+                if (distmatrix[i][j]!=0)
+                {
+                    p2.setX(Village[j].coord.first);
+                    p2.setY(Village[j].coord.second);
+
+                    QCPItemLine *arrow = new QCPItemLine(ui->widget);
+                    ui->widget->addItem(arrow);
+                    arrow->start->setCoords(p1);
+                    arrow->end->setCoords(p2);
+                }
+            }
+        }
+        // replot everything
+        ui->widget->replot();
+    } else {
+        ui->widget->clearItems();
+        if (ui->checkBoxVillageNames->isChecked())
+        {
+            QVector<double> x(nV), y(nV); // initialize with entries 0..100
+
+            for (unsigned int i=0; i< nV; ++i)
+            {
+                x[i] = Village[i].coord.first;
+                y[i] = Village[i].coord.second;
+
+                QCPItemText *textLabel = new QCPItemText(ui->widget);
+                textLabel->setText(QString::fromStdString(Village[i].name));
+                textLabel->position->setCoords(x[i], y[i]+0.007);
+                ui->widget->addItem(textLabel);
+            }
+            // replot everything
+            ui->widget->replot();
+        }
+    }
+}
+
+/*
+ * Is it now a raining season?
+ */
+void MainWindow::on_checkBoxRainingSeazon_clicked()
+{
+
+}
+
+
+void MainWindow::on_horizontalScrollBar_valueChanged(int value)
+{
+    if (qAbs(ui->widget->xAxis->range().center()-value/100.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+    {
+        ui->widget->xAxis->setRange(value/100.0, ui->widget->xAxis->range().size(), Qt::AlignCenter);
+        ui->widget->replot();
+    }
+
+}
+
+void MainWindow::on_verticalScrollBar_valueChanged(int value)
+{
+    if (qAbs(ui->widget->yAxis->range().center()+value/100.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+    {
+        ui->widget->yAxis->setRange(-value/100.0, ui->widget->yAxis->range().size(), Qt::AlignCenter);
+        ui->widget->replot();
+    }
+}
+
+void MainWindow::xAxisChanged(QCPRange range)
+{
+  ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
+  ui->horizontalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+}
+
+void MainWindow::yAxisChanged(QCPRange range)
+{
+  ui->verticalScrollBar->setValue(qRound(-range.center()*100.0)); // adjust position of scroll bar slider
+  ui->verticalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+}
+

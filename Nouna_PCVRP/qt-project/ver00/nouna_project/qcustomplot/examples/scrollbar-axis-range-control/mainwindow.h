@@ -49,6 +49,14 @@ private slots:
   void xAxisChanged(QCPRange range);
   void yAxisChanged(QCPRange range);
   
+  void on_horizontalScrollBar_actionTriggered(int action);
+
+  void on_horizontalScrollBar_sliderMoved(int position);
+
+  void on_horizontalScrollBar_valueChanged(int value);
+
+  void on_horizontalScrollBar_rangeChanged(int min, int max);
+
 private:
   Ui::MainWindow *ui;
 };

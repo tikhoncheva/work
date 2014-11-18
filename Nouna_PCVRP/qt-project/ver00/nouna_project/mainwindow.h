@@ -26,6 +26,20 @@ private slots:
 
     void on_buttonPlot_clicked();
 
+    void on_checkBoxVillageNames_clicked();
+
+    void on_checkBoxShowRoutes_clicked();
+
+    void on_checkBoxRainingSeazon_clicked();
+
+    void on_horizontalScrollBar_valueChanged(int value);
+
+    void on_verticalScrollBar_valueChanged(int value);
+
+    void xAxisChanged(QCPRange range);
+
+    void yAxisChanged(QCPRange range);
+
 private:
     Ui::MainWindow *ui;
 };

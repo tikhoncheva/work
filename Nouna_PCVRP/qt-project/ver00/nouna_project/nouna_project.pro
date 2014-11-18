@@ -16,7 +16,9 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     readdata.cpp \
     add_func.cpp \
-    qcustomplot/qcustomplot.cpp
+    qcustomplot/qcustomplot.cpp \
+    distmatrix.cpp \
+    plot.cpp
 
 HEADERS  += mainwindow.h \
     readdata.h \
@@ -25,6 +27,8 @@ HEADERS  += mainwindow.h \
     village.h \
     route.h \
     household.h \
-    qcustomplot/qcustomplot.h
+    qcustomplot/qcustomplot.h \
+    distmatrix.h \
+    plot.h
 
 FORMS    += mainwindow.ui
