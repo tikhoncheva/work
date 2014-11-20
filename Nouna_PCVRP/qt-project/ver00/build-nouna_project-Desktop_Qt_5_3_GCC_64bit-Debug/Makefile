@@ -47,15 +47,19 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../nouna_project/main.cpp \
 		../nouna_project/mainwindow.cpp \
-		../nouna_project/readdata.cpp \
-		../nouna_project/add_func.cpp \
-		../nouna_project/qcustomplot/qcustomplot.cpp moc_mainwindow.cpp \
+		../nouna_project/qcustomplot/qcustomplot.cpp \
+		../nouna_project/src/add_func.cpp \
+		../nouna_project/src/distmatrix.cpp \
+		../nouna_project/src/plot.cpp \
+		../nouna_project/src/readdata.cpp moc_mainwindow.cpp \
 		moc_qcustomplot.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
-		readdata.o \
-		add_func.o \
 		qcustomplot.o \
+		add_func.o \
+		distmatrix.o \
+		plot.o \
+		readdata.o \
 		moc_mainwindow.o \
 		moc_qcustomplot.o
 DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
@@ -167,9 +171,11 @@ DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/lex.prf \
 		../nouna_project/nouna_project.pro ../nouna_project/main.cpp \
 		../nouna_project/mainwindow.cpp \
-		../nouna_project/readdata.cpp \
-		../nouna_project/add_func.cpp \
-		../nouna_project/qcustomplot/qcustomplot.cpp
+		../nouna_project/qcustomplot/qcustomplot.cpp \
+		../nouna_project/src/add_func.cpp \
+		../nouna_project/src/distmatrix.cpp \
+		../nouna_project/src/plot.cpp \
+		../nouna_project/src/readdata.cpp
 QMAKE_TARGET  = nouna_project
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = nouna_project
@@ -434,7 +440,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/nouna_project1.0.0 || mkdir -p .tmp/nouna_project1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h ../nouna_project/readdata.h ../nouna_project/datadef.h ../nouna_project/add_func.h ../nouna_project/village.h ../nouna_project/route.h ../nouna_project/household.h ../nouna_project/qcustomplot/qcustomplot.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/readdata.cpp ../nouna_project/add_func.cpp ../nouna_project/qcustomplot/qcustomplot.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/add_func.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/route.h ../nouna_project/hrd/village.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/add_func.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
 
 
 clean:compiler_clean 
@@ -460,10 +466,11 @@ compiler_rcc_clean:
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_qcustomplot.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_qcustomplot.cpp
-moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+moc_mainwindow.cpp: ../nouna_project/qcustomplot/qcustomplot.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
@@ -492,11 +499,7 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
@@ -513,6 +516,17 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmargins.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintdevice.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrect.h \
@@ -524,7 +538,6 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
@@ -537,10 +550,6 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimage.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfont.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
@@ -561,8 +570,364 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPainter \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPaintEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMouseEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPixmap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVector \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QString \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDateTime \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatetime.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMultiMap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QFlags \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDebug \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector2D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStack \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QCache \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMargins \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrinter \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagelayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagesize.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtNumeric \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCore \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCoreDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpauseanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpropertyanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvariantanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeasingcurve.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextcodec.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qendian.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibraryinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdiriterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileselector.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStringList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlockfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qloggingcategory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qprocess.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresource.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsavefile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsettings.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstandardpaths.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporarydir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QScopedPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporaryfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlistmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsondocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmetaobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedmemory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignalmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsocketnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtranslator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwineventnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimetype.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfactoryinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibrary.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpluginloader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/quuid.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracttransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfinalstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhistorystate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignaltransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstatemachine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qexception.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfutureinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrunnable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresultstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturewatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qreadwritelock.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthread.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadpool.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadstorage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwaitcondition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydataops.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbitarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcollator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineparser.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qelapsedtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlinkedlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qqueue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimeline.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimezone.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qxmlstream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtcoreversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGui \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGuiDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessible.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessiblebridge.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbitmap.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengineplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimageiohandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagereader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagewriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmovie.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpicture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpictureformatplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmapcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstandarditemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qclipboard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdrag.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericpluginfactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qoffscreensurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglcontext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qt_windows.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QRect \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSize \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSizeF \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QTransform \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsessionmanager.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstylehints.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericmatrix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix4x4.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector3d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector4d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qquaternion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengldebug.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltexture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltimerquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbackingstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpdfwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qglyphrun.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrawfont.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontdatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextcursor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstatictext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtexttable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdesktopservices.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtguiversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgets \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolordialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qerrormessage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qinputdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlineedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmessagebox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwizard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector3D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMatrix4x4 \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolumnview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdirmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtableview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtablewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreeview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qformlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qshortcut.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtooltip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwhatsthis.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidgetaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommonstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdrawutil.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qproxystyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QCommonStyle \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylefactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylepainter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolormap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcompleter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscroller.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollerProperties \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMetaType \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVariant \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundogroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundostack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundoview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcheckbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdial.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdockwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfocusframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgroupbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlabel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdiarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qplaintextedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qradiobutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsizegrip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplashscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplitter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextbrowser.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
 		../nouna_project/mainwindow.h
 	/home/kitty/Software/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/kitty/Documents/ComOpt/GIT/work/Nouna_PCVRP/qt-project/ver00/nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. ../nouna_project/mainwindow.h -o moc_mainwindow.cpp
 
@@ -1048,10 +1413,11 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		../nouna_project/qcustomplot/qcustomplot.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
@@ -1080,11 +1446,7 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
@@ -1101,6 +1463,17 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmargins.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintdevice.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrect.h \
@@ -1112,7 +1485,6 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
@@ -1125,10 +1497,6 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimage.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfont.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
@@ -1149,15 +1517,365 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPainter \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPaintEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMouseEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPixmap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVector \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QString \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDateTime \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatetime.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMultiMap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QFlags \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDebug \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector2D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStack \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QCache \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMargins \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrinter \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagelayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagesize.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtNumeric \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCore \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCoreDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpauseanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpropertyanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvariantanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeasingcurve.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextcodec.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qendian.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibraryinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdiriterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileselector.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStringList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlockfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qloggingcategory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qprocess.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresource.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsavefile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsettings.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstandardpaths.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporarydir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QScopedPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporaryfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlistmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsondocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracteventdispatcher.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmetaobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedmemory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignalmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsocketnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtranslator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwineventnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimetype.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfactoryinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibrary.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpluginloader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/quuid.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracttransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfinalstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhistorystate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignaltransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstatemachine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qexception.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfutureinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrunnable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresultstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturewatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qreadwritelock.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthread.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadpool.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadstorage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwaitcondition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydataops.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbitarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcollator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineparser.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qelapsedtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlinkedlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qqueue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimeline.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimezone.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qxmlstream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtcoreversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGui \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGuiDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessible.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessiblebridge.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbitmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengineplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimageiohandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagereader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagewriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmovie.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpicture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpictureformatplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmapcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstandarditemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qclipboard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdrag.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericpluginfactory.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qoffscreensurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglcontext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qt_windows.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QRect \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSize \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSizeF \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QTransform \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsessionmanager.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstylehints.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericmatrix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix4x4.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector3d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector4d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qquaternion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengldebug.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltexture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltimerquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbackingstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpdfwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qglyphrun.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrawfont.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontdatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextcursor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstatictext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtexttable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdesktopservices.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtguiversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgets \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolordialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qerrormessage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qinputdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlineedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmessagebox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwizard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector3D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMatrix4x4 \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolumnview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdirmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtableview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtablewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreeview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qformlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qshortcut.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtooltip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwhatsthis.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidgetaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommonstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdrawutil.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qproxystyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QCommonStyle \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylefactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylepainter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolormap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcompleter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscroller.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollerProperties \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMetaType \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVariant \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundogroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundostack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundoview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcheckbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdial.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdockwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfocusframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgroupbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlabel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdiarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qplaintextedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qradiobutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsizegrip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplashscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplitter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextbrowser.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../nouna_project/main.cpp
 
 mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
@@ -1264,86 +1982,392 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
 		../nouna_project/mainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVariant \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QButtonGroup \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFrame \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGraphicsView \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsview.h \
+		../nouna_project/qcustomplot/qcustomplot.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPainter \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainter.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextoption.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPaintEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMouseEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPixmap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVector \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QString \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDateTime \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatetime.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMultiMap \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QFlags \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QDebug \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector2D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStack \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QCache \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMargins \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmath.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrinter \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagelayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpagesize.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtNumeric \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCore \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QtCoreDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpauseanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpropertyanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvariantanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeasingcurve.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextcodec.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qendian.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibraryinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdiriterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileselector.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStringList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlockfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qloggingcategory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qprocess.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresource.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsavefile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsettings.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstandardpaths.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporarydir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QScopedPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtemporaryfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlistmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonvalue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsondocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qjsonobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbasictimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmetaobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedmemory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignalmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsocketnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtranslator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwineventnotifier.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimedatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmimetype.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfactoryinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibrary.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpluginloader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/quuid.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstracttransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfinalstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhistorystate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsignaltransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstatemachine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qexception.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfutureinterface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrunnable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qresultstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfuturewatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qreadwritelock.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsemaphore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthread.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadpool.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qthreadstorage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qwaitcondition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydataops.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydatapointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbitarray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcollator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcommandlineparser.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcryptographichash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qelapsedtimer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlinkedlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qqueue.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimeline.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtimezone.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qxmlstream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtcoreversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGui \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QtGuiDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessible.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessiblebridge.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qaccessibleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbitmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qiconengineplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimageiohandler.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagereader.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimagewriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmovie.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpicture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpictureformatplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmapcache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstandarditemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qclipboard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdrag.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericpluginfactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qoffscreensurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurface.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsurfaceformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglcontext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QSurfaceFormat \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qt_windows.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengles2ext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QList \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QRect \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSize \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSizeF \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QTransform \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsessionmanager.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstylehints.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QEvent \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qgenericmatrix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix4x4.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector3d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector4d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qquaternion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengldebug.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglfunctions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QSharedDataPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltexture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopengltimerquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbackingstore.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintengine.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpdfwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextformat.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qglyphrun.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrawfont.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontdatabase.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextcursor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocument.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qstatictext.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtexttable.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qdesktopservices.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtguiversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgets \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolordialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qerrormessage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qinputdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlineedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmessagebox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwizard.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QVector3D \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QMatrix4x4 \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsview.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollarea.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgraphicsscene.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGroupBox \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgroupbox.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QHeaderView \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleoption.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qslider.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractslider.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyle.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qrubberband.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLabel \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlabel.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMenuBar \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolumnview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdirmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlistwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtableview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtablewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreeview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qformlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesture.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qshortcut.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtooltip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwhatsthis.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidgetaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommonstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdrawutil.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qproxystyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QCommonStyle \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylefactory.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstylepainter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleplugin.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolormap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcompleter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscroller.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollerProperties \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMetaType \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVariant \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundogroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundostack.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qundoview.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractbutton.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTextEdit \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcheckbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdial.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdockwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfocusframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgroupbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlabel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdiarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenu.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmenubar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qplaintextedit.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextedit.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextdocument.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextcursor.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextformat.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qprogressbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qradiobutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsizegrip.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplashscreen.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsplitter.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstackedwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstatusbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtextbrowser.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbar.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
-		../nouna_project/datadef.h \
-		../nouna_project/village.h \
-		../nouna_project/route.h \
-		../nouna_project/household.h \
-		../nouna_project/readdata.h \
-		../nouna_project/add_func.h
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtoolbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		ui_mainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QButtonGroup \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QCheckBox \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFrame \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGridLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGroupBox \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QHeaderView \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLabel \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMenuBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTextEdit \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QVBoxLayout \
+		../nouna_project/hrd/datadef.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/route.h \
+		../nouna_project/hrd/household.h \
+		../nouna_project/hrd/distmatrix.h \
+		../nouna_project/hrd/readdata.h \
+		../nouna_project/hrd/add_func.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../nouna_project/mainwindow.cpp
-
-readdata.o: ../nouna_project/readdata.cpp ../nouna_project/readdata.h \
-		../nouna_project/village.h \
-		../nouna_project/route.h \
-		../nouna_project/household.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o readdata.o ../nouna_project/readdata.cpp
-
-add_func.o: ../nouna_project/add_func.cpp ../nouna_project/add_func.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o add_func.o ../nouna_project/add_func.cpp
 
 qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcustomplot/qcustomplot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
@@ -1807,6 +2831,23 @@ qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcu
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qcustomplot.o ../nouna_project/qcustomplot/qcustomplot.cpp
+
+add_func.o: ../nouna_project/src/add_func.cpp ../nouna_project/hrd/add_func.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o add_func.o ../nouna_project/src/add_func.cpp
+
+distmatrix.o: ../nouna_project/src/distmatrix.cpp ../nouna_project/hrd/distmatrix.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/route.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o distmatrix.o ../nouna_project/src/distmatrix.cpp
+
+plot.o: ../nouna_project/src/plot.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o plot.o ../nouna_project/src/plot.cpp
+
+readdata.o: ../nouna_project/src/readdata.cpp ../nouna_project/hrd/readdata.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/route.h \
+		../nouna_project/hrd/household.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o readdata.o ../nouna_project/src/readdata.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -21,7 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
@@ -38,6 +39,11 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QGridLayout *gridLayout;
+    QScrollBar *horizontalScrollBar;
+    QGroupBox *groupBoxPlotSetting;
+    QCheckBox *checkBoxVillageNames;
+    QCheckBox *checkBoxShowRoutes;
+    QCheckBox *checkBoxRainingSeazon;
     QFrame *frame;
     QPushButton *buttonOpenVillages;
     QLabel *labFile1;
@@ -45,7 +51,6 @@ public:
     QLabel *labFile3;
     QPushButton *buttonOpenRoutes;
     QPushButton *buttonOpenHouseh;
-    QSpacerItem *horizontalSpacer;
     QGroupBox *groupBoxPar;
     QLabel *labelNumOfVillages;
     QLabel *labelNumOfHh;
@@ -54,11 +59,8 @@ public:
     QTextEdit *textEditR;
     QLabel *labelNumOfR;
     QPushButton *buttonPlot;
-    QSpacerItem *horizontalSpacer_3;
-    QSpacerItem *horizontalSpacer_4;
     QCustomPlot *widget;
-    QSpacerItem *horizontalSpacer_2;
-    QSpacerItem *verticalSpacer;
+    QScrollBar *verticalScrollBar;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -84,13 +86,43 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        frame = new QFrame(centralWidget);
-        frame->setObjectName(QStringLiteral("frame"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        horizontalScrollBar = new QScrollBar(centralWidget);
+        horizontalScrollBar->setObjectName(QStringLiteral("horizontalScrollBar"));
+        horizontalScrollBar->setValue(0);
+        horizontalScrollBar->setOrientation(Qt::Horizontal);
+
+        gridLayout->addWidget(horizontalScrollBar, 3, 1, 1, 1);
+
+        groupBoxPlotSetting = new QGroupBox(centralWidget);
+        groupBoxPlotSetting->setObjectName(QStringLiteral("groupBoxPlotSetting"));
+        groupBoxPlotSetting->setStyleSheet(QLatin1String("#groupBoxPlotSetting {\n"
+"border: 2px solid gray;\n"
+"border-radius: 10px;\n"
+"}"));
+        checkBoxVillageNames = new QCheckBox(groupBoxPlotSetting);
+        checkBoxVillageNames->setObjectName(QStringLiteral("checkBoxVillageNames"));
+        checkBoxVillageNames->setGeometry(QRect(10, 20, 191, 21));
+        checkBoxShowRoutes = new QCheckBox(groupBoxPlotSetting);
+        checkBoxShowRoutes->setObjectName(QStringLiteral("checkBoxShowRoutes"));
+        checkBoxShowRoutes->setGeometry(QRect(10, 40, 111, 21));
+        checkBoxRainingSeazon = new QCheckBox(groupBoxPlotSetting);
+        checkBoxRainingSeazon->setObjectName(QStringLiteral("checkBoxRainingSeazon"));
+        checkBoxRainingSeazon->setGeometry(QRect(10, 60, 131, 21));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
-        frame->setSizePolicy(sizePolicy1);
+        sizePolicy1.setHeightForWidth(checkBoxRainingSeazon->sizePolicy().hasHeightForWidth());
+        checkBoxRainingSeazon->setSizePolicy(sizePolicy1);
+
+        gridLayout->addWidget(groupBoxPlotSetting, 1, 0, 1, 1);
+
+        frame = new QFrame(centralWidget);
+        frame->setObjectName(QStringLiteral("frame"));
+        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
+        frame->setSizePolicy(sizePolicy2);
         frame->setMaximumSize(QSize(400, 300));
         frame->setStyleSheet(QLatin1String("#frame {\n"
 "border: 2px solid gray;\n"
@@ -108,11 +140,11 @@ public:
         labFile2 = new QLabel(frame);
         labFile2->setObjectName(QStringLiteral("labFile2"));
         labFile2->setGeometry(QRect(20, 70, 91, 21));
-        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(labFile2->sizePolicy().hasHeightForWidth());
-        labFile2->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(labFile2->sizePolicy().hasHeightForWidth());
+        labFile2->setSizePolicy(sizePolicy3);
         labFile2->setAutoFillBackground(false);
         labFile3 = new QLabel(frame);
         labFile3->setObjectName(QStringLiteral("labFile3"));
@@ -127,15 +159,11 @@ public:
 
         gridLayout->addWidget(frame, 0, 0, 1, 1);
 
-        horizontalSpacer = new QSpacerItem(70, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer, 0, 1, 1, 1);
-
         groupBoxPar = new QGroupBox(centralWidget);
         groupBoxPar->setObjectName(QStringLiteral("groupBoxPar"));
         groupBoxPar->setEnabled(true);
-        sizePolicy1.setHeightForWidth(groupBoxPar->sizePolicy().hasHeightForWidth());
-        groupBoxPar->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(groupBoxPar->sizePolicy().hasHeightForWidth());
+        groupBoxPar->setSizePolicy(sizePolicy2);
         groupBoxPar->setMaximumSize(QSize(400, 300));
         labelNumOfVillages = new QLabel(groupBoxPar);
         labelNumOfVillages->setObjectName(QStringLiteral("labelNumOfVillages"));
@@ -171,36 +199,27 @@ public:
 
         gridLayout->addWidget(groupBoxPar, 2, 0, 1, 1);
 
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_3, 0, 3, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_4, 2, 3, 1, 1);
-
         widget = new QCustomPlot(centralWidget);
         widget->setObjectName(QStringLiteral("widget"));
-        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy4);
         widget->setStyleSheet(QLatin1String("#widget {\n"
 "border: 2px solid gray;\n"
 "border-radius: 10px;\n"
 "background: white;\n"
 "}"));
 
-        gridLayout->addWidget(widget, 0, 2, 3, 1);
+        gridLayout->addWidget(widget, 0, 1, 3, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+        verticalScrollBar = new QScrollBar(centralWidget);
+        verticalScrollBar->setObjectName(QStringLiteral("verticalScrollBar"));
+        verticalScrollBar->setValue(0);
+        verticalScrollBar->setOrientation(Qt::Vertical);
 
-        gridLayout->addItem(horizontalSpacer_2, 2, 1, 1, 1);
-
-        verticalSpacer = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout->addItem(verticalSpacer, 1, 0, 1, 1);
+        gridLayout->addWidget(verticalScrollBar, 0, 2, 3, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -226,6 +245,10 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         actionVillages->setText(QApplication::translate("MainWindow", "Villages", 0));
+        groupBoxPlotSetting->setTitle(QApplication::translate("MainWindow", "Plot Settings", 0));
+        checkBoxVillageNames->setText(QApplication::translate("MainWindow", "Show names of the villages", 0));
+        checkBoxShowRoutes->setText(QApplication::translate("MainWindow", "Show Routes", 0));
+        checkBoxRainingSeazon->setText(QApplication::translate("MainWindow", "Raining Season", 0));
         buttonOpenVillages->setText(QApplication::translate("MainWindow", "Villages...", 0));
         labFile1->setText(QApplication::translate("MainWindow", "....", 0));
         labFile2->setText(QApplication::translate("MainWindow", "....", 0));
