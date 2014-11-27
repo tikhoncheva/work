@@ -54,19 +54,19 @@ std::vector<stVillage> readdata_villages(std::string fileName)
 }
 
 
-std::vector<stRoute> readdata_routes(std::string fileName)
+std::vector<stRoad> readdata_Roads(std::string fileName)
 {
-    std::cout << "...read routes" << std::endl;
+    std::cout << "...read Roads" << std::endl;
 
-    std::vector<stRoute> result;	// result vector
+    std::vector<stRoad> result;	// result vector
 
     std::ifstream file(fileName.c_str());	// file to open
     std::string line;			// single line in the file
     std::stringstream buf;		// buffer to get infos from a single line
 
-    stRoute tmpRoute;				// tmp Route instance
+    stRoad tmpRoad;				// tmp Road instance
 
-    assert(file.is_open() && "ERROR readdata_routes : File cannot be opened");
+    assert(file.is_open() && "ERROR readdata_Roads : File cannot be opened");
 
     try
     {
@@ -76,15 +76,15 @@ std::vector<stRoute> readdata_routes(std::string fileName)
             buf.clear();
             buf << line;
 
-            buf >> tmpRoute.ID;
-            buf >> tmpRoute.name;
-            buf >> tmpRoute.start;
-            buf >> tmpRoute.end;
-            buf >> tmpRoute.dist;
-            buf >> tmpRoute.category;
-            buf >> tmpRoute.rain;
+            buf >> tmpRoad.ID;
+            buf >> tmpRoad.name;
+            buf >> tmpRoad.start;
+            buf >> tmpRoad.end;
+            buf >> tmpRoad.dist;
+            buf >> tmpRoad.category;
+            buf >> tmpRoad.rain;
 
-            result.push_back(tmpRoute);
+            result.push_back(tmpRoad);
 
             buf.clear();
         }
@@ -94,7 +94,7 @@ std::vector<stRoute> readdata_routes(std::string fileName)
     catch (...)
     {
         file.close();
-        std::cerr << "ERROR readdata_routes : problem by reading from "
+        std::cerr << "ERROR readdata_Roads : problem by reading from "
                   << fileName << std::endl;
     }
 

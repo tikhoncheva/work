@@ -20,7 +20,7 @@ public:
 private slots:
     void on_buttonOpenVillages_clicked();
 
-    void on_buttonOpenRoutes_clicked();
+    void on_buttonOpenRoads_clicked();
 
     void on_buttonOpenHouseh_clicked();
 
@@ -28,7 +28,7 @@ private slots:
 
     void on_checkBoxVillageNames_clicked();
 
-    void on_checkBoxShowRoutes_clicked();
+    void on_checkBoxShowRoads_clicked();
 
     void on_checkBoxRainingSeazon_clicked();
 
@@ -39,6 +39,8 @@ private slots:
     void xAxisChanged(QCPRange range);
 
     void yAxisChanged(QCPRange range);
+
+    void on_pushButtonInitialSolution_clicked();
 
 private:
     Ui::MainWindow *ui;

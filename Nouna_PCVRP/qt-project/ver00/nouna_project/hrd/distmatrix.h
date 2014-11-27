@@ -5,10 +5,10 @@
 #include <vector>
 #include <algorithm>    // std::find_if
 #include "village.h"
-#include "route.h"
+#include "road.h"
 
 
-struct stRoute_short
+struct stRoad_short
 {
     unsigned int ID;
     double dist;
@@ -17,13 +17,14 @@ struct stRoute_short
 };
 
 
-//extern std::vector<std::vector<stRoute_short> > distmatrix;
-extern std::vector<std::vector<unsigned int> > distmatrix;
+//extern std::vector<std::vector<stRoad_short> > distmatrix;
+extern std::vector<std::vector<unsigned int> > adjmatrix;
 
+extern std::vector<double>  distmatrix;
 
-std::vector<std::vector<unsigned int> > compute_distmatrix(std::vector<stVillage>,
-//std::vector<std::vector<stRoute_short> > compute_distmatrix(std::vector<stVillage>,
-                                                            std::vector<stRoute>);
+std::vector<std::vector<unsigned int> > compute_adjmatrix(std::vector<stVillage>,
+//std::vector<std::vector<stRoad_short> > compute_distmatrix(std::vector<stVillage>,
+                                                            std::vector<stRoad>);
 
 #endif // DISTMATRIX_H
 

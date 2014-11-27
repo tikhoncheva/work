@@ -6,17 +6,9 @@
 #include <utility>
 
 #include "village.h"
-#include "route.h"
+#include "road.h"
 #include "household.h"
-
-
-/*
- * An interviewer
- */
-struct Interviewer
-{
-    unsigned int ID;
-};
+#include "interviewer.h"
 
 
 
@@ -26,10 +18,11 @@ unsigned int nR;     // number of routes
 unsigned int K;		// number of interviewer
 
 std::vector<stVillage> Village;
-std::vector<stRoute> Route;
+std::vector<stRoad> Road;
 std::vector<stHousehold> Household;
+std::vector<stInterviewer> Interviewer;
 
-std::vector<std::vector<unsigned int> > distmatrix;
-
+std::vector<std::vector<unsigned int> > adjmatrix;
+std::vector<double> distmatrix;
 
 #endif // DATADEF_H

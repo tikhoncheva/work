@@ -9,8 +9,10 @@
 #include "hrd/datadef.h"
 #include "hrd/distmatrix.h"
 #include "hrd/readdata.h"
-#include "hrd/add_func.h"
+#include "hrd/additionalfunc.h"
 #include "hrd/plot.h"
+#include "hrd/dijkstra.h"
+#include "hrd/initialsolution.h"
 
 
 
@@ -66,7 +68,7 @@ void MainWindow::on_buttonOpenVillages_clicked()
         ui->buttonPlot->setEnabled(true);
 }
 
-void MainWindow::on_buttonOpenRoutes_clicked()
+void MainWindow::on_buttonOpenRoads_clicked()
 {
     QString qfileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                      "",
@@ -77,8 +79,8 @@ void MainWindow::on_buttonOpenRoutes_clicked()
     ui->labFile2->setText(QString::fromStdString(fileName));
 
     // read data
-    Route = readdata_routes(filePath);
-    nR = Route.size();
+    Road = readdata_Roads(filePath);
+    nR = Road.size();
 
     ui->textEditR->setText(QString::number(nR));
 
@@ -113,7 +115,7 @@ void MainWindow::on_buttonPlot_clicked()
 {
     // plot edges
     //std::vector<std::vector<double> > distmatrix;
-    distmatrix = compute_distmatrix(Village, Route);
+    adjmatrix = compute_adjmatrix(Village, Road);
 
     plot_villages(ui->widget, Village);
 }
@@ -132,9 +134,9 @@ void MainWindow::on_checkBoxVillageNames_clicked()
     } else
     {
         ui->widget->clearItems();
-        if (ui->checkBoxShowRoutes->isChecked())
+        if (ui->checkBoxShowRoads->isChecked())
         {
-            plot_routes(ui->widget, Village, Route, distmatrix, false);
+            plot_roads(ui->widget, Village, Road, adjmatrix, false);
         }
         ui->widget->replot();
     }
@@ -143,13 +145,13 @@ void MainWindow::on_checkBoxVillageNames_clicked()
 //---------------------------------------------------------------------------------------------------
 
 /*
- * Show Routes on the map
+ * Show Roads on the map
  */
-void MainWindow::on_checkBoxShowRoutes_clicked()
+void MainWindow::on_checkBoxShowRoads_clicked()
 {
-    if (ui->checkBoxShowRoutes->isChecked())
+    if (ui->checkBoxShowRoads->isChecked())
     {
-        plot_routes(ui->widget, Village, Route, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, adjmatrix, false);
     } else {
         ui->widget->clearItems();
         if (ui->checkBoxVillageNames->isChecked())
@@ -212,3 +214,25 @@ void MainWindow::yAxisChanged(QCPRange range)
 }
 
 //---------------------------------------------------------------------------------------------------
+/*
+ * Initial solution
+ */
+
+void MainWindow::on_pushButtonInitialSolution_clicked()
+{
+    /*construct initial solution*/
+    distmatrix = dijkstraAlg(adjmatrix, Road);
+
+    std::cout << "Distances from the Nouna" << std::endl;
+    for (unsigned int i=0; i<distmatrix.size(); ++i)
+        std::cout << distmatrix[i] << " ";
+    std::cout << std::endl;
+
+    std::vector<std::vector<unsigned int> > initialSolution;
+    initialSolution = initialsolution(Village,                 // villages
+                       Household,               // households
+                       Road,                    // roads
+                       Interviewer,             // Interviewer
+                       distmatrix                   // distmatrix
+                       );
+}

@@ -71,9 +71,9 @@ void plot_labelsVillages(QCustomPlot *plot,
     plot->replot();
 }
 
-void plot_routes(QCustomPlot *plot,
+void plot_roads(QCustomPlot *plot,
                  std::vector<stVillage> V,
-                 std::vector<stRoute> R,
+                 std::vector<stRoad> R,
                  std::vector<std::vector<unsigned int> > dist,
                  bool rainingSeason)
 {

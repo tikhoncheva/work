@@ -15,10 +15,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot/qcustomplot.cpp \
-    src/add_func.cpp \
     src/distmatrix.cpp \
     src/plot.cpp \
-    src/readdata.cpp
+    src/readdata.cpp \
+    src/initialsolution.cpp \
+    src/additionalfunc.cpp
 
 HEADERS  += mainwindow.h \
     readdata.h \
@@ -30,13 +31,16 @@ HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
     distmatrix.h \
     plot.h \
-    hrd/add_func.h \
     hrd/datadef.h \
     hrd/distmatrix.h \
     hrd/household.h \
     hrd/plot.h \
     hrd/readdata.h \
-    hrd/route.h \
-    hrd/village.h
+    hrd/village.h \
+    hrd/initialsolution.h \
+    hrd/interviewer.h \
+    hrd/road.h \
+    hrd/additionalfunc.h \
+    hrd/dijkstra.h
 
 FORMS    += mainwindow.ui
