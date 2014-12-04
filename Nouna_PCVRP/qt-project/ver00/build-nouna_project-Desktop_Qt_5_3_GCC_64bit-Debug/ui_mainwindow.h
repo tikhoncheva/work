@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -21,7 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
@@ -38,14 +39,7 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QGridLayout *gridLayout;
-    QFrame *frame;
-    QPushButton *buttonOpenVillages;
-    QLabel *labFile1;
-    QLabel *labFile2;
-    QLabel *labFile3;
-    QPushButton *buttonOpenRoutes;
-    QPushButton *buttonOpenHouseh;
-    QSpacerItem *horizontalSpacer;
+    QScrollBar *horizontalScrollBar;
     QGroupBox *groupBoxPar;
     QLabel *labelNumOfVillages;
     QLabel *labelNumOfHh;
@@ -54,11 +48,21 @@ public:
     QTextEdit *textEditR;
     QLabel *labelNumOfR;
     QPushButton *buttonPlot;
-    QSpacerItem *horizontalSpacer_3;
-    QSpacerItem *horizontalSpacer_4;
+    QGroupBox *groupBox;
+    QPushButton *pushButtonInitialSolution;
     QCustomPlot *widget;
-    QSpacerItem *horizontalSpacer_2;
-    QSpacerItem *verticalSpacer;
+    QScrollBar *verticalScrollBar;
+    QGroupBox *groupBoxPlotSetting;
+    QCheckBox *checkBoxVillageNames;
+    QCheckBox *checkBoxShowRoutes;
+    QCheckBox *checkBoxRainingSeazon;
+    QFrame *frame;
+    QPushButton *buttonOpenVillages;
+    QLabel *labFile1;
+    QLabel *labFile2;
+    QLabel *labFile3;
+    QPushButton *buttonOpenRoutes;
+    QPushButton *buttonOpenHouseh;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -67,7 +71,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(883, 513);
+        MainWindow->resize(883, 544);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -84,56 +88,19 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        frame = new QFrame(centralWidget);
-        frame->setObjectName(QStringLiteral("frame"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
-        frame->setSizePolicy(sizePolicy1);
-        frame->setMaximumSize(QSize(400, 300));
-        frame->setStyleSheet(QLatin1String("#frame {\n"
-"border: 2px solid gray;\n"
-"border-radius: 10px;\n"
-"}"));
-        frame->setFrameShape(QFrame::StyledPanel);
-        frame->setFrameShadow(QFrame::Raised);
-        buttonOpenVillages = new QPushButton(frame);
-        buttonOpenVillages->setObjectName(QStringLiteral("buttonOpenVillages"));
-        buttonOpenVillages->setGeometry(QRect(110, 20, 91, 23));
-        labFile1 = new QLabel(frame);
-        labFile1->setObjectName(QStringLiteral("labFile1"));
-        labFile1->setGeometry(QRect(20, 20, 91, 21));
-        labFile1->setAutoFillBackground(false);
-        labFile2 = new QLabel(frame);
-        labFile2->setObjectName(QStringLiteral("labFile2"));
-        labFile2->setGeometry(QRect(20, 70, 91, 21));
-        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(labFile2->sizePolicy().hasHeightForWidth());
-        labFile2->setSizePolicy(sizePolicy2);
-        labFile2->setAutoFillBackground(false);
-        labFile3 = new QLabel(frame);
-        labFile3->setObjectName(QStringLiteral("labFile3"));
-        labFile3->setGeometry(QRect(20, 110, 91, 21));
-        labFile3->setAutoFillBackground(false);
-        buttonOpenRoutes = new QPushButton(frame);
-        buttonOpenRoutes->setObjectName(QStringLiteral("buttonOpenRoutes"));
-        buttonOpenRoutes->setGeometry(QRect(110, 70, 91, 23));
-        buttonOpenHouseh = new QPushButton(frame);
-        buttonOpenHouseh->setObjectName(QStringLiteral("buttonOpenHouseh"));
-        buttonOpenHouseh->setGeometry(QRect(110, 110, 91, 23));
+        horizontalScrollBar = new QScrollBar(centralWidget);
+        horizontalScrollBar->setObjectName(QStringLiteral("horizontalScrollBar"));
+        horizontalScrollBar->setValue(0);
+        horizontalScrollBar->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(frame, 0, 0, 1, 1);
-
-        horizontalSpacer = new QSpacerItem(70, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer, 0, 1, 1, 1);
+        gridLayout->addWidget(horizontalScrollBar, 3, 2, 1, 1);
 
         groupBoxPar = new QGroupBox(centralWidget);
         groupBoxPar->setObjectName(QStringLiteral("groupBoxPar"));
         groupBoxPar->setEnabled(true);
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(groupBoxPar->sizePolicy().hasHeightForWidth());
         groupBoxPar->setSizePolicy(sizePolicy1);
         groupBoxPar->setMaximumSize(QSize(400, 300));
@@ -168,24 +135,22 @@ public:
         buttonPlot->setStyleSheet(QLatin1String("#buttonPlot{\n"
 "background: rgb(238, 238, 238);\n"
 "}"));
+        groupBox = new QGroupBox(groupBoxPar);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setGeometry(QRect(209, 0, 191, 141));
+        pushButtonInitialSolution = new QPushButton(groupBox);
+        pushButtonInitialSolution->setObjectName(QStringLiteral("pushButtonInitialSolution"));
+        pushButtonInitialSolution->setGeometry(QRect(20, 30, 101, 23));
 
         gridLayout->addWidget(groupBoxPar, 2, 0, 1, 1);
 
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_3, 0, 3, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
-
-        gridLayout->addItem(horizontalSpacer_4, 2, 3, 1, 1);
-
         widget = new QCustomPlot(centralWidget);
         widget->setObjectName(QStringLiteral("widget"));
-        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy2);
         widget->setStyleSheet(QLatin1String("#widget {\n"
 "border: 2px solid gray;\n"
 "border-radius: 10px;\n"
@@ -194,13 +159,75 @@ public:
 
         gridLayout->addWidget(widget, 0, 2, 3, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+        verticalScrollBar = new QScrollBar(centralWidget);
+        verticalScrollBar->setObjectName(QStringLiteral("verticalScrollBar"));
+        verticalScrollBar->setValue(0);
+        verticalScrollBar->setOrientation(Qt::Vertical);
 
-        gridLayout->addItem(horizontalSpacer_2, 2, 1, 1, 1);
+        gridLayout->addWidget(verticalScrollBar, 0, 3, 3, 1);
 
-        verticalSpacer = new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        groupBoxPlotSetting = new QGroupBox(centralWidget);
+        groupBoxPlotSetting->setObjectName(QStringLiteral("groupBoxPlotSetting"));
+        groupBoxPlotSetting->setStyleSheet(QLatin1String("#groupBoxPlotSetting {\n"
+"border: 2px solid gray;\n"
+"border-radius: 10px;\n"
+"}"));
+        checkBoxVillageNames = new QCheckBox(groupBoxPlotSetting);
+        checkBoxVillageNames->setObjectName(QStringLiteral("checkBoxVillageNames"));
+        checkBoxVillageNames->setGeometry(QRect(10, 20, 191, 21));
+        checkBoxShowRoutes = new QCheckBox(groupBoxPlotSetting);
+        checkBoxShowRoutes->setObjectName(QStringLiteral("checkBoxShowRoutes"));
+        checkBoxShowRoutes->setGeometry(QRect(10, 40, 111, 21));
+        checkBoxRainingSeazon = new QCheckBox(groupBoxPlotSetting);
+        checkBoxRainingSeazon->setObjectName(QStringLiteral("checkBoxRainingSeazon"));
+        checkBoxRainingSeazon->setGeometry(QRect(10, 60, 131, 21));
+        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(checkBoxRainingSeazon->sizePolicy().hasHeightForWidth());
+        checkBoxRainingSeazon->setSizePolicy(sizePolicy3);
 
-        gridLayout->addItem(verticalSpacer, 1, 0, 1, 1);
+        gridLayout->addWidget(groupBoxPlotSetting, 1, 0, 1, 1);
+
+        frame = new QFrame(centralWidget);
+        frame->setObjectName(QStringLiteral("frame"));
+        sizePolicy1.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
+        frame->setSizePolicy(sizePolicy1);
+        frame->setMaximumSize(QSize(400, 300));
+        frame->setStyleSheet(QLatin1String("#frame {\n"
+"border: 2px solid gray;\n"
+"border-radius: 10px;\n"
+"}"));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        buttonOpenVillages = new QPushButton(frame);
+        buttonOpenVillages->setObjectName(QStringLiteral("buttonOpenVillages"));
+        buttonOpenVillages->setGeometry(QRect(110, 20, 91, 23));
+        labFile1 = new QLabel(frame);
+        labFile1->setObjectName(QStringLiteral("labFile1"));
+        labFile1->setGeometry(QRect(20, 20, 91, 21));
+        labFile1->setAutoFillBackground(false);
+        labFile2 = new QLabel(frame);
+        labFile2->setObjectName(QStringLiteral("labFile2"));
+        labFile2->setGeometry(QRect(20, 70, 91, 21));
+        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(labFile2->sizePolicy().hasHeightForWidth());
+        labFile2->setSizePolicy(sizePolicy4);
+        labFile2->setAutoFillBackground(false);
+        labFile3 = new QLabel(frame);
+        labFile3->setObjectName(QStringLiteral("labFile3"));
+        labFile3->setGeometry(QRect(20, 110, 91, 21));
+        labFile3->setAutoFillBackground(false);
+        buttonOpenRoutes = new QPushButton(frame);
+        buttonOpenRoutes->setObjectName(QStringLiteral("buttonOpenRoutes"));
+        buttonOpenRoutes->setGeometry(QRect(110, 70, 91, 23));
+        buttonOpenHouseh = new QPushButton(frame);
+        buttonOpenHouseh->setObjectName(QStringLiteral("buttonOpenHouseh"));
+        buttonOpenHouseh->setGeometry(QRect(110, 110, 91, 23));
+
+        gridLayout->addWidget(frame, 0, 0, 1, 1);
 
 
         verticalLayout->addLayout(gridLayout);
@@ -226,17 +253,23 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         actionVillages->setText(QApplication::translate("MainWindow", "Villages", 0));
+        groupBoxPar->setTitle(QApplication::translate("MainWindow", "Parameters", 0));
+        labelNumOfVillages->setText(QApplication::translate("MainWindow", "Villages", 0));
+        labelNumOfHh->setText(QApplication::translate("MainWindow", "Households", 0));
+        labelNumOfR->setText(QApplication::translate("MainWindow", "Routes", 0));
+        buttonPlot->setText(QApplication::translate("MainWindow", "plot graph", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Solution", 0));
+        pushButtonInitialSolution->setText(QApplication::translate("MainWindow", "Initial Solution", 0));
+        groupBoxPlotSetting->setTitle(QApplication::translate("MainWindow", "Plot Settings", 0));
+        checkBoxVillageNames->setText(QApplication::translate("MainWindow", "Show names of the villages", 0));
+        checkBoxShowRoutes->setText(QApplication::translate("MainWindow", "Show Routes", 0));
+        checkBoxRainingSeazon->setText(QApplication::translate("MainWindow", "Raining Season", 0));
         buttonOpenVillages->setText(QApplication::translate("MainWindow", "Villages...", 0));
         labFile1->setText(QApplication::translate("MainWindow", "....", 0));
         labFile2->setText(QApplication::translate("MainWindow", "....", 0));
         labFile3->setText(QApplication::translate("MainWindow", "....", 0));
         buttonOpenRoutes->setText(QApplication::translate("MainWindow", "Routes...", 0));
         buttonOpenHouseh->setText(QApplication::translate("MainWindow", "Households...", 0));
-        groupBoxPar->setTitle(QApplication::translate("MainWindow", "Parameters", 0));
-        labelNumOfVillages->setText(QApplication::translate("MainWindow", "Villages", 0));
-        labelNumOfHh->setText(QApplication::translate("MainWindow", "Households", 0));
-        labelNumOfR->setText(QApplication::translate("MainWindow", "Routes", 0));
-        buttonPlot->setText(QApplication::translate("MainWindow", "plot graph", 0));
     } // retranslateUi
 
 };

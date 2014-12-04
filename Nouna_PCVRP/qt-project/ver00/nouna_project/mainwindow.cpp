@@ -1,13 +1,19 @@
 #include <QFileDialog>
 #include <QColor>
+#include <QPointF>
 #include <limits>
 //---------------------
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //---------------------
-#include "datadef.h"
-#include "readdata.h"
-#include "add_func.h"
+#include "hrd/datadef.h"
+#include "hrd/distmatrix.h"
+#include "hrd/readdata.h"
+#include "hrd/additionalfunc.h"
+#include "hrd/plot.h"
+#include "hrd/dijkstra.h"
+#include "hrd/initialsolution.h"
+
 
 
 
@@ -16,13 +22,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // configurate scrollbars
+    ui->horizontalScrollBar->setRange(-410, -290);
+    ui->verticalScrollBar->setRange(-1300, -1240);
+
+    // create connection between axes and scroll bars:
+    connect(ui->widget->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
+    connect(ui->widget->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
+
+    // initialize axis range (and scroll bar positions via signals we just connected):
+    ui->widget->xAxis->setRange(-4.1, -3.2, Qt::AlignCenter);
+    ui->widget->yAxis->setRange(12.4, 13, Qt::AlignCenter);
+
+    ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+//---------------------------------------------------------------------------------------------------
 
+/*
+ * Read data from files
+ */
 
 void MainWindow::on_buttonOpenVillages_clicked()
 {
@@ -44,7 +68,7 @@ void MainWindow::on_buttonOpenVillages_clicked()
         ui->buttonPlot->setEnabled(true);
 }
 
-void MainWindow::on_buttonOpenRoutes_clicked()
+void MainWindow::on_buttonOpenRoads_clicked()
 {
     QString qfileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                      "",
@@ -55,8 +79,8 @@ void MainWindow::on_buttonOpenRoutes_clicked()
     ui->labFile2->setText(QString::fromStdString(fileName));
 
     // read data
-    Route = readdata_routes(filePath);
-    nR = Route.size();
+    Road = readdata_Roads(filePath);
+    nR = Road.size();
 
     ui->textEditR->setText(QString::number(nR));
 
@@ -84,77 +108,131 @@ void MainWindow::on_buttonOpenHouseh_clicked()
         ui->buttonPlot->setEnabled(true);
 }
 
+//---------------------------------------------------------------------------------------------------
+
 // plot original Graph
 void MainWindow::on_buttonPlot_clicked()
 {
-    QCPScatterStyle myScatter;
-    myScatter.setShape(QCPScatterStyle::ssCircle);
-    myScatter.setPen(QPen(Qt::blue));
-    myScatter.setBrush(Qt::white);
-    myScatter.setSize(5);
-
-    // create graph and assign data to it:
-    ui->widget->addGraph();
-    ui->widget->graph(0)->setScatterStyle(myScatter);
-    ui->widget->graph(0)->setLineStyle( QCPGraph::lsNone);
-    // give the axes some labels:
-    ui->widget->xAxis->setLabel("longitude");
-    ui->widget->yAxis->setLabel("latitude");
-
-    QVector<double> x(nV), y(nV); // initialize with entries 0..100
-    double xmin,xmax;
-    double ymin, ymax;
-    QVector<double>::iterator it;
-
-    for (unsigned int i=0; i< nV; ++i)
-    {
-        x[i] = Village[i].coord.first;
-        if (x[i]<xmin)
-            xmin = x[i];
-        if (x[i]>xmax)
-            xmax = x[i];
-        y[i] = Village[i].coord.second;
-
-        if (y[i]<ymin)
-            ymin = y[i];
-        if (y[i]>ymax)
-            ymax = y[i];
-
-        QCPItemText *textLabel = new QCPItemText(ui->widget);
-        textLabel->setText(QString::fromStdString(Village[i].name));
-        textLabel->position->setCoords(x[i], y[i]+0.007);
-        ui->widget->addItem(textLabel);
-    }
-
-    QVector<double>::iterator it_min =  std::min_element(x.begin(), x.end());
-    xmin = *it_min;
-    QVector<double>::iterator it_max =  std::max_element(x.begin(), x.end());
-    xmax = *it_max;
-
-    it_min =  std::min_element(y.begin(), y.end());
-    ymin = *it_min;
-    it_max =  std::max_element(y.begin(), y.end());
-    ymax = *it_max;
-
-    ui->widget->graph(0)->setData(x, y);
-    // set axes ranges, so we see all data:
-    ui->widget->xAxis->setRange(xmin-0.1, xmax+0.1);
-    ui->widget->yAxis->setRange(ymin-0.1, ymax+0.1);
-
-
     // plot edges
+    //std::vector<std::vector<double> > distmatrix;
+    adjmatrix = compute_adjmatrix(Village, Road);
 
-    for (unsigned int i=0; i< nR; ++i)
+    plot_villages(ui->widget, Village);
+}
+
+//---------------------------------------------------------------------------------------------------
+
+/*
+ * Show names of the villages on the map
+ */
+void MainWindow::on_checkBoxVillageNames_clicked()
+{
+
+    if (ui->checkBoxVillageNames->isChecked())
     {
-        unsigned int startId  = Route[i].start;
-        unsigned int endId  = Route[i].end;
+         plot_labelsVillages(ui->widget, Village);
+    } else
+    {
+        ui->widget->clearItems();
+        if (ui->checkBoxShowRoads->isChecked())
+        {
+            plot_roads(ui->widget, Village, Road, adjmatrix, false);
+        }
+        ui->widget->replot();
+    }
+}
 
-        QVector<double>::iterator it_start = std::find(Village.begin(),Village.end(), startId);
+//---------------------------------------------------------------------------------------------------
 
-        QVector<double>::iterator it_end = std::find(Village.begin(),Village.end(), endId);
+/*
+ * Show Roads on the map
+ */
+void MainWindow::on_checkBoxShowRoads_clicked()
+{
+    if (ui->checkBoxShowRoads->isChecked())
+    {
+        plot_roads(ui->widget, Village, Road, adjmatrix, false);
+    } else {
+        ui->widget->clearItems();
+        if (ui->checkBoxVillageNames->isChecked())
+        {
+           plot_labelsVillages(ui->widget, Village);
+        }
+        ui->widget->replot();
+    }
+}
 
+//---------------------------------------------------------------------------------------------------
+
+/*
+ * Is it now a raining season?
+ */
+void MainWindow::on_checkBoxRainingSeazon_clicked()
+{
+
+}
+
+//---------------------------------------------------------------------------------------------------
+
+/*
+ * Scrolling the plot widget
+ */
+void MainWindow::on_horizontalScrollBar_valueChanged(int value)
+{
+    if (qAbs(ui->widget->xAxis->range().center()-value/100.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+    {
+        ui->widget->xAxis->setRange(value/100.0, ui->widget->xAxis->range().size(), Qt::AlignCenter);
+        ui->widget->replot();
     }
 
-    // replot everything
-    ui->widget->replot();
+}
+
+void MainWindow::on_verticalScrollBar_valueChanged(int value)
+{
+    if (qAbs(ui->widget->yAxis->range().center()+value/100.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+    {
+        ui->widget->yAxis->setRange(-value/100.0, ui->widget->yAxis->range().size(), Qt::AlignCenter);
+        ui->widget->replot();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------
+
+/*
+ * Zooming with mouse
+ */
+void MainWindow::xAxisChanged(QCPRange range)
+{
+  ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
+  ui->horizontalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+}
+
+void MainWindow::yAxisChanged(QCPRange range)
+{
+  ui->verticalScrollBar->setValue(qRound(-range.center()*100.0)); // adjust position of scroll bar slider
+  ui->verticalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+}
+
+//---------------------------------------------------------------------------------------------------
+/*
+ * Initial solution
+ */
+
+void MainWindow::on_pushButtonInitialSolution_clicked()
+{
+    /*construct initial solution*/
+    distmatrix = dijkstraAlg(adjmatrix, Road);
+
+    std::cout << "Distances from the Nouna" << std::endl;
+    for (unsigned int i=0; i<distmatrix.size(); ++i)
+        std::cout << distmatrix[i] << " ";
+    std::cout << std::endl;
+
+    std::vector<std::vector<unsigned int> > initialSolution;
+    initialSolution = initialsolution(Village,                 // villages
+                       Household,               // households
+                       Road,                    // roads
+                       Interviewer,             // Interviewer
+                       distmatrix                   // distmatrix
+                       );
 }
