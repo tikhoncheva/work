@@ -1,3 +1,6 @@
+#ifndef DIJKSTRA_H
+#define DIJKSTRA_H
+
 #include <iostream>
 #include <vector>
 #include <set>
@@ -9,27 +12,27 @@
 #include "road.h"
 #include "village.h"
 
-bool isZero(unsigned int a)
+bool isZero(const uDist& a)
 {
-    return a == 0;
+    return a.dist == 0;
 }
 
-std::vector<double> dijkstraAlg(std::vector<std::vector<unsigned int> > adjMatrix,
-                                std::vector<stRoad> R)
+std::vector<double> dijkstraAlg(std::vector<std::vector<uDist> > dist,
+                                std::vector<stRoad> R, bool rainingseason)
 {
-    unsigned int n = adjMatrix.size();
+    unsigned int n = dist.size();
     const unsigned int source = 142-100-1; // Capital (Nouna)
     const double infi = std::numeric_limits<double>::infinity();
 
 
-    std::vector<double> dist(n, infi);
+    std::vector<double> timedist(n, infi);
     std::vector<unsigned int> prev(n, -1);
     std::set<std::pair<unsigned int, double > > Q; // vertex queue
 
-    dist[source] = 0.;
+    timedist[source] = 0.;
     prev[source] = source;
 
-    Q.insert(std::make_pair(source, dist[source]));
+    Q.insert(std::make_pair(source, timedist[source]));
 
     while (!Q.empty())
     {
@@ -38,30 +41,36 @@ std::vector<double> dijkstraAlg(std::vector<std::vector<unsigned int> > adjMatri
 
         Q.erase(Q.begin());
 
-        std::vector<unsigned int> neighbors = adjMatrix[u];
+        std::vector<uDist> neighbors = dist[u];
         // delete all zeros
         neighbors.resize(std::remove_if(neighbors.begin(), neighbors.end(), isZero) - neighbors.begin());
 
         // for each neighbor v of u
-        for (std::vector<unsigned int>::const_iterator neighbor_iter = neighbors.begin();
+        for (std::vector<uDist>::const_iterator neighbor_iter = neighbors.begin();
              neighbor_iter != neighbors.end();
              neighbor_iter++)
         {
-            unsigned int edgeID = *neighbor_iter;
+            uDist road = *neighbor_iter;
 
-            unsigned int v = R[edgeID-1001].end - 101;
+            unsigned int v = R[road.roadID-1001].end - 101;
             if (u==v) // if u is end of the road
-                v = R[edgeID-1001].start-101;
-            double d_uv = R[edgeID-1001].dist;
-            if (d_u+d_uv < dist[v])
-            {
-                Q.erase(std::make_pair(v, dist[v]));
+                v = R[road.roadID-1001].start-101;
 
-                dist[v] = d_u+d_uv;
+            // d_uv in min
+            double d_uv = R[road.roadID-1001].dist/road.speeddry*(1-rainingseason*road.rainDepending)*60
+                        + R[road.roadID-1001].dist/road.speedrain*rainingseason*road.rainDepending*60;
+
+            if (d_u+d_uv < timedist[v])
+            {
+                Q.erase(std::make_pair(v, timedist[v]));
+
+                timedist[v] = d_u+d_uv;
                 prev[v] = u;
-                Q.insert(std::make_pair(v, dist[v]));
+                Q.insert(std::make_pair(v, timedist[v]));
             }
         } // end for each neighbor v
     } // Q is empty
-    return dist;
+    return timedist;
 }
+
+#endif // DIJKSTRA_H

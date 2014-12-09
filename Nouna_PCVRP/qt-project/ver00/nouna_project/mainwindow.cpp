@@ -1,20 +1,24 @@
-#include <QFileDialog>
-#include <QColor>
-#include <QPointF>
-#include <limits>
-//---------------------
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 //---------------------
 #include "hrd/datadef.h"
-#include "hrd/distmatrix.h"
 #include "hrd/readdata.h"
-#include "hrd/additionalfunc.h"
+#include "hrd/collectdata.h"
 #include "hrd/plot.h"
-#include "hrd/dijkstra.h"
+//#include "hrd/distmatrix.h"
+//#include "hrd/dijkstra2.h"
+
 #include "hrd/initialsolution.h"
 
+std::string returnFilename (const std::string& str)
+{
+    unsigned int found = str.find_last_of("/\\");
+    return  str.substr(found+1);
+}
 
+/*
+ * ------------------------------------------------------------------------------------
+ */
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -56,16 +60,22 @@ void MainWindow::on_buttonOpenVillages_clicked()
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
-    ui->labFile1->setText(QString::fromStdString(fileName));
+    if (!fileName.empty())
+    {
+        ui->labFile1->setText(QString::fromStdString(fileName));
 
-    // read data
-    Village = readdata_villages(filePath);
-    nV = Village.size();
+        // read data
+        Village = readdata_villages(filePath);
+        nV = Village.size();
 
-    ui->textEditN->setText(QString::number(nV));
+        ui->textEditN->setText(QString::number(nV));
 
-    if(nV && nH && nR)
-        ui->buttonPlot->setEnabled(true);
+        if(nV && nH && nR)
+        {
+            collectdata_routine(Village, Road, Household); // calculate all important values
+            ui->buttonPlot->setEnabled(true);   //enable plotting
+        }
+    }
 }
 
 void MainWindow::on_buttonOpenRoads_clicked()
@@ -76,16 +86,22 @@ void MainWindow::on_buttonOpenRoads_clicked()
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
-    ui->labFile2->setText(QString::fromStdString(fileName));
+    if (!fileName.empty())
+    {
+        ui->labFile2->setText(QString::fromStdString(fileName));
 
-    // read data
-    Road = readdata_Roads(filePath);
-    nR = Road.size();
+        // read data
+        Road = readdata_Roads(filePath);
+        nR = Road.size();
 
-    ui->textEditR->setText(QString::number(nR));
+        ui->textEditR->setText(QString::number(nR));
 
-    if(nV && nH && nR)
-        ui->buttonPlot->setEnabled(true);
+        if(nV && nH && nR)
+        {
+            collectdata_routine(Village, Road, Household); // calculate all important values
+            ui->buttonPlot->setEnabled(true);   //enable plotting
+        }
+    }
 }
 
 void MainWindow::on_buttonOpenHouseh_clicked()
@@ -96,16 +112,22 @@ void MainWindow::on_buttonOpenHouseh_clicked()
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
-    ui->labFile3->setText(QString::fromStdString(fileName));
+    if (!fileName.empty())
+    {
+        ui->labFile3->setText(QString::fromStdString(fileName));
 
-    // read data
-    Household = readdata_households(filePath);
-    nH = Household.size();
+        // read data
+        Household = readdata_households(filePath);
+        nH = Household.size();
 
-    ui->textEditH->setText(QString::number(nH));
+        ui->textEditH->setText(QString::number(nH));
 
-    if(nV && nH && nR)
-        ui->buttonPlot->setEnabled(true);
+        if(nV && nH && nR)
+        {
+            collectdata_routine(Village, Road, Household); // calculate all important values
+            ui->buttonPlot->setEnabled(true);   //enable plotting
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -114,10 +136,9 @@ void MainWindow::on_buttonOpenHouseh_clicked()
 void MainWindow::on_buttonPlot_clicked()
 {
     // plot edges
-    //std::vector<std::vector<double> > distmatrix;
-    adjmatrix = compute_adjmatrix(Village, Road);
-
     plot_villages(ui->widget, Village);
+
+    ui->pushButtonInitialSolution->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -130,13 +151,13 @@ void MainWindow::on_checkBoxVillageNames_clicked()
 
     if (ui->checkBoxVillageNames->isChecked())
     {
-         plot_labelsVillages(ui->widget, Village);
+        plot_labelsVillages(ui->widget, Village);
     } else
     {
         ui->widget->clearItems();
         if (ui->checkBoxShowRoads->isChecked())
         {
-            plot_roads(ui->widget, Village, Road, adjmatrix, false);
+            plot_roads(ui->widget, Village, Road, distmatrix, false);
         }
         ui->widget->replot();
     }
@@ -151,17 +172,60 @@ void MainWindow::on_checkBoxShowRoads_clicked()
 {
     if (ui->checkBoxShowRoads->isChecked())
     {
-        plot_roads(ui->widget, Village, Road, adjmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
     } else {
         ui->widget->clearItems();
         if (ui->checkBoxVillageNames->isChecked())
         {
-           plot_labelsVillages(ui->widget, Village);
+            plot_labelsVillages(ui->widget, Village);
         }
         ui->widget->replot();
     }
 }
 
+
+//---------------------------------------------------------------------------------------------------
+/*
+ * Show routes
+ */
+
+void MainWindow::on_pushButtonShowRoute_pressed()
+{
+    QString qstrK = ui->textEditSelectK->toPlainText();
+    std::string strK = qstrK.toStdString();
+    unsigned int k = atoi(strK.c_str());
+
+    if (k < 1 )
+        k = 1;
+
+    if (k > Interviewer.size())
+        k = Interviewer.size();
+
+    std::cout << k << std::endl;
+
+    plot_route(ui->widget, Village, Interviewer[k-1], 1, predecessorsDry);
+//    plot_routes(ui->widget, Village, Interviewer[k-1]);
+
+    if (ui->checkBoxVillageNames->isChecked())
+        plot_labelsVillages(ui->widget, Village);
+
+    // fill table with informations about the selected interviewer
+    ui->textEditRouteInfo->setText("Day   Work time    # visited citys # visited households");
+    std::stringstream ss;
+    for (unsigned int d=0; d<Interviewer[k].routes.size(); ++d)
+    {
+        ss << "\n";
+        ss << "Day:" << d+1 << "  ";
+        ss << "Work time:" <<Interviewer[k-1].routes[d].time << "  ";
+        ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size() << "  ";
+        ss << "#VisHh:" <<Interviewer[k-1].routes[d].households.size() << " ";
+
+        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+    }
+
+
+
+}
 //---------------------------------------------------------------------------------------------------
 
 /*
@@ -203,14 +267,14 @@ void MainWindow::on_verticalScrollBar_valueChanged(int value)
  */
 void MainWindow::xAxisChanged(QCPRange range)
 {
-  ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
-  ui->horizontalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+    ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
+    ui->horizontalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
 }
 
 void MainWindow::yAxisChanged(QCPRange range)
 {
-  ui->verticalScrollBar->setValue(qRound(-range.center()*100.0)); // adjust position of scroll bar slider
-  ui->verticalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+    ui->verticalScrollBar->setValue(qRound(-range.center()*100.0)); // adjust position of scroll bar slider
+    ui->verticalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -220,19 +284,17 @@ void MainWindow::yAxisChanged(QCPRange range)
 
 void MainWindow::on_pushButtonInitialSolution_clicked()
 {
-    /*construct initial solution*/
-    distmatrix = dijkstraAlg(adjmatrix, Road);
-
-    std::cout << "Distances from the Nouna" << std::endl;
-    for (unsigned int i=0; i<distmatrix.size(); ++i)
-        std::cout << distmatrix[i] << " ";
-    std::cout << std::endl;
-
     std::vector<std::vector<unsigned int> > initialSolution;
-    initialSolution = initialsolution(Village,                 // villages
-                       Household,               // households
-                       Road,                    // roads
-                       Interviewer,             // Interviewer
-                       distmatrix                   // distmatrix
-                       );
+
+    initialsolution(Village,  // villages
+                    Household,               // households
+                    Interviewer,             // Interviewer
+                    timematrixDry,           // timematrixdry
+                    village_household);
+
+    ui->pushButtonShowRoute->setEnabled(true);
 }
+
+//---------------------------------------------------------------------------------------------------
+
+

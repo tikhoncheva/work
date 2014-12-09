@@ -3,7 +3,16 @@
 
 #include "qcustomplot/qcustomplot.h"
 #include <QMainWindow>
-//------
+#include <QFileDialog>
+#include <QColor>
+#include <QPointF>
+
+#include <limits>
+#include <sstream>
+
+//----------------
+
+
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +50,8 @@ private slots:
     void yAxisChanged(QCPRange range);
 
     void on_pushButtonInitialSolution_clicked();
+
+    void on_pushButtonShowRoute_pressed();
 
 private:
     Ui::MainWindow *ui;

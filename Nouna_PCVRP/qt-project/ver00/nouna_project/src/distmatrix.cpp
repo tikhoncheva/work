@@ -3,7 +3,6 @@
 class matchVillageID
 {
     unsigned int ID;
-
 public:
     matchVillageID(const unsigned int &_ID) : ID(_ID) {}
 
@@ -13,13 +12,10 @@ public:
     }
 };
 
-std::vector<std::vector<unsigned int> > compute_adjmatrix(std::vector<stVillage> Village,
-//std::vector<std::vector<stRoad_short> > compute_distmatrix(std::vector<stVillage> Village,
-                                                            std::vector<stRoad> Road)
+std::vector<std::vector<uDist> > compute_distmatrix(std::vector<stVillage> Village,
+                                                    std::vector<stRoad> Road)
 {
-//    std::vector<std::vector<stRoad_short> > distmatrix;
-    std::vector<std::vector<unsigned int> > adjM;
-    //stRoad_short tmpRoadInfo;
+    std::vector<std::vector<uDist> > dmatrix;
 
     std::vector<stVillage>::iterator it_start;
     std::vector<stVillage>::iterator it_end;
@@ -33,9 +29,9 @@ std::vector<std::vector<unsigned int> > compute_adjmatrix(std::vector<stVillage>
     unsigned int startID;
     unsigned int endID;
 
-    adjM.resize(nV);
+    dmatrix.resize(nV);
     for (unsigned int i=0; i<nV; i++)
-        adjM[i] = std::vector<unsigned int>(nV,0.);
+        dmatrix[i] = std::vector<uDist>(nV,uDist(0, 0, 0, 0, 0));
 
     for (unsigned int r=0; r<nR; ++r)
     {
@@ -48,15 +44,13 @@ std::vector<std::vector<unsigned int> > compute_adjmatrix(std::vector<stVillage>
 
         i = it_start - Village.begin();
         j = it_end - Village.begin();
-/*
-        tmpRoadInfo.category = Road[r].category;
-        tmpRoadInfo.dist = Road[r].dist;
-        tmpRoadInfo.rain = Road[r].rain;
-        tmpRoadInfo.ID = Road[r].ID;
-*/
-        adjM[i][j] = Road[r].ID;
-        adjM[j][i] = Road[r].ID;
+
+        dmatrix[i][j] = uDist(Road[r].ID, Road[r].dist, speeddry[Road[r].category-1],
+                                                        speedrain[Road[r].category-1],
+                                                        Road[r].rainDepending);
+        dmatrix[j][i] = dmatrix[i][j];
     }
 
-    return adjM;
+    return dmatrix;
 }
+

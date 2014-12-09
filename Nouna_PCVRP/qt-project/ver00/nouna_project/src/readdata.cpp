@@ -82,7 +82,7 @@ std::vector<stRoad> readdata_Roads(std::string fileName)
             buf >> tmpRoad.end;
             buf >> tmpRoad.dist;
             buf >> tmpRoad.category;
-            buf >> tmpRoad.rain;
+            buf >> tmpRoad.rainDepending;
 
             result.push_back(tmpRoad);
 

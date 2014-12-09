@@ -18,8 +18,7 @@ SOURCES += main.cpp\
     src/distmatrix.cpp \
     src/plot.cpp \
     src/readdata.cpp \
-    src/initialsolution.cpp \
-    src/additionalfunc.cpp
+    src/initialsolution.cpp
 
 HEADERS  += mainwindow.h \
     readdata.h \
@@ -40,7 +39,8 @@ HEADERS  += mainwindow.h \
     hrd/initialsolution.h \
     hrd/interviewer.h \
     hrd/road.h \
-    hrd/additionalfunc.h \
-    hrd/dijkstra.h
+    hrd/dijkstra.h \
+    hrd/dijkstra2.h \
+    hrd/collectdata.h
 
 FORMS    += mainwindow.ui

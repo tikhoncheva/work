@@ -1,5 +1,26 @@
 #include <hrd/plot.h>
 
+std::vector<unsigned int> getShortestWay(unsigned int source, unsigned int target,
+                                         const std::vector<unsigned int>& _prev)
+{
+    std::vector<unsigned int> shortestWay;
+
+    unsigned int u = target;
+
+    shortestWay.push_back(u);
+
+    while (_prev[u] != source)
+    {
+        u = _prev[u];
+        shortestWay.push_back(u);
+    }
+
+    shortestWay.push_back(source);
+    std::reverse(shortestWay.begin(), shortestWay.end());
+
+    return shortestWay;
+}
+
 void plot_villages(QCustomPlot *plot,
                    std::vector<stVillage> V)
 {
@@ -72,10 +93,10 @@ void plot_labelsVillages(QCustomPlot *plot,
 }
 
 void plot_roads(QCustomPlot *plot,
-                 std::vector<stVillage> V,
-                 std::vector<stRoad> R,
-                 std::vector<std::vector<unsigned int> > dist,
-                 bool rainingSeason)
+                std::vector<stVillage> V,
+                std::vector<stRoad> R,
+                std::vector<std::vector<uDist> > dist,
+                bool rainingSeason)
 {
     QPointF p1, p2;
     unsigned int nV = V.size();
@@ -87,14 +108,14 @@ void plot_roads(QCustomPlot *plot,
 
         for (unsigned int j=0; j<nV; ++j)
         {
-            if (dist[i][j]!=0)
+            if (dist[i][j].roadID!=0)
             {
                 p2.setX(V[j].coord.first);
                 p2.setY(V[j].coord.second);
 
                 QCPItemLine *arrow = new QCPItemLine(plot);
 
-                switch (R[dist[i][j]-1001].category){
+                switch (R[dist[i][j].roadID-1001].category){
                 case 1:arrow->setPen(QPen(Qt::green));break;
                 case 2:arrow->setPen(QPen(Qt::yellow));break;
                 case 3:arrow->setPen(QPen(Qt::red));break;
@@ -106,6 +127,108 @@ void plot_roads(QCustomPlot *plot,
                 arrow->start->setCoords(p1);
                 arrow->end->setCoords(p2);
             }
+        }
+    }
+    // replot everything
+    plot->replot();
+}
+
+void plot_route(QCustomPlot *plot,
+                const std::vector<stVillage>& V,
+                stInterviewer I,
+                unsigned int day,
+                const std::vector<std::vector<unsigned int> >& preds)
+{
+    plot->clearItems();
+    plot->replot();
+
+
+    QPointF p1, p2;
+
+    unsigned int l = I.routes[day-1].villages.size();
+    std::cout << "Length of the route " << l << std::endl;
+    std::vector<unsigned int> shortestWay;
+
+    unsigned int next;
+    unsigned int pred = I.routes[day-1].villages[0];
+
+    p1.setX(V[pred].coord.first);
+    p1.setY(V[pred].coord.second);
+
+    for (unsigned int i=1; i< l; ++i)
+    {
+        next = I.routes[day-1].villages[i];
+
+//        shortestWay = getShortestWay(pred, next, preds[pred]);
+
+        p2.setX(V[next].coord.first);
+        p2.setY(V[next].coord.second);
+
+        QCPItemLine *arrow = new QCPItemLine(plot);
+        arrow->setPen(QPen(Qt::black));
+        plot->addItem(arrow);
+        arrow->start->setCoords(p1);
+        arrow->end->setCoords(p2);
+
+        pred = next;
+        p1 = p2;
+
+//        for (unsigned int j = 0; j< shortestWay.size(); ++j)
+//        {
+//            next = shortestWay[j];
+
+//            p2.setX(V[next].coord.first);
+//            p2.setY(V[next].coord.second);
+
+//            QCPItemLine *arrow = new QCPItemLine(plot);
+//            arrow->setPen(QPen(Qt::black));
+//            plot->addItem(arrow);
+//            arrow->start->setCoords(p1);
+//            arrow->end->setCoords(p2);
+
+//            pred = next;
+//            p1 = p2;
+//        }
+    }
+    // replot everything
+    plot->replot();
+}
+
+void plot_routes(QCustomPlot *plot,
+                 std::vector<stVillage> V,
+                 stInterviewer I)
+{
+    plot->clearItems();
+    plot->replot();
+
+    QPointF p1, p2;
+
+    for (unsigned int d=0; d<I.routes.size(); ++d)
+    {
+        unsigned int l = I.routes[d].villages.size();
+        std::cout << "Length of the route " << l << std::endl;
+
+        unsigned int next;
+        unsigned int pred = I.routes[d].villages[0];
+
+        p1.setX(V[pred].coord.first);
+        p1.setY(V[pred].coord.second);
+
+        for (unsigned int i=1; i< l; ++i)
+        {
+            next = I.routes[d].villages[i];
+
+            p2.setX(V[next].coord.first);
+            p2.setY(V[next].coord.second);
+
+            QCPItemLine *arrow = new QCPItemLine(plot);
+            arrow->setPen(QPen(Qt::black));
+            plot->addItem(arrow);
+            arrow->start->setCoords(p1);
+            arrow->end->setCoords(p2);
+
+            pred = next;
+            p1 = p2;
         }
     }
     // replot everything
