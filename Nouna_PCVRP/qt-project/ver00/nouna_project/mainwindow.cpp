@@ -73,7 +73,8 @@ void MainWindow::on_buttonOpenVillages_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->buttonPlot->setEnabled(true);   //enable plotting
+            ui->groupBoxPlotSetting ->setEnabled(true);
+            ui->groupBoxInitialSolution ->setEnabled(true);
         }
     }
 }
@@ -99,7 +100,8 @@ void MainWindow::on_buttonOpenRoads_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->buttonPlot->setEnabled(true);   //enable plotting
+            ui->groupBoxPlotSetting ->setEnabled(true);
+            ui->groupBoxInitialSolution ->setEnabled(true);
         }
     }
 }
@@ -125,7 +127,8 @@ void MainWindow::on_buttonOpenHouseh_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->buttonPlot->setEnabled(true);   //enable plotting
+            ui->groupBoxPlotSetting ->setEnabled(true);
+            ui->groupBoxInitialSolution ->setEnabled(true);
         }
     }
 }
@@ -138,7 +141,7 @@ void MainWindow::on_buttonPlot_clicked()
     // plot edges
     plot_villages(ui->widget, Village);
 
-    ui->pushButtonInitialSolution->setEnabled(true);
+//    ui->pushButtonInitialSolution->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -149,9 +152,36 @@ void MainWindow::on_buttonPlot_clicked()
 void MainWindow::on_checkBoxVillageNames_clicked()
 {
 
+    ui->widget->clearItems();
+
     if (ui->checkBoxVillageNames->isChecked())
     {
+        ui->checkBoxVillageIDs->setChecked(false);
         plot_labelsVillages(ui->widget, Village);
+    } else
+    {
+        if (ui->checkBoxShowRoads->isChecked())
+        {
+            plot_roads(ui->widget, Village, Road, distmatrix, false);
+        }
+    }
+
+    ui->widget->replot();
+}
+//---------------------------------------------------------------------------------------------------
+
+/*
+ * Show IDs of the villages on the map
+ */
+
+void MainWindow::on_checkBoxVillageIDs_clicked()
+{
+    ui->widget->clearItems();
+
+    if (ui->checkBoxVillageIDs->isChecked())
+    {
+        ui->checkBoxVillageNames->setChecked(false);
+        plot_IDsVillages(ui->widget, Village);
     } else
     {
         ui->widget->clearItems();
@@ -159,9 +189,10 @@ void MainWindow::on_checkBoxVillageNames_clicked()
         {
             plot_roads(ui->widget, Village, Road, distmatrix, false);
         }
-        ui->widget->replot();
     }
+    ui->widget->replot();
 }
+
 
 //---------------------------------------------------------------------------------------------------
 
@@ -191,33 +222,57 @@ void MainWindow::on_checkBoxShowRoads_clicked()
 
 void MainWindow::on_pushButtonShowRoute_pressed()
 {
+    ui->widget->clearItems();
+
     QString qstrK = ui->textEditSelectK->toPlainText();
+    QString qstrD = ui->textEditSelectDay->toPlainText();
     std::string strK = qstrK.toStdString();
-    unsigned int k = atoi(strK.c_str());
+    std::string strD = qstrD.toStdString();
 
-    if (k < 1 )
+    unsigned int day;     // Day
+    unsigned int k;         // Interviewer number
+
+    k = atoi(strK.c_str());    // Interviewer number
+    if (k < 1)
         k = 1;
-
     if (k > Interviewer.size())
         k = Interviewer.size();
 
-    std::cout << k << std::endl;
+    if (strD != "")
+    {
+        day = atoi(strD.c_str());    // Day
+        if (day > Interviewer[0].routes.size())
+            day = Interviewer[0].routes.size();
+        // plot route for the day Day and Interviewer k
+        plot_route(ui->widget, Village, Interviewer[k-1], day, predecessorsDry);
+    }
+    else
+    {
+        day = 80;
+        // if day is not specified plot all routes for the Interviewer k
+        plot_routes(ui->widget, Village, Interviewer[k-1]);
+    }
 
-    plot_route(ui->widget, Village, Interviewer[k-1], 1, predecessorsDry);
-//    plot_routes(ui->widget, Village, Interviewer[k-1]);
-
+    // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
         plot_labelsVillages(ui->widget, Village);
+    if (ui->checkBoxVillageIDs->isChecked())
+        plot_IDsVillages(ui->widget, Village);
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+    ui->widget->replot();
 
     // fill table with informations about the selected interviewer
-    ui->textEditRouteInfo->setText("Day   Work time    # visited citys # visited households");
+    ui->textEditRouteInfo->clear();
+    ui->textEditRouteInfo->setText("Day   Work time    # visited citys # visited households\n");
     std::stringstream ss;
-    for (unsigned int d=0; d<Interviewer[k].routes.size(); ++d)
+    for (unsigned int d=0; d<day; ++d)
     {
         ss << "\n";
         ss << "Day:" << d+1 << "  ";
         ss << "Work time:" <<Interviewer[k-1].routes[d].time << "  ";
-        ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size() << "  ";
+        ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size()-2 << "  ";
         ss << "#VisHh:" <<Interviewer[k-1].routes[d].households.size() << " ";
 
         ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
@@ -284,7 +339,16 @@ void MainWindow::yAxisChanged(QCPRange range)
 
 void MainWindow::on_pushButtonInitialSolution_clicked()
 {
-    std::vector<std::vector<unsigned int> > initialSolution;
+    ui->widget->clearItems();
+    // replot everything that already was on the plot
+    if (ui->checkBoxVillageNames->isChecked())
+        plot_labelsVillages(ui->widget, Village);
+    if (ui->checkBoxVillageIDs->isChecked())
+        plot_IDsVillages(ui->widget, Village);
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+//    std::vector<std::vector<unsigned int> > initialSolution;
 
     initialsolution(Village,  // villages
                     Household,               // households
@@ -296,5 +360,6 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 }
 
 //---------------------------------------------------------------------------------------------------
+
 
 

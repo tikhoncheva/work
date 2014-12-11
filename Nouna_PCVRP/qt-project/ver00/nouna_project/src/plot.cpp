@@ -31,7 +31,7 @@ void plot_villages(QCustomPlot *plot,
     QCPScatterStyle myScatter;
     myScatter.setShape(QCPScatterStyle::ssCircle);
     myScatter.setPen(QPen(Qt::blue));
-    myScatter.setBrush(Qt::white);
+    myScatter.setBrush(QBrush(Qt::white));
     myScatter.setSize(5);
 
     // create graph and assign data to it:
@@ -44,6 +44,7 @@ void plot_villages(QCustomPlot *plot,
 
     unsigned int nV= V.size();
     QVector<double> x(nV), y(nV); // initialize with entries 0..100
+    QVector<double> xNouna(1), yNouna(1); // initialize with entries 0..100
     double xmin,xmax;
     double ymin, ymax;
 
@@ -64,6 +65,17 @@ void plot_villages(QCustomPlot *plot,
     ymax = *it_max;
 
     plot->graph(0)->setData(x, y);
+
+    // extra mark capital
+    xNouna[0] = V[142-101].coord.first;
+    yNouna[0] = V[142-101].coord.second;
+
+    plot->addGraph();
+    myScatter.setBrush(QBrush(Qt::red));
+    myScatter.setSize(7);
+    plot->graph(1)->setScatterStyle(myScatter);
+    plot->graph(1)->setData(xNouna, yNouna);
+
     // set axes ranges, so we see all data:
     plot->xAxis->setRange(xmin-0.1, xmax+0.1);
     plot->yAxis->setRange(ymin-0.1, ymax+0.1);
@@ -84,6 +96,27 @@ void plot_labelsVillages(QCustomPlot *plot,
 
         QCPItemText *textLabel = new QCPItemText(plot);
         textLabel->setText(QString::fromStdString(V[i].name));
+        textLabel->position->setCoords(x[i], y[i]+0.007);
+        plot->addItem(textLabel);
+    }
+
+    // replot everything
+    plot->replot();
+}
+
+void plot_IDsVillages(QCustomPlot *plot,
+                      std::vector<stVillage> V)
+{
+    unsigned int nV= V.size();
+    QVector<double> x(nV), y(nV); // initialize with entries 0..100
+
+    for (unsigned int i=0; i< nV; ++i)
+    {
+        x[i] = V[i].coord.first;
+        y[i] = V[i].coord.second;
+
+        QCPItemText *textLabel = new QCPItemText(plot);
+        textLabel->setText(QString::number(V[i].ID));
         textLabel->position->setCoords(x[i], y[i]+0.007);
         plot->addItem(textLabel);
     }
@@ -139,9 +172,6 @@ void plot_route(QCustomPlot *plot,
                 unsigned int day,
                 const std::vector<std::vector<unsigned int> >& preds)
 {
-    plot->clearItems();
-    plot->replot();
-
 
     QPointF p1, p2;
 
@@ -150,48 +180,68 @@ void plot_route(QCustomPlot *plot,
     std::vector<unsigned int> shortestWay;
 
     unsigned int next;
-    unsigned int pred = I.routes[day-1].villages[0];
+    unsigned int pred;
 
+    QCPScatterStyle myScatter;
+    myScatter.setShape(QCPScatterStyle::ssCircle);
+    myScatter.setPen(QPen(Qt::blue));
+    myScatter.setBrush(Qt::red);
+    myScatter.setSize(5);
+
+    pred = I.routes[day-1].villages[0];
     p1.setX(V[pred].coord.first);
     p1.setY(V[pred].coord.second);
 
     for (unsigned int i=1; i< l; ++i)
     {
         next = I.routes[day-1].villages[i];
+        std::cout << "next " << next;
 
-//        shortestWay = getShortestWay(pred, next, preds[pred]);
+        shortestWay = getShortestWay(pred, next, preds[pred]);
 
-        p2.setX(V[next].coord.first);
-        p2.setY(V[next].coord.second);
+//        p2.setX(V[next].coord.first);
+//        p2.setY(V[next].coord.second);
 
-        QCPItemLine *arrow = new QCPItemLine(plot);
-        arrow->setPen(QPen(Qt::black));
-        plot->addItem(arrow);
-        arrow->start->setCoords(p1);
-        arrow->end->setCoords(p2);
+//        QCPItemLine *arrow = new QCPItemLine(plot);
+//        arrow->setPen(QPen(Qt::black));
+//        plot->addItem(arrow);
+//        arrow->start->setCoords(p1);
+//        arrow->end->setCoords(p2);
+
+//        pred = next;
+//        p1 = p2;
+
+        std::cout << "Shortest way:";
+        for (unsigned int j = 0; j< shortestWay.size(); ++j)
+        {
+            std::cout << shortestWay[j] << " ";
+        }
+        std::cout << std::endl;
+
+        for (unsigned int j = 0; j< shortestWay.size(); ++j)
+        {
+            next = shortestWay[j];
+
+            p2.setX(V[next].coord.first);
+            p2.setY(V[next].coord.second);
+
+            QCPItemLine *arrow = new QCPItemLine(plot);
+            arrow->setPen(QPen(Qt::black));
+            plot->addItem(arrow);
+            arrow->start->setCoords(p1);
+            arrow->end->setCoords(p2);
+            if (j == shortestWay.size()-1)
+                arrow->setHead(QCPLineEnding::esSpikeArrow);
+
+            p1 = p2;
+        }
 
         pred = next;
-        p1 = p2;
 
-//        for (unsigned int j = 0; j< shortestWay.size(); ++j)
-//        {
-//            next = shortestWay[j];
-
-//            p2.setX(V[next].coord.first);
-//            p2.setY(V[next].coord.second);
-
-//            QCPItemLine *arrow = new QCPItemLine(plot);
-//            arrow->setPen(QPen(Qt::black));
-//            plot->addItem(arrow);
-//            arrow->start->setCoords(p1);
-//            arrow->end->setCoords(p2);
-
-//            pred = next;
-//            p1 = p2;
-//        }
     }
     // replot everything
     plot->replot();
+    std::cout << "finished plotting route" << std::endl;
 }
 
 void plot_routes(QCustomPlot *plot,

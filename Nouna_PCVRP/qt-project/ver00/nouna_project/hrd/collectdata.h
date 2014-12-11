@@ -68,7 +68,7 @@ void collectdata_routine(std::vector<stVillage> _villages,
 
     // set number of available interviewers
     std::cout << "  set number of available interviewers ...";
-    Interviewer.resize(22);
+    Interviewer.resize(20);
     std::cout << "finished" << std::endl;
 
     // compute adjazent matrix with distances

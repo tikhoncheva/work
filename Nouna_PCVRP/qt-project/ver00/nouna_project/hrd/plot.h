@@ -13,6 +13,7 @@
 void plot_villages(QCustomPlot*, std::vector<stVillage>);
 
 void plot_labelsVillages(QCustomPlot*, std::vector<stVillage>);
+void plot_IDsVillages(QCustomPlot*, std::vector<stVillage>);
 
 void plot_roads(QCustomPlot*, std::vector<stVillage>, std::vector<stRoad>, std::vector<std::vector<uDist> >, bool);
 

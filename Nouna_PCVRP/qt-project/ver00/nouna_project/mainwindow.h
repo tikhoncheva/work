@@ -53,6 +53,8 @@ private slots:
 
     void on_pushButtonShowRoute_pressed();
 
+    void on_checkBoxVillageIDs_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -48,7 +48,6 @@ OBJECTS_DIR   = ./
 SOURCES       = ../nouna_project/main.cpp \
 		../nouna_project/mainwindow.cpp \
 		../nouna_project/qcustomplot/qcustomplot.cpp \
-		../nouna_project/src/add_func.cpp \
 		../nouna_project/src/distmatrix.cpp \
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
@@ -57,7 +56,6 @@ SOURCES       = ../nouna_project/main.cpp \
 OBJECTS       = main.o \
 		mainwindow.o \
 		qcustomplot.o \
-		add_func.o \
 		distmatrix.o \
 		plot.o \
 		readdata.o \
@@ -174,7 +172,6 @@ DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf
 		../nouna_project/nouna_project.pro ../nouna_project/main.cpp \
 		../nouna_project/mainwindow.cpp \
 		../nouna_project/qcustomplot/qcustomplot.cpp \
-		../nouna_project/src/add_func.cpp \
 		../nouna_project/src/distmatrix.cpp \
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
@@ -443,7 +440,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/nouna_project1.0.0 || mkdir -p .tmp/nouna_project1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/add_func.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/route.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/interviewer.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/add_func.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/dijkstra2.h ../nouna_project/hrd/collectdata.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
 
 
 clean:compiler_clean 
@@ -931,6 +928,8 @@ moc_mainwindow.cpp: ../nouna_project/qcustomplot/qcustomplot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		../nouna_project/mainwindow.h
 	/home/kitty/Software/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/kitty/Documents/ComOpt/GIT/work/Nouna_PCVRP/qt-project/ver00/nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. ../nouna_project/mainwindow.h -o moc_mainwindow.cpp
 
@@ -1878,14 +1877,17 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../nouna_project/main.cpp
 
-mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
+		../nouna_project/qcustomplot/qcustomplot.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
@@ -1914,18 +1916,13 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfile.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlist.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
@@ -1936,15 +1933,14 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
@@ -1956,6 +1952,11 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpalette.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qcolor.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrgb.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvector.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix.h \
@@ -1966,9 +1967,6 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimage.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfont.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
@@ -1983,16 +1981,12 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlocale.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qset.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
-		../nouna_project/mainwindow.h \
-		../nouna_project/qcustomplot/qcustomplot.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpointer.h \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QPainter \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainter.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtextoption.h \
@@ -2039,6 +2033,8 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qendian.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlibraryinfo.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbuffer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdiriterator.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileselector.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QStringList \
@@ -2210,7 +2206,9 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QtWidgetsDepends \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaccessiblewidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolordialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qerrormessage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfilesystemmodel.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfontdialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qinputdialog.h \
@@ -2291,6 +2289,7 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcolormap.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qcompleter.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscroller.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollerProperties \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qscrollerproperties.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QMetaType \
@@ -2346,6 +2345,8 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		ui_mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
@@ -2360,18 +2361,20 @@ mainwindow.o: ../nouna_project/mainwindow.cpp /home/kitty/Software/Qt/5.3/gcc_64
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollBar \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTabWidget \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTextEdit \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QVBoxLayout \
 		../nouna_project/hrd/datadef.h \
 		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/route.h \
+		../nouna_project/hrd/road.h \
 		../nouna_project/hrd/household.h \
 		../nouna_project/hrd/interviewer.h \
-		../nouna_project/hrd/distmatrix.h \
 		../nouna_project/hrd/readdata.h \
-		../nouna_project/hrd/add_func.h \
-		../nouna_project/hrd/plot.h
+		../nouna_project/hrd/collectdata.h \
+		../nouna_project/hrd/distmatrix.h \
+		../nouna_project/hrd/dijkstra2.h \
+		../nouna_project/hrd/plot.h \
+		../nouna_project/hrd/initialsolution.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../nouna_project/mainwindow.cpp
 
 qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcustomplot/qcustomplot.h \
@@ -2837,12 +2840,9 @@ qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcu
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qcustomplot.o ../nouna_project/qcustomplot/qcustomplot.cpp
 
-add_func.o: ../nouna_project/src/add_func.cpp ../nouna_project/hrd/add_func.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o add_func.o ../nouna_project/src/add_func.cpp
-
 distmatrix.o: ../nouna_project/src/distmatrix.cpp ../nouna_project/hrd/distmatrix.h \
 		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/route.h
+		../nouna_project/hrd/road.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o distmatrix.o ../nouna_project/src/distmatrix.cpp
 
 plot.o: ../nouna_project/src/plot.cpp ../nouna_project/hrd/plot.h \
@@ -3309,16 +3309,21 @@ plot.o: ../nouna_project/src/plot.cpp ../nouna_project/hrd/plot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/route.h
+		../nouna_project/hrd/road.h \
+		../nouna_project/hrd/interviewer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o plot.o ../nouna_project/src/plot.cpp
 
 readdata.o: ../nouna_project/src/readdata.cpp ../nouna_project/hrd/readdata.h \
 		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/route.h \
+		../nouna_project/hrd/road.h \
 		../nouna_project/hrd/household.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o readdata.o ../nouna_project/src/readdata.cpp
 
-initialsolution.o: ../nouna_project/src/initialsolution.cpp 
+initialsolution.o: ../nouna_project/src/initialsolution.cpp ../nouna_project/hrd/initialsolution.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/road.h \
+		../nouna_project/hrd/household.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialsolution.o ../nouna_project/src/initialsolution.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
