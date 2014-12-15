@@ -8,7 +8,7 @@ struct stRoute
 {
     std::vector<unsigned int> households;
     std::vector<unsigned int> villages;
-    unsigned int time;
+    float time;
 };
 
 /*
