@@ -11,6 +11,11 @@ bool isZero (const unsigned int a)
     return a==0;
 }
 
+bool visited (std::pair<unsigned int, bool> a)
+{
+    return !a.second;
+}
+
 /*
  * returns position on the minimum positive value in the container
 */
@@ -18,13 +23,13 @@ template <class ForwardIterator>
 ForwardIterator find_posmin( ForwardIterator first, ForwardIterator last )
 {
     if (first==last)
-        return last-1;
+        return last;
 
     ForwardIterator smallest = first;
 
     while (++first!=last)
     {
-        if ((*first>=0 && *first<*smallest) || *smallest<0)
+        if (*first>=0 && (*first<*smallest || *smallest<0))
         {
             smallest=first;
         }
@@ -221,37 +226,22 @@ void planForADay2 (const unsigned int day,
         remaining_time[k] = tmax;
     }
 
-    std::cout << "Remaining time after iteration " << 0 << std::endl;
-    for (unsigned int k=0; k<K; ++k)
-        std::cout << remaining_time[k] << " ";
-    std::cout << std::endl;
-
     // pick randomly first unvisited household (an the beginning of period all hh need to be visited)
     first = rand()%(N-1);
     while (!ToVis[first].second)
-        first= (first+1)%N;
-
-    predV = home;   // start allways from home
+        first = (first+1)%N;
 
     unsigned int i=first;
     bool allFull = false;
-    // for j, j+1, ..., N-1, 0, 1, ..., j-1
-//    for (unsigned int i=first; i<N+first; ++i)
-    while(++i<N+first && !allFull)
+
+    while( ++i<(N+first) && !allFull)   // ~ for j, j+1, ..., N-1, 0, 1, ..., j-1
     {
         // select a household
         if (!ToVis[i%N].second)    //skip already visited citys
             continue;
 
-        hhID = ToVis[i%N].first;
-
-        nextV = _household[hhID].villageID - 101;
-
-        // if hh is not in the previous village, travel time is not 0
-        if (predV !=nextV)
-            t_changev = _distmatrix[predV][nextV];
-        else
-            t_changev = 0;
+        hhID = ToVis[i%N].first;                    // next household to visite
+        nextV = _household[hhID].villageID - 101;   // village of the next household
 
         // Interview time
         ti = (1-_household[hhID].type)*10*_household[hhID].nPersons   // 10 min for standart interview
@@ -263,49 +253,31 @@ void planForADay2 (const unsigned int day,
         // for each Interviewer calculate the remaining time, if he takes the hh
         for (unsigned int k=0; k<K; ++k)
         {
+            predV = visitedV[k].back(); // previous village in tour k
+            // travel time between previous village and new village
+            t_changev = _distmatrix[predV][nextV];
             remaining_time_new[k] = remaining_time[k] - (t_changev + ti + t_home);
         }
 
-
         // find min remaining time over all positive values
-        unsigned int  k_min = find_posmin(remaining_time_new.begin(), remaining_time_new.end()) - remaining_time_new.begin();
-        std::cout << "needed time" << t_changev + ti << "+" << t_home
-                                   << "=" << t_changev + ti + t_home<< std::endl;
+        unsigned int  k_min = find_posmin(remaining_time_new.begin(), remaining_time_new.end())
+                            - remaining_time_new.begin();
 
-        if (k_min==K)
-        {
-            std::cout << std::endl;
-            for (unsigned int k=0; k<K; ++k)
-                std::cout << remaining_time[k] << " ";
-            std::cout << std::endl;
-
-//            std::cout << "needed time" << t_changev + ti << "+" << t_home
-//                                       << "=" << t_changev + ti + t_home<< std::endl;
-            for (unsigned int k=0; k<K; ++k)
-                std::cout << remaining_time_new[k] << " ";
-            std::cout << std::endl;
-            std::cout << std::endl;
+        if (k_min==K)   // all values in remaining_time_ are negative
             continue;
-        }
-//        if (k_min==K && remaining_time_new[k_min]<0) // check if not interviewers are completely full
-//            allFull = true;
 
+        predV= visitedV[k_min].back();
+        t_changev = _distmatrix[predV][nextV];
 
-        remaining_time[k_min] = remaining_time[k_min] - (t_changev + ti);
+        remaining_time[k_min] = remaining_time_new[k_min] + t_home; // we dont want to come back immediately home
         visitedHh[k_min].push_back(hhID);
+
         if (predV !=nextV)
-        {
             visitedV[k_min].push_back(nextV);
-        }
 
         ToVis[i%N].second = false; // set hh as visited
 
-//        std::cout << "Remaining time after iteration " << 0 << std::endl;
-//        for (unsigned int k=0; k<K; ++k)
-//            std::cout << remaining_time[k] << " ";
-//        std::cout << std::endl;
-        if (std::remove_if(remaining_time.begin(), remaining_time.end(), isZero) == remaining_time.begin())
-           allFull = true;
+        allFull = std::all_of(remaining_time.begin(), remaining_time.end(), isZero);
 
     }
 
@@ -313,8 +285,9 @@ void planForADay2 (const unsigned int day,
     // assign routes to Interviewer
     for (unsigned int k=0; k<K; ++k)
     {
-        unsigned int lastV = visitedV[k][visitedV[k].size()-1];    // last village in the route
-        remaining_time[k] -= _distmatrix[lastV][home];
+        predV = visitedV[k][visitedV[k].size()-1];    // last village in the route
+
+        remaining_time[k] -= _distmatrix[predV][home];
         visitedV[k].push_back(home);
 
         tmpRoute.villages = visitedV[k];
@@ -333,13 +306,13 @@ void planForADay2 (const unsigned int day,
 void initialsolution(std::vector<stVillage> _villages,           // villages
                      std::vector<stHousehold> _households,         // _households
                      std::vector<stInterviewer>& _interviewer,      // _interviewer
+                     std::vector<stInterviewer>& _cleaner,      // _interviewer
                      std::vector<std::vector<double> >  _distmatrix,// distmatrix
                      std::vector<std::vector<unsigned int> > _village_household
                      )
 {
-    unsigned int V = _villages.size();
+//    unsigned int V = _villages.size();
     unsigned int N = _households.size();
-
 
 
     std::vector<std::pair<unsigned int, bool> > ToVis(N, std::make_pair(0, true));
@@ -355,43 +328,59 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     }
 
     // plan nex day
-    for (unsigned int d=0; d<1; d++) // planning horizon 80 weekdays
+    unsigned int totalVisHh = 0;
+    for (unsigned int d=0; d<80; d++) // planning horizon 80 week days
     {
         // day, unvisited hh, _interviewer, _households, distmatrix
-//        planForADay(d, ToVis, _interviewer, _households, _distmatrix);
+        //        planForADay(d, ToVis, _interviewer, _households, _distmatrix);
         planForADay2(d, ToVis, _interviewer, _households, _distmatrix);
 
         unsigned int sumVisHh = 0;
         for (unsigned int i=0; i<_interviewer.size(); ++i)
             sumVisHh += _interviewer[i].routes[d].households.size();
+
+        std::cout << "# of Households, visited at the day " << d << " of the first period: "
+                  << sumVisHh << std::endl;
+        totalVisHh += sumVisHh;
     }
 
-    for (unsigned int i=0; i<_interviewer.size(); ++i)
+    std::cout << "Total number of the visited households in first period: "
+              << totalVisHh << std::endl;
+
+    std::cout << " Still to visite "
+              << N - totalVisHh << std::endl;
+
+
+
+    // plan the rest
+    _cleaner.resize(1);    // we take only one cleaner
+
+    stRoute tmpRoute;
+    unsigned int home = 142 - 101;
+
+    tmpRoute.villages.push_back(home);
+    tmpRoute.time  = 0.;
+
+    for (unsigned int i=0; i<ToVis.size(); ++i)
     {
-        std::cout << "Interviewer " << i+1 << std::endl;
-        for (unsigned int d=0; d<_interviewer[i].routes.size(); ++d)
+        if (ToVis[i].second)
         {
-            std::cout << "day " << d << ": visitid households " << _interviewer[i].routes[d].households.size() << std::endl;
-//            for (unsigned int r=0; r<_interviewer[i].routes[d].households.size(); ++r)
-//                std::cout << _interviewer[i].routes[d].households[r] << "->";
-            std::cout << "  work time = " << _interviewer[i].routes[d].time << std::endl;
+            unsigned int hh = ToVis[i].first;
+            unsigned int nextV = _households[hh].villageID - 101;
+
+            tmpRoute.households.push_back(hh);
+            tmpRoute.villages.push_back(nextV);
+            tmpRoute.time += _distmatrix[tmpRoute.villages.back()][nextV];
+            tmpRoute.time += (1-_households[hh].type)*10*_households[hh].nPersons   // 10 min for standart interview
+                          +     _households[hh].type *30*_households[hh].nPersons;  // 30 min for special cases;
+            ToVis[i].second = false;
         }
     }
 
-    //    std::cout << "Unvisited househols:" << std::endl;
-    //    for (unsigned int i=0; i<N; ++i)
-    //        if (ToVis[i])
-    //        std::cout << "Household " << i+1 << " ";
-    //    std::cout << std::endl;
+    tmpRoute.time +=  _distmatrix[tmpRoute.villages.back()][home];
 
-    //    std::cout << "Routes length:" << std::endl;
-    //    for (unsigned int i=0; i<_interviewer.size(); ++i)
-    //    {
-    //        std::cout << _interviewer[i].routes.size();
-    //        if (_interviewer[i].routes.size()>0)
-    //            std::cout << "\t_interviewer " << i+1
-    //                      << "  route length " << _interviewer[i].routes[0].villages.size();
-    //        std::cout << std::endl;
-    //    }
-    //    std::cout << std::endl;
+    _cleaner[0].routes.push_back(tmpRoute);
+
+    std::cout << "Cleaner would need " << tmpRoute.time/480 << " days to visit the rest" << std::endl;
+
 }

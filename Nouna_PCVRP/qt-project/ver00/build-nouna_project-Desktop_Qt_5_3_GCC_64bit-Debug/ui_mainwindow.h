@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -66,11 +67,11 @@ public:
     QGroupBox *groupBoxInitialSolution;
     QTextEdit *textEditRouteInfo;
     QLabel *labelSelectDay;
-    QTextEdit *textEditSelectDay;
     QLabel *labelSelectInterviewer;
-    QTextEdit *textEditSelectK;
     QPushButton *pushButtonShowRoute;
     QPushButton *pushButtonInitialSolution;
+    QComboBox *comboBoxDay;
+    QComboBox *comboBoxInterviewer;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -292,26 +293,16 @@ public:
         groupBoxInitialSolution = new QGroupBox(tab_8);
         groupBoxInitialSolution->setObjectName(QStringLiteral("groupBoxInitialSolution"));
         groupBoxInitialSolution->setEnabled(true);
-        groupBoxInitialSolution->setGeometry(QRect(10, 10, 331, 301));
+        groupBoxInitialSolution->setGeometry(QRect(5, 10, 340, 301));
         textEditRouteInfo = new QTextEdit(groupBoxInitialSolution);
         textEditRouteInfo->setObjectName(QStringLiteral("textEditRouteInfo"));
-        textEditRouteInfo->setGeometry(QRect(10, 110, 311, 181));
+        textEditRouteInfo->setGeometry(QRect(5, 110, 332, 181));
         labelSelectDay = new QLabel(groupBoxInitialSolution);
         labelSelectDay->setObjectName(QStringLiteral("labelSelectDay"));
         labelSelectDay->setGeometry(QRect(20, 70, 31, 21));
-        textEditSelectDay = new QTextEdit(groupBoxInitialSolution);
-        textEditSelectDay->setObjectName(QStringLiteral("textEditSelectDay"));
-        textEditSelectDay->setGeometry(QRect(50, 70, 31, 21));
-        textEditSelectDay->setInputMethodHints(Qt::ImhDigitsOnly);
-        textEditSelectDay->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         labelSelectInterviewer = new QLabel(groupBoxInitialSolution);
         labelSelectInterviewer->setObjectName(QStringLiteral("labelSelectInterviewer"));
         labelSelectInterviewer->setGeometry(QRect(100, 70, 71, 21));
-        textEditSelectK = new QTextEdit(groupBoxInitialSolution);
-        textEditSelectK->setObjectName(QStringLiteral("textEditSelectK"));
-        textEditSelectK->setGeometry(QRect(180, 70, 31, 21));
-        textEditSelectK->setInputMethodHints(Qt::ImhDigitsOnly);
-        textEditSelectK->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         pushButtonShowRoute = new QPushButton(groupBoxInitialSolution);
         pushButtonShowRoute->setObjectName(QStringLiteral("pushButtonShowRoute"));
         pushButtonShowRoute->setEnabled(false);
@@ -320,6 +311,18 @@ public:
         pushButtonInitialSolution->setObjectName(QStringLiteral("pushButtonInitialSolution"));
         pushButtonInitialSolution->setEnabled(true);
         pushButtonInitialSolution->setGeometry(QRect(100, 30, 101, 23));
+        comboBoxDay = new QComboBox(groupBoxInitialSolution);
+        comboBoxDay->setObjectName(QStringLiteral("comboBoxDay"));
+        comboBoxDay->setGeometry(QRect(50, 70, 45, 21));
+        sizePolicy4.setHeightForWidth(comboBoxDay->sizePolicy().hasHeightForWidth());
+        comboBoxDay->setSizePolicy(sizePolicy4);
+        comboBoxDay->setMaximumSize(QSize(45, 30));
+        comboBoxDay->setInputMethodHints(Qt::ImhNone);
+        comboBoxDay->setMaxCount(81);
+        comboBoxDay->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+        comboBoxInterviewer = new QComboBox(groupBoxInitialSolution);
+        comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
+        comboBoxInterviewer->setGeometry(QRect(170, 70, 43, 23));
         tabWidget->addTab(tab_8, QString());
 
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
@@ -341,7 +344,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -366,19 +369,10 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "General", 0));
         groupBoxInitialSolution->setTitle(QString());
         labelSelectDay->setText(QApplication::translate("MainWindow", "Day", 0));
-        textEditSelectDay->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1</p></body></html>", 0));
         labelSelectInterviewer->setText(QApplication::translate("MainWindow", "Interviewer", 0));
-        textEditSelectK->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">1</p></body></html>", 0));
         pushButtonShowRoute->setText(QApplication::translate("MainWindow", "show routes", 0));
         pushButtonInitialSolution->setText(QApplication::translate("MainWindow", "Initial Solution", 0));
+        comboBoxDay->setCurrentText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("MainWindow", "Initial Solution", 0));
     } // retranslateUi
 

@@ -19,7 +19,8 @@ void plot_roads(QCustomPlot*, std::vector<stVillage>, std::vector<stRoad>, std::
 
 void plot_route(QCustomPlot*, const std::vector<stVillage>&, stInterviewer, unsigned int,
                 const std::vector<std::vector<unsigned int> >&);
-void plot_routes(QCustomPlot*, std::vector<stVillage>, stInterviewer);
+void plot_routes(QCustomPlot*, std::vector<stVillage>, stInterviewer,
+                const std::vector<std::vector<unsigned int> > &);
 
 void delete_labelsAndRoads(QCustomPlot*);
 

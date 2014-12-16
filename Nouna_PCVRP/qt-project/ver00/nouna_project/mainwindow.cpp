@@ -40,6 +40,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->widget->yAxis->setRange(12.4, 13, Qt::AlignCenter);
 
     ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+    MainWindow::on_buttonOpenVillages_clicked();
+    MainWindow::on_buttonOpenRoads_clicked();
+    MainWindow::on_buttonOpenHouseh_clicked();
+
+    ui->comboBoxDay->addItem("all");
+    for (unsigned int i = 0;i<80; ++i)
+        ui->comboBoxDay->addItem(QString::number(i+1));
+
 }
 
 MainWindow::~MainWindow()
@@ -54,9 +63,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_buttonOpenVillages_clicked()
 {
-    QString qfileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString qfileName = "villages.csv";/*QFileDialog::getOpenFileName(this, tr("Open File"),
                                                      "",
-                                                     tr("Files (*.csv)"));
+                                                     tr("Files (*.csv)"));*/
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
@@ -75,15 +84,21 @@ void MainWindow::on_buttonOpenVillages_clicked()
             collectdata_routine(Village, Road, Household); // calculate all important values
             ui->groupBoxPlotSetting ->setEnabled(true);
             ui->groupBoxInitialSolution ->setEnabled(true);
+
+            for (unsigned int i =0; i<Interviewer.size(); ++i)
+                ui->comboBoxInterviewer->addItem(QString::number(i+1));
+
+            // plot edges
+            plot_villages(ui->widget, Village);
         }
     }
 }
 
 void MainWindow::on_buttonOpenRoads_clicked()
 {
-    QString qfileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString qfileName = "routes.csv";/*QFileDialog::getOpenFileName(this, tr("Open File"),
                                                      "",
-                                                     tr("Files (*.csv)"));
+                                                     tr("Files (*.csv)"));*/
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
@@ -102,15 +117,21 @@ void MainWindow::on_buttonOpenRoads_clicked()
             collectdata_routine(Village, Road, Household); // calculate all important values
             ui->groupBoxPlotSetting ->setEnabled(true);
             ui->groupBoxInitialSolution ->setEnabled(true);
+
+            for (unsigned int i =0; i<Interviewer.size(); ++i)
+                ui->comboBoxInterviewer->addItem(QString::number(i+1));
+
+            // plot edges
+            plot_villages(ui->widget, Village);
         }
     }
 }
 
 void MainWindow::on_buttonOpenHouseh_clicked()
 {
-    QString qfileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString qfileName = "households.csv";/*QFileDialog::getOpenFileName(this, tr("Open File"),
                                                      "",
-                                                     tr("Files (*.csv)"));
+                                                     tr("Files (*.csv)"));*/
     std::string filePath = qfileName.toStdString();
     std::string fileName = returnFilename(filePath);
 
@@ -129,6 +150,12 @@ void MainWindow::on_buttonOpenHouseh_clicked()
             collectdata_routine(Village, Road, Household); // calculate all important values
             ui->groupBoxPlotSetting ->setEnabled(true);
             ui->groupBoxInitialSolution ->setEnabled(true);
+
+            for (unsigned int i =0; i<Interviewer.size(); ++i)
+                ui->comboBoxInterviewer->addItem(QString::number(i+1));
+
+            // plot edges
+            plot_villages(ui->widget, Village);
         }
     }
 }
@@ -158,13 +185,10 @@ void MainWindow::on_checkBoxVillageNames_clicked()
     {
         ui->checkBoxVillageIDs->setChecked(false);
         plot_labelsVillages(ui->widget, Village);
-    } else
-    {
-        if (ui->checkBoxShowRoads->isChecked())
-        {
-            plot_roads(ui->widget, Village, Road, distmatrix, false);
-        }
     }
+
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
 
     ui->widget->replot();
 }
@@ -182,14 +206,11 @@ void MainWindow::on_checkBoxVillageIDs_clicked()
     {
         ui->checkBoxVillageNames->setChecked(false);
         plot_IDsVillages(ui->widget, Village);
-    } else
-    {
-        ui->widget->clearItems();
-        if (ui->checkBoxShowRoads->isChecked())
-        {
-            plot_roads(ui->widget, Village, Road, distmatrix, false);
-        }
     }
+
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
+
     ui->widget->replot();
 }
 
@@ -206,10 +227,13 @@ void MainWindow::on_checkBoxShowRoads_clicked()
         plot_roads(ui->widget, Village, Road, distmatrix, false);
     } else {
         ui->widget->clearItems();
+
         if (ui->checkBoxVillageNames->isChecked())
-        {
             plot_labelsVillages(ui->widget, Village);
-        }
+
+        if (ui->checkBoxVillageIDs->isChecked())
+            plot_IDsVillages(ui->widget, Village);
+
         ui->widget->replot();
     }
 }
@@ -223,14 +247,17 @@ void MainWindow::on_checkBoxShowRoads_clicked()
 void MainWindow::on_pushButtonShowRoute_pressed()
 {
     ui->widget->clearItems();
+    plot_villages(ui->widget, Village);
 
-    QString qstrK = ui->textEditSelectK->toPlainText();
-    QString qstrD = ui->textEditSelectDay->toPlainText();
+    QString qstrK = ui->comboBoxInterviewer->currentText();
+    QString qstrD = ui->comboBoxDay->currentText();
     std::string strK = qstrK.toStdString();
     std::string strD = qstrD.toStdString();
 
     unsigned int day;     // Day
     unsigned int k;         // Interviewer number
+
+    ui->textEditRouteInfo->clear();
 
     k = atoi(strK.c_str());    // Interviewer number
     if (k < 1)
@@ -238,19 +265,49 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     if (k > Interviewer.size())
         k = Interviewer.size();
 
-    if (strD != "")
+    if (strD == "all")
     {
-        day = atoi(strD.c_str());    // Day
-        if (day > Interviewer[0].routes.size())
-            day = Interviewer[0].routes.size();
-        // plot route for the day Day and Interviewer k
-        plot_route(ui->widget, Village, Interviewer[k-1], day, predecessorsDry);
+        day = 80;
+        plot_routes(ui->widget, Village, Interviewer[k-1],predecessorsDry);
+
+        std::stringstream ss;
+        for (unsigned int d=0; d<day; ++d)
+        {
+            ss << "Day:" << d+1 << "  ";
+            ss << "Work time:" <<Interviewer[k-1].routes[d].time << "  ";
+            ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size()-2 << "  ";
+            ss << "#VisHh:" <<Interviewer[k-1].routes[d].households.size() << " ";
+            ss << "\n";
+
+            ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+        }
+
     }
     else
     {
-        day = 80;
-        // if day is not specified plot all routes for the Interviewer k
-        plot_routes(ui->widget, Village, Interviewer[k-1]);
+        day = atoi(strD.c_str());    // Day
+        // plot route for the day Day and Interviewer k
+        plot_route(ui->widget, Village, Interviewer[k-1], day, predecessorsDry);
+
+        std::stringstream ss;
+        ss << "Day:" << day << "  ";
+        ss << "Work time:" <<Interviewer[k-1].routes[day-1].time << "  ";
+        ss << "\n\n";
+
+        ss << "#VisCitys:" << Interviewer[k-1].routes[day-1].villages.size()-2 << "  ";
+        ss << "\n";
+        for (unsigned int v=0; v<Interviewer[k-1].routes[day-1].villages.size(); ++v)
+            ss << Interviewer[k-1].routes[day-1].villages[v] + 101 << " ";
+        ss << "\n\n";
+
+        ss << "#VisHh:" << Interviewer[k-1].routes[day-1].households.size() << " ";
+        ss << "\n";
+        for (unsigned int h=0; h<Interviewer[k-1].routes[day-1].households.size(); ++h)
+            ss << Interviewer[k-1].routes[day-1].households[h] + 10001<< " ";
+        ss << "\n";
+
+        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+
     }
 
     // replot everything that already was on the plot
@@ -262,21 +319,6 @@ void MainWindow::on_pushButtonShowRoute_pressed()
         plot_roads(ui->widget, Village, Road, distmatrix, false);
 
     ui->widget->replot();
-
-    // fill table with informations about the selected interviewer
-    ui->textEditRouteInfo->clear();
-    ui->textEditRouteInfo->setText("Day   Work time    # visited citys # visited households\n");
-    std::stringstream ss;
-    for (unsigned int d=0; d<day; ++d)
-    {
-        ss << "\n";
-        ss << "Day:" << d+1 << "  ";
-        ss << "Work time:" <<Interviewer[k-1].routes[d].time << "  ";
-        ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size()-2 << "  ";
-        ss << "#VisHh:" <<Interviewer[k-1].routes[d].households.size() << " ";
-
-        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
-    }
 
 
 
@@ -348,11 +390,11 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix, false);
 
-//    std::vector<std::vector<unsigned int> > initialSolution;
 
     initialsolution(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
+                    Cleaner,                 // Cleaner how visited all unvisited hh
                     timematrixDry,           // timematrixdry
                     village_household);
 

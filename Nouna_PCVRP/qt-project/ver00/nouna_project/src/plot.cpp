@@ -176,7 +176,6 @@ void plot_route(QCustomPlot *plot,
     QPointF p1, p2;
 
     unsigned int l = I.routes[day-1].villages.size();
-    std::cout << "Length of the route " << l << std::endl;
     std::vector<unsigned int> shortestWay;
 
     unsigned int next;
@@ -195,7 +194,6 @@ void plot_route(QCustomPlot *plot,
     for (unsigned int i=1; i< l; ++i)
     {
         next = I.routes[day-1].villages[i];
-        std::cout << "next " << next;
 
         shortestWay = getShortestWay(pred, next, preds[pred]);
 
@@ -211,12 +209,6 @@ void plot_route(QCustomPlot *plot,
 //        pred = next;
 //        p1 = p2;
 
-        std::cout << "Shortest way:";
-        for (unsigned int j = 0; j< shortestWay.size(); ++j)
-        {
-            std::cout << shortestWay[j] << " ";
-        }
-        std::cout << std::endl;
 
         for (unsigned int j = 0; j< shortestWay.size(); ++j)
         {
@@ -226,11 +218,12 @@ void plot_route(QCustomPlot *plot,
             p2.setY(V[next].coord.second);
 
             QCPItemLine *arrow = new QCPItemLine(plot);
-            arrow->setPen(QPen(Qt::black));
+            arrow->setPen(QPen(Qt::blue, 2));
             plot->addItem(arrow);
             arrow->start->setCoords(p1);
             arrow->end->setCoords(p2);
-            if (j == shortestWay.size()-1)
+
+            if (j == shortestWay.size()-1 && i!=(l-1))
                 arrow->setHead(QCPLineEnding::esSpikeArrow);
 
             p1 = p2;
@@ -241,46 +234,22 @@ void plot_route(QCustomPlot *plot,
     }
     // replot everything
     plot->replot();
-    std::cout << "finished plotting route" << std::endl;
+
 }
 
 void plot_routes(QCustomPlot *plot,
                  std::vector<stVillage> V,
-                 stInterviewer I)
+                 stInterviewer I,
+                 const std::vector<std::vector<unsigned int> >& preds)
 {
     plot->clearItems();
     plot->replot();
 
-    QPointF p1, p2;
-
     for (unsigned int d=0; d<I.routes.size(); ++d)
     {
-        unsigned int l = I.routes[d].villages.size();
-        std::cout << "Length of the route " << l << std::endl;
-
-        unsigned int next;
-        unsigned int pred = I.routes[d].villages[0];
-
-        p1.setX(V[pred].coord.first);
-        p1.setY(V[pred].coord.second);
-
-        for (unsigned int i=1; i< l; ++i)
-        {
-            next = I.routes[d].villages[i];
-
-            p2.setX(V[next].coord.first);
-            p2.setY(V[next].coord.second);
-
-            QCPItemLine *arrow = new QCPItemLine(plot);
-            arrow->setPen(QPen(Qt::black));
-            plot->addItem(arrow);
-            arrow->start->setCoords(p1);
-            arrow->end->setCoords(p2);
-
-            pred = next;
-            p1 = p2;
-        }
+        plot_route(plot, V, I, d+1, preds);
     }
+
     // replot everything
     plot->replot();
 }

@@ -44,3 +44,5 @@ HEADERS  += mainwindow.h \
     hrd/collectdata.h
 
 FORMS    += mainwindow.ui
+
+CONFIG += c++11

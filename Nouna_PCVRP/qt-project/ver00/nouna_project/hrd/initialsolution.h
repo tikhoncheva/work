@@ -18,10 +18,12 @@
 void setNInterviwer();
 
 void initialsolution(std::vector<stVillage>,                // villages
-                                                       std::vector<stHousehold> ,               // households
-                                                       std::vector<stInterviewer>& ,             // Interviewer
-                                                       std::vector<std::vector<double> >,       // distmatrix
-                                                       std::vector<std::vector<unsigned int> >);
+                     std::vector<stHousehold> ,               // households
+                     std::vector<stInterviewer>& ,             // Interviewer
+                     std::vector<stInterviewer>& ,             // Cleaner
+                     std::vector<std::vector<double> >,       // distmatrix
+                     std::vector<std::vector<unsigned int> >);
+
 void planForADay (unsigned int,                      // day
                   std::vector<std::pair<int, bool> >& ToVis,
                   std::vector<std::vector<double> >,       // distmatrix

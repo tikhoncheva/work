@@ -14,7 +14,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
-CXXFLAGS      = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
+CXXFLAGS      = -pipe -g -std=c++0x -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I../nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. -I. -I.
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/kitty/Software/Qt/5.3/gcc_64 -Wl,-rpath,/home/kitty/Software/Qt/5.3/gcc_64/lib
@@ -158,6 +158,7 @@ DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_pre.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resolve_config.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_post.prf \
+		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/c++11.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/warn_on.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/qt.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resources.prf \
@@ -304,6 +305,7 @@ Makefile: ../nouna_project/nouna_project.pro /home/kitty/Software/Qt/5.3/gcc_64/
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_pre.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resolve_config.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_post.prf \
+		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/c++11.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/warn_on.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/qt.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resources.prf \
@@ -417,6 +419,7 @@ Makefile: ../nouna_project/nouna_project.pro /home/kitty/Software/Qt/5.3/gcc_64/
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_pre.prf:
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resolve_config.prf:
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/default_post.prf:
+/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/c++11.prf:
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/warn_on.prf:
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/qt.prf:
 /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/resources.prf:
