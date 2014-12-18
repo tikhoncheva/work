@@ -36,6 +36,91 @@
 
 \begin{document}
 
+\section{Modelle}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $ f(x)=3-x$  & $L(2,1)$   & & $f(x)=4-x$    & $L(3,2,1)$\\ \hline 
+	Hexagonal &  $6.41699$	 & $5$        & & $16.6243$     & $9$   \\ 
+			  &  $1.74$ sec  & $0.08$ sec & & $2089.44$ sec & $0.3$ sec \\ \hline
+	Triangular&  $9.78029$	 & $8$        & & $21.0968$     & $18$   \\ 
+			  &  $11.07$ sec & $0.35$ sec & & $106155$ sec  & $168.39$ sec\\ \hline
+	Square    &  $8.63494$	 & $6$        & & $19.9067$     & $11$   \\ 
+			  &  $5.01$ sec  & $0.21$ sec & & $28186.3$ sec & $0.73$ sec \\ \hline
+	\end{tabular}
+	\caption{ Ergebnisse für L(2,1), L(3,2,1) im klassischen Fall und Funktion $f(x)=3-x$, $f(x)=4-x$ im Fall der
+	reelwertigen Labeling.} 
+	\label{Table:T1}
+	\end{table}
+	
+\FloatBarrier	
+\section{Treppenfunktion}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $ f(x)=3-x$  & $L(2,1)$   & & $f(x)=4-x$    & $L(3,2,1)$\\ \hline 
+	Hexagonal &  $5$	     & $5$        & & $9$           & $9$   \\ 
+			  &  $0.65$ sec  & $0.08$ sec & & $1.62$ sec    & $0.3$ sec \\ \hline
+	Triangular&  $8$	     & $8$        & & $18$          & $18$   \\ 
+			  &  $8.01$ sec  & $0.35$ sec & & $1790.31$ sec & $168.39$ sec\\ \hline
+	Square    &  $6$	     & $6$        & & $11$          & $11$   \\ 
+			  &  $6.56$ sec  & $0.21$ sec & & $68.88$ sec   & $0.73$ sec \\ \hline
+	\end{tabular}
+	\caption{ Ergebnisse für L(2,1), L(3,2,1) im klassischen Fall und Treppenfunktion im Fall der
+	reelwertigen Labeling.} 
+	\label{Table:T2}
+	\end{table}
+\FloatBarrier	
+
+\section{Verbessern der Laufzeit}
+
+\subsection{Bescränkung der Konstanten $M$}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $f(x)=3-x$(new) & $f(x)=3-x$(old) & & $f(x)=4-x$ (new) & $f(x)=4-x$(old)\\ \hline 
+	Hexagonal &  $6.41699$	    & $6.41699$       & & $16.6243$        & $16.6243$   \\ 
+			  &  $1.88 $ sec    & $1.74$ sec      & & $1599.84$ sec    & $2089.44$ \\ \hline
+	Triangular&  $9.78029$      & $9.78029$       & & $21.0968$        & $21.0968$\\ 
+			  &  $9.08$ sec     & $11.07$ sec     & & $61499.6$ sec    & $106155$ sec\\ \hline
+	Square    & $8.63494$       & $8.63494$       & & $19.9067$        & $19.9067$   \\ 
+			  &  $7.35$ sec     & $5.01$ sec      & & $21571$ sec      & $28186.3$ sec \\ \hline
+	\end{tabular}
+	\caption{ Der Vergleich der Laufzeit des vorherigen Modells und des Modells mit den zusatzlichen Beschränkungen auf die Konstanten M} 
+	\label{Table:T31}
+	\end{table}
+\FloatBarrier	
+	
+\subsection{Bescränkung von $\alpha$}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $f(x)=3-x$(new)   & $f(x)=3-x$(old) & & $f(x)=4-x$ (new) & $f(x)=4-x$(old)\\ \hline 
+	Hexagonal &  $6.41699$	      & $6.41699$       & & $16.6243$        & $16.6243$   \\ 
+			  &  $5.26 + 21.79=$  & $1.74$ sec      & & $88014+109604=$  & $2089.44$ sec\\
+			  &  $27.05$ sec       &                 & & $197618$ sec     &  \\ \hline			  
+	Triangular&  $9.78029$        & $9.78029$       & & $21.0968$        & $21.0968$\\ 
+			  &  $117.21+281.43=$ & $11.07$ sec     & & $ $              & $106155$ sec\\ 
+			  &  $398.64$ sec     &                 & & $ $              & \\ \hline			  
+	Square    & $8.63494$         & $8.63494$       & & $19.9067$        & $19.9067$   \\ 
+			  &  $34.2+55.65=$    & $5.01$ sec      & & $ $              & $28186.3$ sec \\ 
+			  &  $89.85$ sec      &                 & & $ $              &  \\ \hline			  
+	\end{tabular}
+	\caption{ Ansatz der binären Suche für die Bestimmung oberer und unterer Schranken für $\alpha$ } 
+	\label{Table:T31}
+	\end{table}
+\FloatBarrier	
+
+
+\subsection{Teilgrephen}	
 	\begin{table}[htbp]
 	\centering
 	\begin{tabular}{|c|c|c|c|}
@@ -45,7 +130,7 @@
 		Teilgraphen & & &\\\hline
 		Sechsecke mit der Seitenlänge $1$ & $1.7$ sec	&  $4337.39$ sec & $608$\\ \hline
 		Sechsecke mit der Seitenlänge $1$, $2$	&  $1.86$sec	& $2460.81$  sec & $609$\\ \hline
-		Trapez& $2.66$ sec  & $1538.48sec$  sec & $614$ \\ \hline
+		Trapez& $2.66$ sec  & $1538.48$  sec & $614$ \\ \hline
 	\end{tabular}
 	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
 	\label{Table:TG1}
