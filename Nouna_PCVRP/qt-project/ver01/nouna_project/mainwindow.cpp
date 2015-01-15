@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainWindow::on_buttonOpenHouseh_clicked();
 
     ui->comboBoxDay->addItem("all");
-    for (unsigned int i = 0;i<80; ++i)
+    for (unsigned int i = 0;i<16; ++i)  // planning horizont 16 weeks
         ui->comboBoxDay->addItem(QString::number(i+1));
 
 }
@@ -254,7 +254,7 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     std::string strK = qstrK.toStdString();
     std::string strD = qstrD.toStdString();
 
-    unsigned int day;     // Day
+    unsigned int week;     // # week
     unsigned int k;         // Interviewer number
 
     ui->textEditRouteInfo->clear();
@@ -267,16 +267,16 @@ void MainWindow::on_pushButtonShowRoute_pressed()
 
     if (strD == "all")
     {
-        day = 80;
+        week = 16;
         plot_routes(ui->widget, Village, Interviewer[k-1],predecessorsDry);
 
         std::stringstream ss;
-        for (unsigned int d=0; d<day; ++d)
+        for (unsigned int w=0; w<week; ++w)
         {
-            ss << "Day:" << d+1 << "  ";
-            ss << "Work time:" <<Interviewer[k-1].routes[d].time << "  ";
-            ss << "#VisCitys:" << Interviewer[k-1].routes[d].villages.size()-2 << "  ";
-            ss << "#VisHh:" <<Interviewer[k-1].routes[d].households.size() << " ";
+            ss << "Week:" << w+1 << "  ";
+            ss << "Work time:" <<Interviewer[k-1].routes[w].time << "  ";
+            ss << "#VisCitys:" << Interviewer[k-1].routes[w].villages.size()-2 << "  ";
+            ss << "#VisHh:" <<Interviewer[k-1].routes[w].households.size() << " ";
             ss << "\n";
 
             ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
@@ -285,25 +285,25 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     }
     else
     {
-        day = atoi(strD.c_str());    // Day
+        week = atoi(strD.c_str());    // week
         // plot route for the day Day and Interviewer k
-        plot_route(ui->widget, Village, Interviewer[k-1], day, predecessorsDry);
+        plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
 
         std::stringstream ss;
-        ss << "Day:" << day << "  ";
-        ss << "Work time:" <<Interviewer[k-1].routes[day-1].time << "  ";
+        ss << "Week:" << week << "  ";
+        ss << "Work time:" <<Interviewer[k-1].routes[week-1].time << "  ";
         ss << "\n\n";
 
-        ss << "#VisCitys:" << Interviewer[k-1].routes[day-1].villages.size()-2 << "  ";
+        ss << "#VisCitys:" << Interviewer[k-1].routes[week-1].villages.size()-2 << "  ";
         ss << "\n";
-        for (unsigned int v=0; v<Interviewer[k-1].routes[day-1].villages.size(); ++v)
-            ss << Interviewer[k-1].routes[day-1].villages[v] + 101 << " ";
+        for (unsigned int v=0; v<Interviewer[k-1].routes[week-1].villages.size(); ++v)
+            ss << Interviewer[k-1].routes[week-1].villages[v] + 101 << " ";
         ss << "\n\n";
 
-        ss << "#VisHh:" << Interviewer[k-1].routes[day-1].households.size() << " ";
+        ss << "#VisHh:" << Interviewer[k-1].routes[week-1].households.size() << " ";
         ss << "\n";
-        for (unsigned int h=0; h<Interviewer[k-1].routes[day-1].households.size(); ++h)
-            ss << Interviewer[k-1].routes[day-1].households[h] + 10001<< " ";
+        for (unsigned int h=0; h<Interviewer[k-1].routes[week-1].households.size(); ++h)
+            ss << Interviewer[k-1].routes[week-1].households[h] + 10001<< " ";
         ss << "\n";
 
         ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
@@ -360,7 +360,7 @@ void MainWindow::on_verticalScrollBar_valueChanged(int value)
 //---------------------------------------------------------------------------------------------------
 
 /*
- * Zooming with mouse
+ * Zooming the plot widget with mouse
  */
 void MainWindow::xAxisChanged(QCPRange range)
 {
