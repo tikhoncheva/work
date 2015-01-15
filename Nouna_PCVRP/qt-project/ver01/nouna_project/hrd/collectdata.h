@@ -5,6 +5,8 @@
 #include <hrd/distmatrix.h> // adjazent matrix with distances
 #include <hrd/dijkstra2.h>  // shortes ways between villages
 
+#include <utility>      // std::pair
+
 /*
  * ------------------------------------------------------------------------------------
  */
@@ -23,14 +25,17 @@ public:
 };
 
 
-std::vector<std::vector<unsigned int> > households_in_villages(std::vector<stVillage> villages,
+std::vector<std::vector<std::pair<double, unsigned int> > >
+                                        households_in_villages(std::vector<stVillage> villages,
                                                                std::vector<stHousehold> households)
 {
     // get list of households in each village
     unsigned int V = villages.size();
-    std::vector<std::vector<unsigned int> > _village_household(V);
+    std::vector<std::vector<std::pair<double, unsigned int> > > _village_household(V);
 
-    unsigned int vID;
+    unsigned int vID;   // village's ID
+    unsigned int hID;   // household's ID
+    double it;          // interview time
     std::vector<stHousehold>::iterator household_in_vID;
 
     for (unsigned int i=0; i<V; ++i)    // for each village
@@ -43,7 +48,11 @@ std::vector<std::vector<unsigned int> > households_in_villages(std::vector<stVil
         while (household_in_vID!=households.end())
         {
             // add household index in the list
-            _village_household[i].push_back(int(household_in_vID-households.begin()));
+            hID = int(household_in_vID-households.begin());
+            it = (1-households[hID].type)*10*households[hID].nPersons  // 10 min for standart interview
+               +    households[hID].type *30*households[hID].nPersons;  // 30 min for special cases
+
+            _village_household[i].push_back(std::make_pair(it, hID));
             // find next household in the village i
             household_in_vID = std::find_if(household_in_vID + 1,
                                             households.end(),
@@ -51,7 +60,6 @@ std::vector<std::vector<unsigned int> > households_in_villages(std::vector<stVil
         }
 
     }
-
     return _village_household;
 }
 

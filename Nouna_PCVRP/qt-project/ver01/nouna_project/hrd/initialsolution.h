@@ -22,7 +22,7 @@ void initialsolution(std::vector<stVillage>,                // villages
                      std::vector<stInterviewer>& ,             // Interviewer
                      std::vector<stInterviewer>& ,             // Cleaner
                      std::vector<std::vector<double> >,       // distmatrix
-                     std::vector<std::vector<unsigned int> >);
+                     std::vector<std::vector<std::pair<double, unsigned int> > >);
 
 void planForADay (unsigned int,                      // day
                   std::vector<std::pair<int, bool> >& ToVis,

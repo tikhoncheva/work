@@ -9,6 +9,7 @@
 #include "road.h"
 #include "household.h"
 #include "interviewer.h"
+#include <utility>      // std::pair
 
 typedef std::vector<std::vector<unsigned int> > uintMatrix2D ;
 typedef std::vector<uintMatrix2D> uintMatrix3D;
@@ -33,6 +34,6 @@ std::vector<std::vector<double> > timematrixRain;   // between all villages
 uintMatrix2D predecessorsDry;    // shortest ways
 uintMatrix2D predecessorsRain;   // between all villages
 
-uintMatrix2D village_household;    // list of the households in a village
+std::vector<std::vector<std::pair<double, unsigned int> > > village_household;    // list of the households in a village
 
 #endif // DATADEF_H
