@@ -12,6 +12,7 @@ struct stHousehold
     unsigned int type; // 1 or 0
     unsigned int nPersons;
     unsigned int villageID;
+    double itime;               // interview time
 
     void print()
     {

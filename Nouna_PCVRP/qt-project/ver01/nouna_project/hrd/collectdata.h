@@ -49,8 +49,7 @@ std::vector<std::vector<std::pair<double, unsigned int> > >
         {
             // add household index in the list
             hID = int(household_in_vID-households.begin());
-            it = (1-households[hID].type)*10*households[hID].nPersons  // 10 min for standart interview
-               +    households[hID].type *30*households[hID].nPersons;  // 30 min for special cases
+            it = households[hID].itime;         // interview time
 
             _village_household[i].push_back(std::make_pair(it, hID));
             // find next household in the village i
@@ -120,6 +119,7 @@ void collectdata_routine(std::vector<stVillage> _villages,
     std::cout << "  get additional list of hh in villages ...";
     village_household = households_in_villages(_villages, _households);
     std::cout << "finished" << std::endl;
+
 
     std::cout << "finished" << std::endl;
 }
