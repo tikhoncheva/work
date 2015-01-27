@@ -41,7 +41,9 @@ HEADERS  += mainwindow.h \
     hrd/road.h \
     hrd/dijkstra.h \
     hrd/dijkstra2.h \
-    hrd/collectdata.h
+    hrd/collectdata.h \
+    hrd/statistic.h \
+    hrd/const.h
 
 FORMS    += mainwindow.ui
 

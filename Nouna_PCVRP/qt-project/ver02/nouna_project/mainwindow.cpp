@@ -394,11 +394,14 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     initialsolution(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
-                    Cleaner,                 // Cleaner how visited all unvisited hh
-                    timematrixDry,           // timematrixdry
-                    village_household);
+                    timematrixDry,           // time matrix dry
+                    timematrixRain,           // time matrix rain
+                    village_household,
+                    TimeInfo);
 
     ui->pushButtonShowRoute->setEnabled(true);
+
+    std::cout << "Find initial solution ... finished" << std::endl;
 }
 
 //---------------------------------------------------------------------------------------------------

@@ -25,13 +25,13 @@ public:
 };
 
 
-std::vector<std::vector<std::pair<double, unsigned int> > >
+std::vector<std::vector<std::pair<unsigned int, double> > >
                                         households_in_villages(std::vector<stVillage> villages,
                                                                std::vector<stHousehold> households)
 {
     // get list of households in each village
     unsigned int V = villages.size();
-    std::vector<std::vector<std::pair<double, unsigned int> > > _village_household(V);
+    std::vector<std::vector<std::pair<unsigned int, double> > > _village_household(V);
 
     unsigned int vID;   // village's ID
     unsigned int hID;   // household's ID
@@ -51,7 +51,7 @@ std::vector<std::vector<std::pair<double, unsigned int> > >
             hID = int(household_in_vID-households.begin());
             it = households[hID].itime;         // interview time
 
-            _village_household[i].push_back(std::make_pair(it, hID));
+            _village_household[i].push_back(std::make_pair(hID, it));
             // find next household in the village i
             household_in_vID = std::find_if(household_in_vID + 1,
                                             households.end(),
@@ -71,14 +71,14 @@ void collectdata_routine(std::vector<stVillage> _villages,
                          std::vector<stRoad> _roads,
                          std::vector<stHousehold> _households)
 {
-    std::cout << "Data routine:" << std::endl;
+    std::cout << "\nData routine:" << std::endl;
     unsigned int V = _villages.size();
 
     /*
      *  set number of available interviewers
      */
     nK = 20;
-    std::cout << "  set number of available interviewers to" << nK < "...";
+    std::cout << "  set number of available interviewers to " << nK << " ...";
     Interviewer.resize(nK);
     std::cout << "finished" << std::endl;
 
@@ -137,7 +137,7 @@ void collectdata_routine(std::vector<stVillage> _villages,
     std::cout << "  time statistic..." << std::endl;
 
     double sShortITime = 0.;
-    double sLongITime = 0.;
+    double sLongITime1 = 0.;
     double sLongITime23 = 0.;
 
     int nLongHh = 0;
@@ -151,8 +151,8 @@ void collectdata_routine(std::vector<stVillage> _villages,
             ++nShortHh;
         }
         else {
-            sLongITime += _households[i].itime;
-            sLongITime23 += 10.*_households[i].nPersons;
+            sLongITime1 += _households[i].itime;
+            sLongITime23 += 10;//.*_households[i].nPersons;
             ++nLongHh;
         }
 
@@ -160,7 +160,7 @@ void collectdata_routine(std::vector<stVillage> _villages,
                                * 8  /*hours*/
                                * 60 /*min*/;
     TimeInfo.sShortITime = sShortITime;
-    TimeInfo.sLongITime1 = sLongITime;
+    TimeInfo.sLongITime1 = sLongITime1;
     TimeInfo.sLongITime23 = sLongITime23;
     TimeInfo.nLongInterviews = nLongHh;
     TimeInfo.nShortInterviews = nShortHh;
@@ -168,21 +168,22 @@ void collectdata_routine(std::vector<stVillage> _villages,
     std::cout << "      " << nShortHh
               << " short interviews with summary itime " << sShortITime << std::endl;
     std::cout << "      " << nLongHh
-              << " long interviews with summary itime " << sLongITime
+              << " long interviews with summary itime " << sLongITime1
               << " or " << sLongITime23 << std::endl;
     std::cout << std::endl;
 
-    std::cout << "      Summary (year):" << std::endl;
+    std::cout << "      Summary (year) with "  << nK << " interviewers: "<< std::endl;
     std::cout << "      Working time " << TimeInfo.workTimeYear << std::endl;
     std::cout << "      Short interviews " << 3 * sShortITime << std::endl;
-    std::cout << "      Long interviews " <<      sLongITime + 2 * sLongITime23 << std::endl;
+    std::cout << "      Long interviews " <<      sLongITime1 + 2 * sLongITime23 << std::endl;
 
+    std::cout << "      Summary " << 3 * sShortITime + sLongITime1 + 2 * sLongITime23 << std::endl;
     std::cout << "      -----------------------------------------" << std::endl;
     std::cout << "      Remains for travel time " << TimeInfo.workTimeYear - 3 * sShortITime
-                                               - sLongITime - 2 * sLongITime23 << std::endl;
+                                               - sLongITime1 - 2 * sLongITime23 << std::endl;
 
 
-    std::cout << std::endl << "finished" << std::endl;
+    std::cout << std::endl << "finished" << std::endl << std::endl;
 }
 
 #endif // COLLECTDATA_H

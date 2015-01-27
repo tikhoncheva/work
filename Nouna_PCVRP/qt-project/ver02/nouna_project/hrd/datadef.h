@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <vector>
-#include <utility>
+#include <utility>      // std::pair
 
 #include "village.h"
 #include "road.h"
 #include "household.h"
 #include "interviewer.h"
-#include <utility>      // std::pair
+#include "statistic.h"
+
 
 typedef std::vector<std::vector<unsigned int> > uintMatrix2D ;
 typedef std::vector<uintMatrix2D> uintMatrix3D;
@@ -34,19 +35,8 @@ std::vector<std::vector<double> > timematrixRain;   // between all villages
 uintMatrix2D predecessorsDry;    // shortest ways
 uintMatrix2D predecessorsRain;   // between all villages
 
-std::vector<std::vector<std::pair<double, unsigned int> > > village_household;    // list of the households in a village
+std::vector<std::vector<std::pair<unsigned int, double> > > village_household;    // list of the households in a village
 
-
-
-struct timeStatistic
-{
-    unsigned int nLongInterviews;   // number of Households with the type 1
-    unsigned int nShortInterviews;  // number of Households with the type 0
-
-    double workTimeYear;            // summary working time in year
-    double sShortITime;             // summary short interview times in year
-    double sLongITime1;              // summary long interview times in year
-    double sLongITime23;              // summary long interview times in year
-} TimeInfo;
+timeStatistic TimeInfo;
 
 #endif // DATADEF_H

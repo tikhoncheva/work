@@ -443,7 +443,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/nouna_project1.0.0 || mkdir -p .tmp/nouna_project1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/dijkstra2.h ../nouna_project/hrd/collectdata.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/dijkstra2.h ../nouna_project/hrd/collectdata.h ../nouna_project/hrd/statistic.h ../nouna_project/hrd/const.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
 
 
 clean:compiler_clean 
@@ -1882,6 +1882,7 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
+		../nouna_project/hrd/const.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../nouna_project/main.cpp
 
@@ -2351,11 +2352,29 @@ mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		ui_mainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QButtonGroup \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QCheckBox \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QComboBox \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFrame \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGridLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGroupBox \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QHeaderView \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QLabel \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMenuBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QScrollBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QStatusBar \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTabWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTextEdit \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
 		../nouna_project/hrd/datadef.h \
 		../nouna_project/hrd/village.h \
 		../nouna_project/hrd/road.h \
 		../nouna_project/hrd/household.h \
 		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/statistic.h \
 		../nouna_project/hrd/readdata.h \
 		../nouna_project/hrd/collectdata.h \
 		../nouna_project/hrd/distmatrix.h \
@@ -3310,7 +3329,8 @@ initialsolution.o: ../nouna_project/src/initialsolution.cpp ../nouna_project/hrd
 		../nouna_project/hrd/village.h \
 		../nouna_project/hrd/interviewer.h \
 		../nouna_project/hrd/road.h \
-		../nouna_project/hrd/household.h
+		../nouna_project/hrd/household.h \
+		../nouna_project/hrd/statistic.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialsolution.o ../nouna_project/src/initialsolution.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
