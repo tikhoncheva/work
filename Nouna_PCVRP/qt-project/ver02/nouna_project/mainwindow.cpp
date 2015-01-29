@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->widget->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
     connect(ui->widget->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
 
+    connect(ui->tableWidget_weekplans, SIGNAL(clicked(QModelIndex)), this, SLOT(selectedWeek(QModelIndex)));
+
     // initialize axis range (and scroll bar positions via signals we just connected):
     ui->widget->xAxis->setRange(-4.1, -3.2, Qt::AlignCenter);
     ui->widget->yAxis->setRange(12.4, 13, Qt::AlignCenter);
@@ -168,7 +170,7 @@ void MainWindow::on_buttonPlot_clicked()
     // plot edges
     plot_villages(ui->widget, Village);
 
-//    ui->pushButtonInitialSolution->setEnabled(true);
+    //    ui->pushButtonInitialSolution->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -257,7 +259,7 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     unsigned int week;     // # week
     unsigned int k;         // Interviewer number
 
-    ui->textEditRouteInfo->clear();
+//    ui->textEditRouteInfo->clear();
 
     k = atoi(strK.c_str());    // Interviewer number
     if (k < 1)
@@ -267,20 +269,41 @@ void MainWindow::on_pushButtonShowRoute_pressed()
 
     if (strD == "all")
     {
-        week = 16;
+        week = Interviewer[0].routes.size();
+
         plot_routes(ui->widget, Village, Interviewer[k-1],predecessorsDry);
 
         std::stringstream ss;
         for (unsigned int w=0; w<week; ++w)
         {
             ss << "Week:" << w+1 << "  ";
-            ss << "Work time:" <<Interviewer[k-1].routes[w].time << "  ";
+            ss << "Work time:" <<Interviewer[k-1].routes[w].time << "/" << 5*8*60 << "  ";
             ss << "#VisCitys:" << Interviewer[k-1].routes[w].villages.size()-2 << "  ";
             ss << "#VisHh:" <<Interviewer[k-1].routes[w].households.size() << " ";
             ss << "\n";
 
-            ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+//            ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
         }
+
+        ui->tableWidget_weekplans->setRowCount(week);
+        ui->tableWidget_weekplans->setColumnCount(4);
+
+        QStringList Header;
+        Header << "Week"<<"Work time"<<"#Villages" << "#Households";
+        ui->tableWidget_weekplans->setHorizontalHeaderLabels(Header);
+
+        for (unsigned int w=0; w<week; ++w)
+        {
+            ui->tableWidget_weekplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
+            ui->tableWidget_weekplans->setItem(w, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].time)));
+            ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].villages.size()-2)));
+            ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].households.size())));
+        }
+
+        ui->tableWidget_weekplans->setColumnWidth(0,40);
+        ui->tableWidget_weekplans->setColumnWidth(1,80);
+        ui->tableWidget_weekplans->setColumnWidth(2,70);
+        ui->tableWidget_weekplans->setColumnWidth(3,90);
 
     }
     else
@@ -291,7 +314,7 @@ void MainWindow::on_pushButtonShowRoute_pressed()
 
         std::stringstream ss;
         ss << "Week:" << week << "  ";
-        ss << "Work time:" <<Interviewer[k-1].routes[week-1].time << "  ";
+        ss << "Work time:" <<Interviewer[k-1].routes[week-1].time << "/" << 5*8*60 << "  ";
         ss << "\n\n";
 
         ss << "#VisCitys:" << Interviewer[k-1].routes[week-1].villages.size()-2 << "  ";
@@ -306,7 +329,8 @@ void MainWindow::on_pushButtonShowRoute_pressed()
             ss << Interviewer[k-1].routes[week-1].households[h] + 10001<< " ";
         ss << "\n";
 
-        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+//        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
+
 
     }
 
@@ -320,9 +344,42 @@ void MainWindow::on_pushButtonShowRoute_pressed()
 
     ui->widget->replot();
 
-
-
 }
+
+/*
+ * Plot interviewer's route beim selecting the row of the tableWidget_weekplans
+ */
+void MainWindow::selectedWeek(QModelIndex& ind)
+{
+
+    std::cout << "a row was selected " << ind.row() << std::endl;
+    int week = ind.row();
+
+    QString qstrK = ui->comboBoxInterviewer->currentText();
+    std::string strK = qstrK.toStdString();
+
+    unsigned int k = atoi(strK.c_str());    // Interviewer number
+    if (k < 1)
+        k = 1;
+    if (k > Interviewer.size())
+        k = Interviewer.size();
+
+    ui->widget->clearItems();
+    plot_villages(ui->widget, Village);
+
+    plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+
+    // replot everything that already was on the plot
+    if (ui->checkBoxVillageNames->isChecked())
+        plot_labelsVillages(ui->widget, Village);
+    if (ui->checkBoxVillageIDs->isChecked())
+        plot_IDsVillages(ui->widget, Village);
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+    ui->widget->replot();
+}
+
 //---------------------------------------------------------------------------------------------------
 
 /*

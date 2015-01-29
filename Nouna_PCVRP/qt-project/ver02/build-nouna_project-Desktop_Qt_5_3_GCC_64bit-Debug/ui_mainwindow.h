@@ -26,6 +26,7 @@
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -65,13 +66,13 @@ public:
     QCheckBox *checkBoxVillageNames;
     QWidget *tab_8;
     QGroupBox *groupBoxInitialSolution;
-    QTextEdit *textEditRouteInfo;
     QLabel *labelSelectDay;
     QLabel *labelSelectInterviewer;
     QPushButton *pushButtonShowRoute;
     QPushButton *pushButtonInitialSolution;
     QComboBox *comboBoxDay;
     QComboBox *comboBoxInterviewer;
+    QTableWidget *tableWidget_weekplans;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -293,10 +294,7 @@ public:
         groupBoxInitialSolution = new QGroupBox(tab_8);
         groupBoxInitialSolution->setObjectName(QStringLiteral("groupBoxInitialSolution"));
         groupBoxInitialSolution->setEnabled(true);
-        groupBoxInitialSolution->setGeometry(QRect(5, 10, 340, 301));
-        textEditRouteInfo = new QTextEdit(groupBoxInitialSolution);
-        textEditRouteInfo->setObjectName(QStringLiteral("textEditRouteInfo"));
-        textEditRouteInfo->setGeometry(QRect(5, 110, 332, 181));
+        groupBoxInitialSolution->setGeometry(QRect(5, 10, 340, 401));
         labelSelectDay = new QLabel(groupBoxInitialSolution);
         labelSelectDay->setObjectName(QStringLiteral("labelSelectDay"));
         labelSelectDay->setGeometry(QRect(20, 70, 31, 21));
@@ -323,6 +321,10 @@ public:
         comboBoxInterviewer = new QComboBox(groupBoxInitialSolution);
         comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
         comboBoxInterviewer->setGeometry(QRect(170, 70, 43, 23));
+        tableWidget_weekplans = new QTableWidget(groupBoxInitialSolution);
+        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
+        tableWidget_weekplans->setGeometry(QRect(5, 100, 331, 281));
+        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
         tabWidget->addTab(tab_8, QString());
 
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
@@ -344,7 +346,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

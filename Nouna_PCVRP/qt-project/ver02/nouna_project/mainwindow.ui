@@ -96,7 +96,7 @@ background: white;
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_7">
          <attribute name="title">
@@ -467,22 +467,12 @@ background: rgb(238, 238, 238);
             <x>5</x>
             <y>10</y>
             <width>340</width>
-            <height>301</height>
+            <height>401</height>
            </rect>
           </property>
           <property name="title">
            <string/>
           </property>
-          <widget class="QTextEdit" name="textEditRouteInfo">
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>110</y>
-             <width>332</width>
-             <height>181</height>
-            </rect>
-           </property>
-          </widget>
           <widget class="QLabel" name="labelSelectDay">
            <property name="geometry">
             <rect>
@@ -583,6 +573,19 @@ background: rgb(238, 238, 238);
              <width>43</width>
              <height>23</height>
             </rect>
+           </property>
+          </widget>
+          <widget class="QTableWidget" name="tableWidget_weekplans">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>100</y>
+             <width>331</width>
+             <height>281</height>
+            </rect>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
            </property>
           </widget>
          </widget>

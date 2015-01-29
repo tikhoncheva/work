@@ -55,6 +55,8 @@ private slots:
 
     void on_checkBoxVillageIDs_clicked();
 
+    void selectedWeek(QModelIndex&);
+
 private:
     Ui::MainWindow *ui;
 };
