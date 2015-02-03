@@ -98,7 +98,7 @@ background: white;
         <property name="currentIndex">
          <number>1</number>
         </property>
-        <widget class="QWidget" name="tab_7">
+        <widget class="QWidget" name="tab_general">
          <attribute name="title">
           <string>General</string>
          </attribute>
@@ -454,140 +454,90 @@ background: rgb(238, 238, 238);
           </widget>
          </widget>
         </widget>
-        <widget class="QWidget" name="tab_8">
+        <widget class="QWidget" name="tab_initsolution">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <attribute name="title">
           <string>Initial Solution</string>
          </attribute>
-         <widget class="QGroupBox" name="groupBoxInitialSolution">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
+         <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
-            <x>5</x>
-            <y>10</y>
-            <width>340</width>
-            <height>401</height>
+            <x>2</x>
+            <y>12</y>
+            <width>341</width>
+            <height>421</height>
            </rect>
           </property>
-          <property name="title">
-           <string/>
-          </property>
-          <widget class="QLabel" name="labelSelectDay">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>70</y>
-             <width>31</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Day</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="labelSelectInterviewer">
-           <property name="geometry">
-            <rect>
-             <x>100</x>
-             <y>70</y>
-             <width>71</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Interviewer</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButtonShowRoute">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>220</x>
-             <y>70</y>
-             <width>91</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>show routes</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButtonInitialSolution">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>100</x>
-             <y>30</y>
-             <width>101</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Initial Solution</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="comboBoxDay">
-           <property name="geometry">
-            <rect>
-             <x>50</x>
-             <y>70</y>
-             <width>45</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>45</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="inputMethodHints">
-            <set>Qt::ImhNone</set>
-           </property>
-           <property name="currentText">
-            <string/>
-           </property>
-           <property name="maxCount">
-            <number>81</number>
-           </property>
-           <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="comboBoxInterviewer">
-           <property name="geometry">
-            <rect>
-             <x>170</x>
-             <y>70</y>
-             <width>43</width>
-             <height>23</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QTableWidget" name="tableWidget_weekplans">
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>100</y>
-             <width>331</width>
-             <height>281</height>
-            </rect>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
-           </property>
-          </widget>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="4" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_dayplans"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="labelSelectInterviewer">
+             <property name="text">
+              <string>Interviewer</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QComboBox" name="comboBoxInterviewer"/>
+           </item>
+           <item row="2" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_weekplans">
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QPushButton" name="pushButtonShowRoute">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>show routes</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButtonInitialSolution">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Initial Solution</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </widget>
         </widget>
        </widget>

@@ -24,6 +24,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollBar>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableWidget>
@@ -45,7 +46,7 @@ public:
     QScrollBar *horizontalScrollBar;
     QScrollBar *verticalScrollBar;
     QTabWidget *tabWidget;
-    QWidget *tab_7;
+    QWidget *tab_general;
     QFrame *frame;
     QWidget *gridLayoutWidget_2;
     QGridLayout *gridLayout_4;
@@ -64,15 +65,17 @@ public:
     QCheckBox *checkBoxVillageIDs;
     QPushButton *buttonPlot;
     QCheckBox *checkBoxVillageNames;
-    QWidget *tab_8;
-    QGroupBox *groupBoxInitialSolution;
-    QLabel *labelSelectDay;
+    QWidget *tab_initsolution;
+    QWidget *layoutWidget;
+    QGridLayout *gridLayout_2;
+    QTableWidget *tableWidget_dayplans;
     QLabel *labelSelectInterviewer;
-    QPushButton *pushButtonShowRoute;
-    QPushButton *pushButtonInitialSolution;
-    QComboBox *comboBoxDay;
     QComboBox *comboBoxInterviewer;
     QTableWidget *tableWidget_weekplans;
+    QPushButton *pushButtonShowRoute;
+    QSpacerItem *verticalSpacer;
+    QPushButton *pushButtonInitialSolution;
+    QSpacerItem *verticalSpacer_2;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -145,9 +148,9 @@ public:
         sizePolicy3.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
         tabWidget->setSizePolicy(sizePolicy3);
         tabWidget->setMaximumSize(QSize(350, 16777215));
-        tab_7 = new QWidget();
-        tab_7->setObjectName(QStringLiteral("tab_7"));
-        frame = new QFrame(tab_7);
+        tab_general = new QWidget();
+        tab_general->setObjectName(QStringLiteral("tab_general"));
+        frame = new QFrame(tab_general);
         frame->setObjectName(QStringLiteral("frame"));
         frame->setGeometry(QRect(10, 10, 321, 141));
         QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -254,7 +257,7 @@ public:
 
         gridLayout_4->addWidget(textEditN, 0, 2, 1, 1);
 
-        groupBoxPlotSetting = new QGroupBox(tab_7);
+        groupBoxPlotSetting = new QGroupBox(tab_general);
         groupBoxPlotSetting->setObjectName(QStringLiteral("groupBoxPlotSetting"));
         groupBoxPlotSetting->setEnabled(true);
         groupBoxPlotSetting->setGeometry(QRect(10, 160, 321, 171));
@@ -288,44 +291,60 @@ public:
         checkBoxVillageNames->setObjectName(QStringLiteral("checkBoxVillageNames"));
         checkBoxVillageNames->setEnabled(true);
         checkBoxVillageNames->setGeometry(QRect(10, 70, 191, 21));
-        tabWidget->addTab(tab_7, QString());
-        tab_8 = new QWidget();
-        tab_8->setObjectName(QStringLiteral("tab_8"));
-        groupBoxInitialSolution = new QGroupBox(tab_8);
-        groupBoxInitialSolution->setObjectName(QStringLiteral("groupBoxInitialSolution"));
-        groupBoxInitialSolution->setEnabled(true);
-        groupBoxInitialSolution->setGeometry(QRect(5, 10, 340, 401));
-        labelSelectDay = new QLabel(groupBoxInitialSolution);
-        labelSelectDay->setObjectName(QStringLiteral("labelSelectDay"));
-        labelSelectDay->setGeometry(QRect(20, 70, 31, 21));
-        labelSelectInterviewer = new QLabel(groupBoxInitialSolution);
+        tabWidget->addTab(tab_general, QString());
+        tab_initsolution = new QWidget();
+        tab_initsolution->setObjectName(QStringLiteral("tab_initsolution"));
+        tab_initsolution->setEnabled(true);
+        layoutWidget = new QWidget(tab_initsolution);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(2, 12, 341, 421));
+        gridLayout_2 = new QGridLayout(layoutWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setContentsMargins(0, 0, 0, 0);
+        tableWidget_dayplans = new QTableWidget(layoutWidget);
+        tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
+
+        gridLayout_2->addWidget(tableWidget_dayplans, 4, 0, 1, 4);
+
+        labelSelectInterviewer = new QLabel(layoutWidget);
         labelSelectInterviewer->setObjectName(QStringLiteral("labelSelectInterviewer"));
-        labelSelectInterviewer->setGeometry(QRect(100, 70, 71, 21));
-        pushButtonShowRoute = new QPushButton(groupBoxInitialSolution);
+
+        gridLayout_2->addWidget(labelSelectInterviewer, 0, 1, 1, 1);
+
+        comboBoxInterviewer = new QComboBox(layoutWidget);
+        comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
+
+        gridLayout_2->addWidget(comboBoxInterviewer, 0, 2, 1, 1);
+
+        tableWidget_weekplans = new QTableWidget(layoutWidget);
+        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
+        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+        gridLayout_2->addWidget(tableWidget_weekplans, 2, 0, 1, 4);
+
+        pushButtonShowRoute = new QPushButton(layoutWidget);
         pushButtonShowRoute->setObjectName(QStringLiteral("pushButtonShowRoute"));
         pushButtonShowRoute->setEnabled(false);
-        pushButtonShowRoute->setGeometry(QRect(220, 70, 91, 23));
-        pushButtonInitialSolution = new QPushButton(groupBoxInitialSolution);
+
+        gridLayout_2->addWidget(pushButtonShowRoute, 0, 3, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer, 1, 1, 1, 1);
+
+        pushButtonInitialSolution = new QPushButton(layoutWidget);
         pushButtonInitialSolution->setObjectName(QStringLiteral("pushButtonInitialSolution"));
-        pushButtonInitialSolution->setEnabled(true);
-        pushButtonInitialSolution->setGeometry(QRect(100, 30, 101, 23));
-        comboBoxDay = new QComboBox(groupBoxInitialSolution);
-        comboBoxDay->setObjectName(QStringLiteral("comboBoxDay"));
-        comboBoxDay->setGeometry(QRect(50, 70, 45, 21));
-        sizePolicy4.setHeightForWidth(comboBoxDay->sizePolicy().hasHeightForWidth());
-        comboBoxDay->setSizePolicy(sizePolicy4);
-        comboBoxDay->setMaximumSize(QSize(45, 30));
-        comboBoxDay->setInputMethodHints(Qt::ImhNone);
-        comboBoxDay->setMaxCount(81);
-        comboBoxDay->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-        comboBoxInterviewer = new QComboBox(groupBoxInitialSolution);
-        comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
-        comboBoxInterviewer->setGeometry(QRect(170, 70, 43, 23));
-        tableWidget_weekplans = new QTableWidget(groupBoxInitialSolution);
-        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
-        tableWidget_weekplans->setGeometry(QRect(5, 100, 331, 281));
-        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tabWidget->addTab(tab_8, QString());
+        pushButtonInitialSolution->setEnabled(false);
+
+        gridLayout_2->addWidget(pushButtonInitialSolution, 0, 0, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer_2, 3, 1, 1, 1);
+
+        tabWidget->addTab(tab_initsolution, QString());
 
         gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
 
@@ -368,14 +387,11 @@ public:
         checkBoxVillageIDs->setText(QApplication::translate("MainWindow", "Show IDs of the villages", 0));
         buttonPlot->setText(QApplication::translate("MainWindow", "plot graph", 0));
         checkBoxVillageNames->setText(QApplication::translate("MainWindow", "Show names of the villages", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "General", 0));
-        groupBoxInitialSolution->setTitle(QString());
-        labelSelectDay->setText(QApplication::translate("MainWindow", "Day", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_general), QApplication::translate("MainWindow", "General", 0));
         labelSelectInterviewer->setText(QApplication::translate("MainWindow", "Interviewer", 0));
         pushButtonShowRoute->setText(QApplication::translate("MainWindow", "show routes", 0));
         pushButtonInitialSolution->setText(QApplication::translate("MainWindow", "Initial Solution", 0));
-        comboBoxDay->setCurrentText(QString());
-        tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("MainWindow", "Initial Solution", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_initsolution), QApplication::translate("MainWindow", "Initial Solution", 0));
     } // retranslateUi
 
 };

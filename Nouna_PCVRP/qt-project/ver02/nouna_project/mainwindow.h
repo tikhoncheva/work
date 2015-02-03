@@ -55,7 +55,7 @@ private slots:
 
     void on_checkBoxVillageIDs_clicked();
 
-    void selectedWeek(QModelIndex&);
+    void selectedWeek(int, int);
 
 private:
     Ui::MainWindow *ui;

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[21];
-    char stringdata[454];
+    QByteArrayData data[20];
+    char stringdata[441];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -48,8 +48,7 @@ QT_MOC_LITERAL(15, 317, 12),
 QT_MOC_LITERAL(16, 330, 36),
 QT_MOC_LITERAL(17, 367, 30),
 QT_MOC_LITERAL(18, 398, 29),
-QT_MOC_LITERAL(19, 428, 12),
-QT_MOC_LITERAL(20, 441, 12)
+QT_MOC_LITERAL(19, 428, 12)
     },
     "MainWindow\0on_buttonOpenVillages_clicked\0"
     "\0on_buttonOpenRoads_clicked\0"
@@ -64,7 +63,7 @@ QT_MOC_LITERAL(20, 441, 12)
     "on_pushButtonInitialSolution_clicked\0"
     "on_pushButtonShowRoute_pressed\0"
     "on_checkBoxVillageIDs_clicked\0"
-    "selectedWeek\0QModelIndex&"
+    "selectedWeek"
 };
 #undef QT_MOC_LITERAL
 
@@ -96,7 +95,7 @@ static const uint qt_meta_data_MainWindow[] = {
       16,    0,  108,    2, 0x08 /* Private */,
       17,    0,  109,    2, 0x08 /* Private */,
       18,    0,  110,    2, 0x08 /* Private */,
-      19,    1,  111,    2, 0x08 /* Private */,
+      19,    2,  111,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -113,7 +112,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 20,    2,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,    2,    2,
 
        0        // eod
 };
@@ -137,7 +136,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 11: _t->on_pushButtonInitialSolution_clicked(); break;
         case 12: _t->on_pushButtonShowRoute_pressed(); break;
         case 13: _t->on_checkBoxVillageIDs_clicked(); break;
-        case 14: _t->selectedWeek((*reinterpret_cast< QModelIndex(*)>(_a[1]))); break;
+        case 14: _t->selectedWeek((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         default: ;
         }
     }
