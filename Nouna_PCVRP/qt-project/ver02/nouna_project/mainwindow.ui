@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>883</width>
-    <height>544</height>
+    <width>953</width>
+    <height>624</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -29,7 +29,70 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="1">
+      <item row="2" column="2">
+       <widget class="QScrollBar" name="horizontalScrollBar">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QScrollBar" name="verticalScrollBar">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QCheckBox" name="checkBoxVillageNames">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Names of the villages</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxVillageIDs">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>IDs of the villages</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxShowRoads">
+          <property name="text">
+           <string>Roads</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="2">
        <widget class="QCustomPlot" name="widget" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -47,38 +110,6 @@ background: white;
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QScrollBar" name="horizontalScrollBar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QScrollBar" name="verticalScrollBar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidget">
         <property name="enabled">
          <bool>true</bool>
@@ -91,7 +122,7 @@ background: white;
         </property>
         <property name="maximumSize">
          <size>
-          <width>350</width>
+          <width>355</width>
           <height>16777215</height>
          </size>
         </property>
@@ -346,113 +377,6 @@ border-radius: 10px;
            </layout>
           </widget>
          </widget>
-         <widget class="QGroupBox" name="groupBoxPlotSetting">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>160</y>
-            <width>321</width>
-            <height>171</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">#groupBoxPlotSetting {
-border: 2px solid gray;
-border-radius: 10px;
-}</string>
-          </property>
-          <property name="title">
-           <string>Plot Settings</string>
-          </property>
-          <widget class="QCheckBox" name="checkBoxShowRoads">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>111</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Show Roads</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBoxRainingSeazon">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>110</y>
-             <width>131</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Raining Season</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBoxVillageIDs">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>191</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Show IDs of the villages</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="buttonPlot">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>20</y>
-             <width>81</width>
-             <height>23</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">#buttonPlot{
-background: rgb(238, 238, 238);
-}</string>
-           </property>
-           <property name="text">
-            <string>plot graph</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="checkBoxVillageNames">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>70</y>
-             <width>191</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Show names of the villages</string>
-           </property>
-          </widget>
-         </widget>
         </widget>
         <widget class="QWidget" name="tab_initsolution">
          <property name="enabled">
@@ -464,16 +388,19 @@ background: rgb(238, 238, 238);
          <widget class="QWidget" name="layoutWidget">
           <property name="geometry">
            <rect>
-            <x>2</x>
-            <y>12</y>
-            <width>341</width>
-            <height>421</height>
+            <x>0</x>
+            <y>10</y>
+            <width>352</width>
+            <height>441</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="4" column="0" colspan="4">
-            <widget class="QTableWidget" name="tableWidget_dayplans"/>
-           </item>
+           <property name="leftMargin">
+            <number>8</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
            <item row="0" column="1">
             <widget class="QLabel" name="labelSelectInterviewer">
              <property name="text">
@@ -482,26 +409,29 @@ background: rgb(238, 238, 238);
             </widget>
            </item>
            <item row="0" column="2">
-            <widget class="QComboBox" name="comboBoxInterviewer"/>
+            <widget class="QComboBox" name="comboBoxInterviewer">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
-           <item row="2" column="0" colspan="4">
-            <widget class="QTableWidget" name="tableWidget_weekplans">
+           <item row="6" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_dayplans">
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="selectionBehavior">
               <enum>QAbstractItemView::SelectRows</enum>
              </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QPushButton" name="pushButtonShowRoute">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>show routes</string>
+             <property name="textElideMode">
+              <enum>Qt::ElideMiddle</enum>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="1">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -514,6 +444,20 @@ background: rgb(238, 238, 238);
              </property>
             </spacer>
            </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Day plan</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Week plan</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QPushButton" name="pushButtonInitialSolution">
              <property name="enabled">
@@ -524,7 +468,7 @@ background: rgb(238, 238, 238);
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="5" column="2">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -536,6 +480,32 @@ background: rgb(238, 238, 238);
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="0" column="3">
+            <widget class="QPushButton" name="pushButtonShowRoute">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>show routes</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_weekplans">
+             <property name="maximumSize">
+              <size>
+               <width>325</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="textElideMode">
+              <enum>Qt::ElideMiddle</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -551,7 +521,7 @@ background: rgb(238, 238, 238);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>883</width>
+     <width>953</width>
      <height>20</height>
     </rect>
    </property>

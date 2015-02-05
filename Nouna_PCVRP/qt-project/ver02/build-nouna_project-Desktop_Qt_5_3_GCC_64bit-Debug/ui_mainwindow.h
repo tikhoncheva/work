@@ -17,7 +17,7 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -42,9 +42,13 @@ public:
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QGridLayout *gridLayout;
-    QCustomPlot *widget;
     QScrollBar *horizontalScrollBar;
     QScrollBar *verticalScrollBar;
+    QHBoxLayout *horizontalLayout;
+    QCheckBox *checkBoxVillageNames;
+    QCheckBox *checkBoxVillageIDs;
+    QCheckBox *checkBoxShowRoads;
+    QCustomPlot *widget;
     QTabWidget *tabWidget;
     QWidget *tab_general;
     QFrame *frame;
@@ -59,23 +63,19 @@ public:
     QLabel *labFile3;
     QPushButton *buttonOpenRoads;
     QTextEdit *textEditN;
-    QGroupBox *groupBoxPlotSetting;
-    QCheckBox *checkBoxShowRoads;
-    QCheckBox *checkBoxRainingSeazon;
-    QCheckBox *checkBoxVillageIDs;
-    QPushButton *buttonPlot;
-    QCheckBox *checkBoxVillageNames;
     QWidget *tab_initsolution;
     QWidget *layoutWidget;
     QGridLayout *gridLayout_2;
-    QTableWidget *tableWidget_dayplans;
     QLabel *labelSelectInterviewer;
     QComboBox *comboBoxInterviewer;
-    QTableWidget *tableWidget_weekplans;
-    QPushButton *pushButtonShowRoute;
+    QTableWidget *tableWidget_dayplans;
     QSpacerItem *verticalSpacer;
+    QLabel *label_2;
+    QLabel *label;
     QPushButton *pushButtonInitialSolution;
     QSpacerItem *verticalSpacer_2;
+    QPushButton *pushButtonShowRoute;
+    QTableWidget *tableWidget_weekplans;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -84,7 +84,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(883, 544);
+        MainWindow->resize(953, 624);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -103,18 +103,6 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        widget = new QCustomPlot(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        sizePolicy.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-        widget->setSizePolicy(sizePolicy);
-        widget->setStyleSheet(QLatin1String("#widget {\n"
-"border: 2px solid gray;\n"
-"border-radius: 10px;\n"
-"background: white;\n"
-"}"));
-
-        gridLayout->addWidget(widget, 0, 1, 1, 1);
-
         horizontalScrollBar = new QScrollBar(centralWidget);
         horizontalScrollBar->setObjectName(QStringLiteral("horizontalScrollBar"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -125,7 +113,7 @@ public:
         horizontalScrollBar->setValue(0);
         horizontalScrollBar->setOrientation(Qt::Horizontal);
 
-        gridLayout->addWidget(horizontalScrollBar, 1, 1, 1, 1);
+        gridLayout->addWidget(horizontalScrollBar, 2, 2, 1, 1);
 
         verticalScrollBar = new QScrollBar(centralWidget);
         verticalScrollBar->setObjectName(QStringLiteral("verticalScrollBar"));
@@ -137,7 +125,42 @@ public:
         verticalScrollBar->setValue(0);
         verticalScrollBar->setOrientation(Qt::Vertical);
 
-        gridLayout->addWidget(verticalScrollBar, 0, 2, 1, 1);
+        gridLayout->addWidget(verticalScrollBar, 1, 3, 1, 1);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        checkBoxVillageNames = new QCheckBox(centralWidget);
+        checkBoxVillageNames->setObjectName(QStringLiteral("checkBoxVillageNames"));
+        checkBoxVillageNames->setEnabled(true);
+
+        horizontalLayout->addWidget(checkBoxVillageNames);
+
+        checkBoxVillageIDs = new QCheckBox(centralWidget);
+        checkBoxVillageIDs->setObjectName(QStringLiteral("checkBoxVillageIDs"));
+        checkBoxVillageIDs->setEnabled(true);
+
+        horizontalLayout->addWidget(checkBoxVillageIDs);
+
+        checkBoxShowRoads = new QCheckBox(centralWidget);
+        checkBoxShowRoads->setObjectName(QStringLiteral("checkBoxShowRoads"));
+
+        horizontalLayout->addWidget(checkBoxShowRoads);
+
+
+        gridLayout->addLayout(horizontalLayout, 0, 2, 1, 1);
+
+        widget = new QCustomPlot(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        sizePolicy.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy);
+        widget->setStyleSheet(QLatin1String("#widget {\n"
+"border: 2px solid gray;\n"
+"border-radius: 10px;\n"
+"background: white;\n"
+"}"));
+
+        gridLayout->addWidget(widget, 1, 2, 1, 1);
 
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
@@ -147,7 +170,7 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
         tabWidget->setSizePolicy(sizePolicy3);
-        tabWidget->setMaximumSize(QSize(350, 16777215));
+        tabWidget->setMaximumSize(QSize(355, 16777215));
         tab_general = new QWidget();
         tab_general->setObjectName(QStringLiteral("tab_general"));
         frame = new QFrame(tab_general);
@@ -257,57 +280,18 @@ public:
 
         gridLayout_4->addWidget(textEditN, 0, 2, 1, 1);
 
-        groupBoxPlotSetting = new QGroupBox(tab_general);
-        groupBoxPlotSetting->setObjectName(QStringLiteral("groupBoxPlotSetting"));
-        groupBoxPlotSetting->setEnabled(true);
-        groupBoxPlotSetting->setGeometry(QRect(10, 160, 321, 171));
-        groupBoxPlotSetting->setStyleSheet(QLatin1String("#groupBoxPlotSetting {\n"
-"border: 2px solid gray;\n"
-"border-radius: 10px;\n"
-"}"));
-        checkBoxShowRoads = new QCheckBox(groupBoxPlotSetting);
-        checkBoxShowRoads->setObjectName(QStringLiteral("checkBoxShowRoads"));
-        checkBoxShowRoads->setGeometry(QRect(10, 90, 111, 21));
-        checkBoxRainingSeazon = new QCheckBox(groupBoxPlotSetting);
-        checkBoxRainingSeazon->setObjectName(QStringLiteral("checkBoxRainingSeazon"));
-        checkBoxRainingSeazon->setGeometry(QRect(10, 110, 131, 21));
-        QSizePolicy sizePolicy5(QSizePolicy::Minimum, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(checkBoxRainingSeazon->sizePolicy().hasHeightForWidth());
-        checkBoxRainingSeazon->setSizePolicy(sizePolicy5);
-        checkBoxVillageIDs = new QCheckBox(groupBoxPlotSetting);
-        checkBoxVillageIDs->setObjectName(QStringLiteral("checkBoxVillageIDs"));
-        checkBoxVillageIDs->setEnabled(true);
-        checkBoxVillageIDs->setGeometry(QRect(10, 50, 191, 21));
-        buttonPlot = new QPushButton(groupBoxPlotSetting);
-        buttonPlot->setObjectName(QStringLiteral("buttonPlot"));
-        buttonPlot->setEnabled(true);
-        buttonPlot->setGeometry(QRect(120, 20, 81, 23));
-        buttonPlot->setStyleSheet(QLatin1String("#buttonPlot{\n"
-"background: rgb(238, 238, 238);\n"
-"}"));
-        checkBoxVillageNames = new QCheckBox(groupBoxPlotSetting);
-        checkBoxVillageNames->setObjectName(QStringLiteral("checkBoxVillageNames"));
-        checkBoxVillageNames->setEnabled(true);
-        checkBoxVillageNames->setGeometry(QRect(10, 70, 191, 21));
         tabWidget->addTab(tab_general, QString());
         tab_initsolution = new QWidget();
         tab_initsolution->setObjectName(QStringLiteral("tab_initsolution"));
         tab_initsolution->setEnabled(true);
         layoutWidget = new QWidget(tab_initsolution);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(2, 12, 341, 421));
+        layoutWidget->setGeometry(QRect(0, 10, 352, 441));
         gridLayout_2 = new QGridLayout(layoutWidget);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        gridLayout_2->setContentsMargins(0, 0, 0, 0);
-        tableWidget_dayplans = new QTableWidget(layoutWidget);
-        tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
-
-        gridLayout_2->addWidget(tableWidget_dayplans, 4, 0, 1, 4);
-
+        gridLayout_2->setContentsMargins(8, 0, 5, 0);
         labelSelectInterviewer = new QLabel(layoutWidget);
         labelSelectInterviewer->setObjectName(QStringLiteral("labelSelectInterviewer"));
 
@@ -315,14 +299,41 @@ public:
 
         comboBoxInterviewer = new QComboBox(layoutWidget);
         comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
+        comboBoxInterviewer->setEnabled(false);
 
         gridLayout_2->addWidget(comboBoxInterviewer, 0, 2, 1, 1);
 
-        tableWidget_weekplans = new QTableWidget(layoutWidget);
-        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
-        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget_dayplans = new QTableWidget(layoutWidget);
+        tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
+        tableWidget_dayplans->setMaximumSize(QSize(300, 16777215));
+        tableWidget_dayplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget_dayplans->setTextElideMode(Qt::ElideMiddle);
 
-        gridLayout_2->addWidget(tableWidget_weekplans, 2, 0, 1, 4);
+        gridLayout_2->addWidget(tableWidget_dayplans, 6, 0, 1, 4);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer, 2, 1, 1, 1);
+
+        label_2 = new QLabel(layoutWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        gridLayout_2->addWidget(label_2, 5, 0, 1, 1);
+
+        label = new QLabel(layoutWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout_2->addWidget(label, 2, 0, 1, 1);
+
+        pushButtonInitialSolution = new QPushButton(layoutWidget);
+        pushButtonInitialSolution->setObjectName(QStringLiteral("pushButtonInitialSolution"));
+        pushButtonInitialSolution->setEnabled(true);
+
+        gridLayout_2->addWidget(pushButtonInitialSolution, 0, 0, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer_2, 5, 2, 1, 1);
 
         pushButtonShowRoute = new QPushButton(layoutWidget);
         pushButtonShowRoute->setObjectName(QStringLiteral("pushButtonShowRoute"));
@@ -330,23 +341,17 @@ public:
 
         gridLayout_2->addWidget(pushButtonShowRoute, 0, 3, 1, 1);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        tableWidget_weekplans = new QTableWidget(layoutWidget);
+        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
+        tableWidget_weekplans->setMaximumSize(QSize(325, 16777215));
+        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget_weekplans->setTextElideMode(Qt::ElideMiddle);
 
-        gridLayout_2->addItem(verticalSpacer, 1, 1, 1, 1);
-
-        pushButtonInitialSolution = new QPushButton(layoutWidget);
-        pushButtonInitialSolution->setObjectName(QStringLiteral("pushButtonInitialSolution"));
-        pushButtonInitialSolution->setEnabled(false);
-
-        gridLayout_2->addWidget(pushButtonInitialSolution, 0, 0, 1, 1);
-
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout_2->addItem(verticalSpacer_2, 3, 1, 1, 1);
+        gridLayout_2->addWidget(tableWidget_weekplans, 3, 0, 1, 4);
 
         tabWidget->addTab(tab_initsolution, QString());
 
-        gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
+        gridLayout->addWidget(tabWidget, 1, 1, 1, 1);
 
 
         gridLayout_3->addLayout(gridLayout, 0, 0, 1, 1);
@@ -354,7 +359,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 883, 20));
+        menuBar->setGeometry(QRect(0, 0, 953, 20));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -375,22 +380,21 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         actionVillages->setText(QApplication::translate("MainWindow", "Villages", 0));
+        checkBoxVillageNames->setText(QApplication::translate("MainWindow", "Names of the villages", 0));
+        checkBoxVillageIDs->setText(QApplication::translate("MainWindow", "IDs of the villages", 0));
+        checkBoxShowRoads->setText(QApplication::translate("MainWindow", "Roads", 0));
         buttonOpenHouseh->setText(QApplication::translate("MainWindow", "Households...", 0));
         labFile1->setText(QApplication::translate("MainWindow", "....", 0));
         labFile2->setText(QApplication::translate("MainWindow", "....", 0));
         buttonOpenVillages->setText(QApplication::translate("MainWindow", "Villages...", 0));
         labFile3->setText(QApplication::translate("MainWindow", "....", 0));
         buttonOpenRoads->setText(QApplication::translate("MainWindow", "Roads...", 0));
-        groupBoxPlotSetting->setTitle(QApplication::translate("MainWindow", "Plot Settings", 0));
-        checkBoxShowRoads->setText(QApplication::translate("MainWindow", "Show Roads", 0));
-        checkBoxRainingSeazon->setText(QApplication::translate("MainWindow", "Raining Season", 0));
-        checkBoxVillageIDs->setText(QApplication::translate("MainWindow", "Show IDs of the villages", 0));
-        buttonPlot->setText(QApplication::translate("MainWindow", "plot graph", 0));
-        checkBoxVillageNames->setText(QApplication::translate("MainWindow", "Show names of the villages", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_general), QApplication::translate("MainWindow", "General", 0));
         labelSelectInterviewer->setText(QApplication::translate("MainWindow", "Interviewer", 0));
-        pushButtonShowRoute->setText(QApplication::translate("MainWindow", "show routes", 0));
+        label_2->setText(QApplication::translate("MainWindow", "Day plan", 0));
+        label->setText(QApplication::translate("MainWindow", "Week plan", 0));
         pushButtonInitialSolution->setText(QApplication::translate("MainWindow", "Initial Solution", 0));
+        pushButtonShowRoute->setText(QApplication::translate("MainWindow", "show routes", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_initsolution), QApplication::translate("MainWindow", "Initial Solution", 0));
     } // retranslateUi
 

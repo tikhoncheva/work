@@ -55,7 +55,11 @@ private slots:
 
     void on_checkBoxVillageIDs_clicked();
 
-    void selectedWeek(int, int);
+    void weekSelected(int, int);
+
+    void daySelected(int, int);
+
+    void on_pushButtonShowRoute_clicked();
 
 private:
     Ui::MainWindow *ui;

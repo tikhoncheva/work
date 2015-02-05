@@ -36,6 +36,7 @@ void plot_villages(QCustomPlot *plot,
 
     // create graph and assign data to it:
     plot->addGraph();
+    assert (plot->graphCount()==1); // zu diesem Zeitpunkt soll nur ein Graph existieren
     plot->graph(0)->setScatterStyle(myScatter);
     plot->graph(0)->setLineStyle( QCPGraph::lsNone);
     // give the axes some labels:
@@ -125,7 +126,7 @@ void plot_IDsVillages(QCustomPlot *plot,
     plot->replot();
 }
 
-void plot_roads(QCustomPlot *plot,
+void plot_roads(QCustomPlot* plot,
                 std::vector<stVillage> V,
                 std::vector<stRoad> R,
                 std::vector<std::vector<uDist> > dist,
@@ -166,14 +167,12 @@ void plot_roads(QCustomPlot *plot,
     plot->replot();
 }
 
-void plot_route(QCustomPlot *plot,
-                const std::vector<stVillage>& V,
+void plot_route(QCustomPlot* plot,
+                const std::vector<stVillage> V,
                 stInterviewer I,
                 unsigned int day,
-                const std::vector<std::vector<unsigned int> >& preds)
+                const std::vector<std::vector<unsigned int> > preds)
 {
-
-    QPointF p1, p2;
 
     unsigned int l = I.routes[day-1].villages.size();
     std::vector<unsigned int> shortestWay;
@@ -181,15 +180,17 @@ void plot_route(QCustomPlot *plot,
     unsigned int next;
     unsigned int pred;
 
+    QVector<double> x, y;
+
     QCPScatterStyle myScatter;
     myScatter.setShape(QCPScatterStyle::ssCircle);
-    myScatter.setPen(QPen(Qt::blue));
+    myScatter.setPen(QPen(Qt::blue,1));
     myScatter.setBrush(Qt::red);
     myScatter.setSize(5);
 
+    QCPCurve *Curve1 = new QCPCurve(plot->xAxis, plot->yAxis);
+
     pred = I.routes[day-1].villages[0];
-    p1.setX(V[pred].coord.first);
-    p1.setY(V[pred].coord.second);
 
     for (unsigned int i=1; i< l; ++i)
     {
@@ -197,47 +198,26 @@ void plot_route(QCustomPlot *plot,
 
         shortestWay = getShortestWay(pred, next, preds[pred]);
 
-//        p2.setX(V[next].coord.first);
-//        p2.setY(V[next].coord.second);
-
-//        QCPItemLine *arrow = new QCPItemLine(plot);
-//        arrow->setPen(QPen(Qt::black));
-//        plot->addItem(arrow);
-//        arrow->start->setCoords(p1);
-//        arrow->end->setCoords(p2);
-
-//        pred = next;
-//        p1 = p2;
-
-
         for (unsigned int j = 0; j< shortestWay.size(); ++j)
         {
             next = shortestWay[j];
 
-            p2.setX(V[next].coord.first);
-            p2.setY(V[next].coord.second);
-
-            QCPItemLine *arrow = new QCPItemLine(plot);
-            arrow->setPen(QPen(Qt::blue, 2));
-            plot->addItem(arrow);
-            arrow->start->setCoords(p1);
-            arrow->end->setCoords(p2);
-
-            if (j == shortestWay.size()-1 && i!=(l-1))
-                arrow->setHead(QCPLineEnding::esSpikeArrow);
-
-            p1 = p2;
+            x.push_back(V[next].coord.first);
+            y.push_back(V[next].coord.second);
         }
-
         pred = next;
-
     }
+
     // replot everything
+    plot->clearPlottables();
+    plot->addPlottable(Curve1);
+    Curve1->setScatterStyle(myScatter);
+    Curve1->setData(x,y);
     plot->replot();
 
 }
 
-void plot_routes(QCustomPlot *plot,
+void plot_routes(QCustomPlot* plot,
                  std::vector<stVillage> V,
                  stInterviewer I,
                  const std::vector<std::vector<unsigned int> >& preds)

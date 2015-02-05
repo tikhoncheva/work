@@ -35,19 +35,52 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->widget->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
     connect(ui->widget->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisChanged(QCPRange)));
 
-    connect(ui->tableWidget_weekplans, SIGNAL(cellClicked(int, int)), this, SLOT(selectedWeek(int, int)));
-
-    // initialize axis range (and scroll bar positions via signals we just connected):
+    // initialize axis range und zooming
     ui->widget->xAxis->setRange(-4.1, -3.2, Qt::AlignCenter);
     ui->widget->yAxis->setRange(12.4, 13, Qt::AlignCenter);
-
     ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
+    // draw routes by selecting table row
+    connect(ui->tableWidget_weekplans, SIGNAL(cellClicked(int, int)), this, SLOT(weekSelected(int, int)));
+    connect(ui->tableWidget_dayplans, SIGNAL(cellClicked(int, int)), this, SLOT(daySelected(int, int)));
+
+    // table of week plans
+    ui->tableWidget_weekplans->setRowCount(constant::nweeks);
+    ui->tableWidget_weekplans->setColumnCount(4);
+
+    QStringList Header;
+    Header << "Week"<<"Work time"<<"#Villages" << "#Households";
+    ui->tableWidget_weekplans->setHorizontalHeaderLabels(Header);
+
+
+    ui->tableWidget_weekplans->setColumnWidth(0,45);
+    ui->tableWidget_weekplans->setColumnWidth(1,80);
+    ui->tableWidget_weekplans->setColumnWidth(2,70);
+    ui->tableWidget_weekplans->setColumnWidth(3,90);
+
+    // table of day plans
+    ui->tableWidget_dayplans->setRowCount(5);
+    ui->tableWidget_dayplans->setColumnCount(4);
+
+    Header.clear();
+    Header << "Day"<<"Work time"<<"Villages" << "Households";
+    ui->tableWidget_dayplans->setHorizontalHeaderLabels(Header);
+
+    ui->tableWidget_dayplans->setItem(0,0, new QTableWidgetItem(QString::number(1)));
+    ui->tableWidget_dayplans->setItem(1,0, new QTableWidgetItem(QString::number(2)));
+    ui->tableWidget_dayplans->setItem(2,0, new QTableWidgetItem(QString::number(3)));
+    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
+    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
+
+    ui->tableWidget_dayplans->setColumnWidth(0,45);
+    ui->tableWidget_dayplans->setColumnWidth(1,80);
+    ui->tableWidget_dayplans->setColumnWidth(2,70);
+    ui->tableWidget_dayplans->setColumnWidth(3,90);
+
+    // default file selection
     MainWindow::on_buttonOpenVillages_clicked();
     MainWindow::on_buttonOpenRoads_clicked();
     MainWindow::on_buttonOpenHouseh_clicked();
-
-
 }
 
 MainWindow::~MainWindow()
@@ -81,7 +114,7 @@ void MainWindow::on_buttonOpenVillages_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->groupBoxPlotSetting ->setEnabled(true);
+            //ui->groupBoxPlotSetting ->setEnabled(true);
             //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
@@ -114,7 +147,7 @@ void MainWindow::on_buttonOpenRoads_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->groupBoxPlotSetting ->setEnabled(true);
+            //ui->groupBoxPlotSetting ->setEnabled(true);
             //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
@@ -147,7 +180,7 @@ void MainWindow::on_buttonOpenHouseh_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            ui->groupBoxPlotSetting ->setEnabled(true);
+            //ui->groupBoxPlotSetting ->setEnabled(true);
             //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
@@ -243,15 +276,24 @@ void MainWindow::on_checkBoxShowRoads_clicked()
  * Show routes
  */
 
-void MainWindow::on_pushButtonShowRoute_pressed()
+void MainWindow::on_pushButtonShowRoute_clicked()
 {
     ui->widget->clearItems();
+
     plot_villages(ui->widget, Village);
+
+    // replot everything that already was on the plot
+    if (ui->checkBoxVillageNames->isChecked())
+        plot_labelsVillages(ui->widget, Village);
+    if (ui->checkBoxVillageIDs->isChecked())
+        plot_IDsVillages(ui->widget, Village);
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
 
     QString qstrK = ui->comboBoxInterviewer->currentText();
     std::string strK = qstrK.toStdString();
 
-    unsigned int week;     // # week
+    unsigned int week = constant::nweeks;     // # week
     unsigned int k;         // Interviewer number
 
 //    ui->textEditRouteInfo->clear();
@@ -262,13 +304,6 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     if (k > Interviewer.size())
         k = Interviewer.size();
 
-    ui->tableWidget_weekplans->setRowCount(week);
-    ui->tableWidget_weekplans->setColumnCount(4);
-
-    QStringList Header;
-    Header << "Week"<<"Work time"<<"#Villages" << "#Households";
-    ui->tableWidget_weekplans->setHorizontalHeaderLabels(Header);
-
     for (unsigned int w=0; w<week; ++w)
     {
         ui->tableWidget_weekplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
@@ -276,11 +311,6 @@ void MainWindow::on_pushButtonShowRoute_pressed()
         ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].villages.size()-2)));
         ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].households.size())));
     }
-
-    ui->tableWidget_weekplans->setColumnWidth(0,40);
-    ui->tableWidget_weekplans->setColumnWidth(1,80);
-    ui->tableWidget_weekplans->setColumnWidth(2,70);
-    ui->tableWidget_weekplans->setColumnWidth(3,90);
 
 /*
     {
@@ -309,23 +339,14 @@ void MainWindow::on_pushButtonShowRoute_pressed()
     }
 */
 
-    // replot everything that already was on the plot
-    if (ui->checkBoxVillageNames->isChecked())
-        plot_labelsVillages(ui->widget, Village);
-    if (ui->checkBoxVillageIDs->isChecked())
-        plot_IDsVillages(ui->widget, Village);
-    if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
-
     ui->widget->replot();
-
 }
 
 /*
  * Plot interviewer's route beim selecting the row of the tableWidget_weekplans
  */
 
-void MainWindow::selectedWeek(int i, int)
+void MainWindow::weekSelected(int i, int)
 {
     int week = i + 1;
 
@@ -339,9 +360,10 @@ void MainWindow::selectedWeek(int i, int)
         k = Interviewer.size();
 
     ui->widget->clearItems();
-    plot_villages(ui->widget, Village);
+    ui->widget->clearItems();
 
     plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+    plot_villages(ui->widget, Village);
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -352,7 +374,36 @@ void MainWindow::selectedWeek(int i, int)
         plot_roads(ui->widget, Village, Road, distmatrix, false);
 
     ui->widget->replot();
+}
 
+
+void MainWindow::daySelected(int i, int)
+{
+    int week = i + 1;
+
+//    QString qstrK = ui->comboBoxInterviewer->currentText();
+//    std::string strK = qstrK.toStdString();
+
+//    unsigned int k = atoi(strK.c_str());    // Interviewer number
+//    if (k < 1)
+//        k = 1;
+//    if (k > Interviewer.size())
+//        k = Interviewer.size();
+
+//    ui->widget->clearItems();
+//    plot_villages(ui->widget, Village);
+
+//    plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+
+    // replot everything that already was on the plot
+    if (ui->checkBoxVillageNames->isChecked())
+        plot_labelsVillages(ui->widget, Village);
+    if (ui->checkBoxVillageIDs->isChecked())
+        plot_IDsVillages(ui->widget, Village);
+    if (ui->checkBoxShowRoads->isChecked())
+        plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+    ui->widget->replot();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -432,11 +483,14 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
                     TimeInfo);
 
     ui->pushButtonShowRoute->setEnabled(true);
+    ui->comboBoxInterviewer->setEnabled(true);
 
     std::cout << "Find initial solution ... finished" << std::endl;
 }
 
 //---------------------------------------------------------------------------------------------------
+
+
 
 
 
