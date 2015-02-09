@@ -66,11 +66,11 @@ MainWindow::MainWindow(QWidget *parent) :
     Header << "Day"<<"Work time"<<"Villages" << "Households";
     ui->tableWidget_dayplans->setHorizontalHeaderLabels(Header);
 
-    ui->tableWidget_dayplans->setItem(0,0, new QTableWidgetItem(QString::number(1)));
-    ui->tableWidget_dayplans->setItem(1,0, new QTableWidgetItem(QString::number(2)));
-    ui->tableWidget_dayplans->setItem(2,0, new QTableWidgetItem(QString::number(3)));
-    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
-    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
+//    ui->tableWidget_dayplans->setItem(0,0, new QTableWidgetItem(QString::number(1)));
+//    ui->tableWidget_dayplans->setItem(1,0, new QTableWidgetItem(QString::number(2)));
+//    ui->tableWidget_dayplans->setItem(2,0, new QTableWidgetItem(QString::number(3)));
+//    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
+//    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
 
     ui->tableWidget_dayplans->setColumnWidth(0,45);
     ui->tableWidget_dayplans->setColumnWidth(1,80);
@@ -312,6 +312,8 @@ void MainWindow::on_pushButtonShowRoute_clicked()
         ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].households.size())));
     }
 
+    ui->tableWidget_dayplans->selectionModel()->clearSelection();
+    ui->tableWidget_dayplans->clearContents();
 /*
     {
         week = atoi(strD.c_str());    // week
@@ -375,16 +377,27 @@ void MainWindow::weekSelected(int i, int)
 
     ui->widget->replot();
 
+    ui->tableWidget_dayplans->clearContents();
+
+    if (Interviewer[k-1].routes_days.empty())
+        return;
+
     // show day schedules for this week
     for (unsigned int d=0; d<5; ++d)
     {
-        unsigned int ind = week*5;
-//        ui->tableWidget_dayplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
+        unsigned int ind = (week-1)*5+d;
+
+        if (Interviewer[k-1].routes_days[ind].villages.empty())
+            continue;
+
+        ui->tableWidget_dayplans->setItem(d, 0, new QTableWidgetItem(QString::number(d+1)));
+
         ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
 
-        ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visVilToString(week*5+d))));
+        ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visVilToString(ind))));
 
-        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(week*5+d))));
+//        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(ind))));
+        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].households.size())));
     }
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
 }
@@ -394,7 +407,7 @@ void MainWindow::daySelected(int i, int)
 {
 
     int week = ui->tableWidget_weekplans->currentRow();
-    int day = i;
+    int day = i+1;
 
     QString qstrK = ui->comboBoxInterviewer->currentText();
     std::string strK = qstrK.toStdString();

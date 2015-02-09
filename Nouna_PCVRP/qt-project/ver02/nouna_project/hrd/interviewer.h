@@ -25,7 +25,7 @@ struct stInterviewer
     {
         std::stringstream ss;
         for (unsigned int i=0; i< routes_days[day].villages.size(); i++)
-            ss << routes_days[day].villages[i] << " ";
+            ss << routes_days[day].villages[i] + 101 << " ";
         return ss.str();
     }
 
@@ -33,7 +33,7 @@ struct stInterviewer
     {
         std::stringstream ss;
         for (unsigned int i=0; i< routes_days[day].households.size(); i++)
-            ss << routes_days[day].households[i] << " ";
+            ss << routes_days[day].households[i] + 10001 << " ";
         return ss.str();
     }
 
