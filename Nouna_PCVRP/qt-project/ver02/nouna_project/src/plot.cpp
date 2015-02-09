@@ -24,7 +24,7 @@ std::vector<unsigned int> getShortestWay(unsigned int source, unsigned int targe
 void plot_villages(QCustomPlot *plot,
                    std::vector<stVillage> V)
 {
-    plot->clearItems();
+    //plot->clearItems();
     plot->clearGraphs();
     plot->replot();
 
@@ -167,14 +167,14 @@ void plot_roads(QCustomPlot* plot,
     plot->replot();
 }
 
-void plot_route(QCustomPlot* plot,
+void plot_route_week(QCustomPlot* plot,
                 const std::vector<stVillage> V,
                 stInterviewer I,
                 unsigned int day,
                 const std::vector<std::vector<unsigned int> > preds)
 {
 
-    unsigned int l = I.routes[day-1].villages.size();
+    unsigned int l = I.routes_weeks[day-1].villages.size();
     std::vector<unsigned int> shortestWay;
 
     unsigned int next;
@@ -189,12 +189,14 @@ void plot_route(QCustomPlot* plot,
     myScatter.setSize(5);
 
     QCPCurve *Curve1 = new QCPCurve(plot->xAxis, plot->yAxis);
+    Curve1->setScatterStyle(myScatter);
+    Curve1->setPen(QPen(Qt::blue,3));
 
-    pred = I.routes[day-1].villages[0];
+    pred = I.routes_weeks[day-1].villages[0];
 
     for (unsigned int i=1; i< l; ++i)
     {
-        next = I.routes[day-1].villages[i];
+        next = I.routes_weeks[day-1].villages[i];
 
         shortestWay = getShortestWay(pred, next, preds[pred]);
 
@@ -211,8 +213,60 @@ void plot_route(QCustomPlot* plot,
     // replot everything
     plot->clearPlottables();
     plot->addPlottable(Curve1);
-    Curve1->setScatterStyle(myScatter);
     Curve1->setData(x,y);
+
+    plot->replot();
+
+}
+
+void plot_route_day(QCustomPlot* plot,
+                const std::vector<stVillage> V,
+                stInterviewer I,
+                unsigned int day,
+                const std::vector<std::vector<unsigned int> > preds)
+{
+
+    unsigned int l = I.routes_days[day-1].villages.size();
+    std::vector<unsigned int> shortestWay;
+
+    unsigned int next;
+    unsigned int pred;
+
+    QVector<double> x, y;
+
+    QCPScatterStyle myScatter;
+    myScatter.setShape(QCPScatterStyle::ssCircle);
+    myScatter.setPen(QPen(Qt::blue,1));
+    myScatter.setBrush(Qt::red);
+    myScatter.setSize(5);
+
+    QCPCurve *Curve1 = new QCPCurve(plot->xAxis, plot->yAxis);
+    Curve1->setScatterStyle(myScatter);
+    Curve1->setPen(QPen(Qt::blue,3));
+
+    pred = I.routes_days[day-1].villages[0];
+
+    for (unsigned int i=1; i< l; ++i)
+    {
+        next = I.routes_days[day-1].villages[i];
+
+        shortestWay = getShortestWay(pred, next, preds[pred]);
+
+        for (unsigned int j = 0; j< shortestWay.size(); ++j)
+        {
+            next = shortestWay[j];
+
+            x.push_back(V[next].coord.first);
+            y.push_back(V[next].coord.second);
+        }
+        pred = next;
+    }
+
+    // replot everything
+    plot->clearPlottables();
+    plot->addPlottable(Curve1);
+    Curve1->setData(x,y);
+
     plot->replot();
 
 }
@@ -222,16 +276,16 @@ void plot_routes(QCustomPlot* plot,
                  stInterviewer I,
                  const std::vector<std::vector<unsigned int> >& preds)
 {
-    plot->clearItems();
-    plot->replot();
+//    plot->clearItems();
+//    plot->replot();
 
-    for (unsigned int d=0; d<I.routes.size(); ++d)
-    {
-        plot_route(plot, V, I, d+1, preds);
-    }
+//    for (unsigned int d=0; d<I.routes.size(); ++d)
+//    {
+//        plot_route(plot, V, I, d+1, preds);
+//    }
 
-    // replot everything
-    plot->replot();
+//    // replot everything
+//    plot->replot();
 }
 
 void delete_labelsAndRoutes(QCustomPlot* plot)

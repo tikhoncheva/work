@@ -19,7 +19,9 @@ void plot_IDsVillages(QCustomPlot*, std::vector<stVillage>);
 
 void plot_roads(QCustomPlot*, std::vector<stVillage>, std::vector<stRoad>, std::vector<std::vector<uDist> >, bool);
 
-void plot_route(QCustomPlot*, const std::vector<stVillage>, stInterviewer, unsigned int,
+void plot_route_week(QCustomPlot*, const std::vector<stVillage>, stInterviewer, unsigned int,
+                const std::vector<std::vector<unsigned int> >);
+void plot_route_day(QCustomPlot*, const std::vector<stVillage>, stInterviewer, unsigned int,
                 const std::vector<std::vector<unsigned int> >);
 void plot_routes(QCustomPlot*, std::vector<stVillage>, stInterviewer,
                 const std::vector<std::vector<unsigned int> > );

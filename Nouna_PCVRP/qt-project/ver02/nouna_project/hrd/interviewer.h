@@ -18,21 +18,22 @@ struct stInterviewer
 {
     unsigned int ID;
     unsigned int nRoutes;
-    std::vector<stRoute> routes;
+    std::vector<stRoute> routes_weeks;
+    std::vector<stRoute> routes_days;
 
     std::string visVilToString(unsigned int day)
     {
         std::stringstream ss;
-        for (unsigned int i=0; i< routes[day].villages.size(); i++)
-            ss << routes[day].villages[i] << " ";
+        for (unsigned int i=0; i< routes_days[day].villages.size(); i++)
+            ss << routes_days[day].villages[i] << " ";
         return ss.str();
     }
 
     std::string visHhToString(unsigned int day)
     {
         std::stringstream ss;
-        for (unsigned int i=0; i< routes[day].households.size(); i++)
-            ss << routes[day].households[i] << " ";
+        for (unsigned int i=0; i< routes_days[day].households.size(); i++)
+            ss << routes_days[day].households[i] << " ";
         return ss.str();
     }
 

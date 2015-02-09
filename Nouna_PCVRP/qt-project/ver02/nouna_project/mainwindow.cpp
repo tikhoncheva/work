@@ -280,8 +280,6 @@ void MainWindow::on_pushButtonShowRoute_clicked()
 {
     ui->widget->clearItems();
 
-    plot_villages(ui->widget, Village);
-
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
         plot_labelsVillages(ui->widget, Village);
@@ -289,6 +287,8 @@ void MainWindow::on_pushButtonShowRoute_clicked()
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+    plot_villages(ui->widget, Village);
 
     QString qstrK = ui->comboBoxInterviewer->currentText();
     std::string strK = qstrK.toStdString();
@@ -307,9 +307,9 @@ void MainWindow::on_pushButtonShowRoute_clicked()
     for (unsigned int w=0; w<week; ++w)
     {
         ui->tableWidget_weekplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
-        ui->tableWidget_weekplans->setItem(w, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].time)));
-        ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].villages.size()-2)));
-        ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes[w].households.size())));
+        ui->tableWidget_weekplans->setItem(w, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].time)));
+        ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].villages.size()-2)));
+        ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].households.size())));
     }
 
 /*
@@ -360,10 +360,7 @@ void MainWindow::weekSelected(int i, int)
         k = Interviewer.size();
 
     ui->widget->clearItems();
-    ui->widget->clearItems();
 
-    plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
-    plot_villages(ui->widget, Village);
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -373,27 +370,39 @@ void MainWindow::weekSelected(int i, int)
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix, false);
 
+    plot_route_week(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+    plot_villages(ui->widget, Village);
+
     ui->widget->replot();
+
+    // show day schedules for this week
+    for (unsigned int d=0; d<5; ++d)
+    {
+        unsigned int ind = week*5;
+//        ui->tableWidget_dayplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
+        ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
+
+        ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visVilToString(week*5+d))));
+
+        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(week*5+d))));
+    }
+    ui->tableWidget_dayplans->selectionModel()->clearSelection();
 }
 
 
 void MainWindow::daySelected(int i, int)
 {
-    int week = i + 1;
 
-//    QString qstrK = ui->comboBoxInterviewer->currentText();
-//    std::string strK = qstrK.toStdString();
+    int week = ui->tableWidget_weekplans->currentRow();
+    int day = i;
 
-//    unsigned int k = atoi(strK.c_str());    // Interviewer number
-//    if (k < 1)
-//        k = 1;
-//    if (k > Interviewer.size())
-//        k = Interviewer.size();
-
-//    ui->widget->clearItems();
-//    plot_villages(ui->widget, Village);
-
-//    plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+    QString qstrK = ui->comboBoxInterviewer->currentText();
+    std::string strK = qstrK.toStdString();
+    unsigned int k = atoi(strK.c_str());    // Interviewer number
+    if (k < 1)
+        k = 1;
+    if (k > Interviewer.size())
+        k = Interviewer.size();
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -402,6 +411,9 @@ void MainWindow::daySelected(int i, int)
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix, false);
+
+    plot_route_day(ui->widget, Village, Interviewer[k-1], 5*week + day, predecessorsDry);
+    plot_villages(ui->widget, Village);
 
     ui->widget->replot();
 }

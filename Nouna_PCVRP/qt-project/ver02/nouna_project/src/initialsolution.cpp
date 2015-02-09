@@ -18,7 +18,7 @@ bool visited (std::pair<unsigned int, bool> a)
 
 /*
  * returns position on the minimum positive value in the container
-*/
+ */
 template <class ForwardIterator>
 ForwardIterator find_posmin( ForwardIterator first, ForwardIterator last )
 {
@@ -354,7 +354,7 @@ int planForAWeek (std::vector <std::pair<int, double> > ToVisit,
         tmpRoute.households = visitedHh[k];
         tmpRoute.time = tmax - remaining_time[k];
 
-        _interviewer[k].routes.push_back(tmpRoute);
+        _interviewer[k].routes_weeks.push_back(tmpRoute);
     }
 
     return nUnvisited;
@@ -449,17 +449,23 @@ void planForAWeek0 (std::vector <std::pair<int, double> > ToVisit,
         tmpRoute.households = visitedHh[i];
         tmpRoute.time = tmax - remaining_time[i];
 
-        _interviewer[i].routes.push_back(tmpRoute);
+        _interviewer[i].routes_weeks.push_back(tmpRoute);
     }
 
     std::cout << "actually needed " << k << " interviewer" << std::endl;
 }
 
-int planForADay (std::vector<stInterviewer>& _interviewer)
+
+void planForADay (stInterviewer& _interviewer,
+                 std::vector<std::vector <std::pair<int, double> > >  ITimePlan, // <hh, itime>
+                 const std::vector<stHousehold> _households,         // _households
+                 const std::vector<std::vector<double> > _distmatrixDry,        // distmatrix
+                 const std::vector<std::vector<double> > _distmatrixRain        // distmatrix
+                 )
 {
-    /*
-    unsigned int N = ToVisit.size();
-    const unsigned int K = _interviewer.size();  // maximal number of available interviewers
+
+    unsigned int weekN;     // number of houselholds to visit on the current week
+    std::vector<unsigned int> hhToVis; // households to visit on the current week
 
     const unsigned int home = 142-101; // Capital (Nouna)
 
@@ -468,85 +474,105 @@ int planForADay (std::vector<stInterviewer>& _interviewer)
 
     unsigned int hhID; // hhID
 
-    std::vector<std::vector<unsigned int> > visitedV(K); // visited villages
-    std::vector<std::vector<unsigned int> > visitedHh(K);// visited _households
+    std::vector<std::vector<unsigned int> > visitedV(5); // visited villages
+    std::vector<std::vector<unsigned int> > visitedHh(5);// visited _households
+
     stRoute tmpRoute;
+    std::vector<std::pair<int, double> >::iterator TimePlan_hhID;
 
-    const double tmax = 5*8*60.;    // maximal worktime pro week (in min)
+    const double tmax = 8*60.;    // maximal worktime pro day (in min)
+    std::vector<double> remaining_time(5, tmax); // work time of each day
     double ti;                    // interview time
-    double t_changev;              // time to move in other village
-    double t_home;                 // time to come back at the start
+    double t_changev;             // time to move in other village
+    double t_home;                // time to come back at the start
 
-    int nUnvisited = 0;
+    unsigned int d;         // current week day
 
-    std::vector<double> remaining_time (K, tmax);
-    std::vector<double> remaining_time_new (K);
-
-    bool allFull = false;
-
-    // each route starts at capital (home)
-    for (unsigned int k=0; k<K; ++k)
-        visitedV[k].push_back(home);
-
-
-
-    for (unsigned int i=0; i<N && !allFull; ++i)
+    // plan each week one after another
+    for (unsigned int w=0; w<constant::nweeks; ++w)
     {
+        hhToVis = _interviewer.routes_weeks[w].households;
+        weekN = _interviewer.routes_weeks[w].households.size();
 
-        hhID = ToVisit[i].first;                    // next household to visite
-        nextV = _household[hhID].villageID - 101;   // village of the next household
+        visitedV.erase(visitedV.begin(), visitedV.end());
+        visitedHh.erase(visitedHh.begin(), visitedHh.end());
 
-        ti = ToVisit[i].second;     // Interview time
-        t_home = _distmatrix[nextV][home]; // if interviewer would come back home after this hh
+        // each week starts at capital (home)
+        predV = home;
+        visitedV[0].push_back(home);
 
-        // for each Interviewer calculate the remaining time, if he takes the hh
-        for (unsigned int k=0; k<K; ++k)
+        d = 0;
+
+        for (unsigned int i=0; i<weekN; ++i)
         {
-            predV = visitedV[k].back(); // previous village in tour k
-            t_changev = _distmatrix[predV][nextV];// travel time between previous village and new village
-            remaining_time_new[k] = remaining_time[k] - (t_changev + ti + t_home);
+
+            hhID = hhToVis[i];                           // next household to visite
+            nextV = _households[hhID].villageID - 101;   // village of the next household
+
+            // interview time
+            TimePlan_hhID = std::find_if(ITimePlan[w].begin(), ITimePlan[w].end(),
+                              [hhID] (std::pair<unsigned int, double> const& element)
+                              { return element.first == hhID;});
+            ti = (*TimePlan_hhID).second;
+
+            // travel time
+            if (w>=20 && w <=40)
+            {
+                t_home    = _distmatrixRain[nextV][home]; // if interviewer would come back home after this hh
+                t_changev = _distmatrixRain[predV][nextV];// travel time between previous village and new village
+            } else
+            {
+                t_home    = _distmatrixDry[nextV][home]; // if interviewer would come back home after this hh
+                t_changev = _distmatrixDry[predV][nextV];// travel time between previous village and new village
+            }
+
+
+            if (remaining_time[d] - (t_changev + ti + t_home) > 0 )
+            {
+                visitedV[d].push_back(home);
+                visitedHh[d].push_back(hhID);
+                remaining_time[d] -= t_changev + ti + t_home;
+
+            } else
+            {
+                visitedV[d].push_back(home);
+                visitedHh[d].push_back(home);
+                remaining_time[d] -= t_home;
+
+                d = std::min(int(d+1), 4);
+                predV = home;
+
+                visitedV[d].push_back(home);
+                visitedV[d].push_back(nextV);
+                visitedHh[d].push_back(hhID);
+
+                if (w>=20 && w <=40)
+                    t_changev = _distmatrixRain[predV][nextV];// travel time between previous village and new village
+                else
+                   t_changev = _distmatrixDry[predV][nextV];// travel time between previous village and new village
+
+                remaining_time[d] -= t_changev + ti;
+            }
+
+            predV = nextV;
         }
 
-        // find min remaining time over all positive values
-        unsigned int  k_min = find_posmin(remaining_time_new.begin(), remaining_time_new.end())
-                - remaining_time_new.begin();
+        // close last route
+        visitedV[4].push_back(home);
+        visitedHh[4].push_back(home);
+        remaining_time[4] -= t_home;
 
-        k_min = std::min(k_min, K);
-        if (k_min==K){   // all values in remaining_time_ are negative
-            ++nUnvisited;
-            continue;
+        // save all routes
+        for (unsigned int d=0; d<5; ++d)
+        {
+            tmpRoute.villages = visitedV[d];
+            tmpRoute.households = visitedHh[d];
+            tmpRoute.time = tmax - remaining_time[d];
+
+            _interviewer.routes_days.push_back(tmpRoute);
         }
+    }   // end week
 
-        predV= visitedV[k_min].back();
-        t_changev = _distmatrix[predV][nextV];
-        remaining_time[k_min] = remaining_time_new[k_min] + t_home; // we dont want to come back immediately
-        visitedHh[k_min].push_back(hhID);
-
-        if (predV !=nextV)
-            visitedV[k_min].push_back(nextV);
-
-        allFull = std::all_of(remaining_time.begin(), remaining_time.end(), isZero);
-
-    }
-
-    // close all routes: add time to go home
-    // assign routes to Interviewer
-    for (unsigned int k=0; k<K; ++k)
-    {
-        predV = visitedV[k][visitedV[k].size()-1];    // last village in the route
-
-        remaining_time[k] -= _distmatrix[predV][home];
-        visitedV[k].push_back(home);
-
-        tmpRoute.villages = visitedV[k];
-        tmpRoute.households = visitedHh[k];
-        tmpRoute.time = tmax - remaining_time[k];
-
-        _interviewer[k].routes.push_back(tmpRoute);
-    }
-
-    return nUnvisited;
-    */
 }
 
 
@@ -579,8 +605,10 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     for (unsigned int k=0; k < _interviewer.size(); ++k)
     {
         _interviewer[k].nRoutes = 0;
-        _interviewer[k].routes.erase(_interviewer[k].routes.begin(),
-                                     _interviewer[k].routes.end());
+        _interviewer[k].routes_weeks.erase(_interviewer[k].routes_weeks.begin(),
+                                           _interviewer[k].routes_weeks.end());
+        _interviewer[k].routes_days.erase(_interviewer[k].routes_days.begin(),
+                                          _interviewer[k].routes_days.end());
     }
 
     /*
@@ -651,10 +679,10 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     double totalRemainingTime = 0.;
     for (unsigned int i=0; i<_interviewer.size(); ++i)
     {
-        for (unsigned int w=0; w<_interviewer[i].routes.size(); ++w)
+        for (unsigned int w=0; w<_interviewer[i].routes_weeks.size(); ++w)
         {
-            totalVisHh += _interviewer[i].routes[w].households.size();
-            totalRemainingTime += 5*8*60. -_interviewer[i].routes[w].time;
+            totalVisHh += _interviewer[i].routes_weeks[w].households.size();
+            totalRemainingTime += 5*8*60. -_interviewer[i].routes_weeks[w].time;
         }
     }
 
@@ -685,10 +713,10 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     totalRemainingTime = 0.;
     for (unsigned int i=0; i<_interviewer.size(); ++i)
     {
-        for (unsigned int w=constant::nweeks; w<_interviewer[i].routes.size(); ++w)
+        for (unsigned int w=constant::nweeks; w<_interviewer[i].routes_weeks.size(); ++w)
         {
-            totalVisHh += _interviewer[i].routes[w].households.size();
-            totalRemainingTime += 5*8*60. -_interviewer[i].routes[w].time;
+            totalVisHh += _interviewer[i].routes_weeks[w].households.size();
+            totalRemainingTime += 5*8*60. -_interviewer[i].routes_weeks[w].time;
         }
     }
 
@@ -719,10 +747,10 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     totalRemainingTime = 0.;
     for (unsigned int i=0; i<_interviewer.size(); ++i)
     {
-        for (unsigned int w=2*constant::nweeks; w<_interviewer[i].routes.size(); ++w)
+        for (unsigned int w=2*constant::nweeks; w<_interviewer[i].routes_weeks.size(); ++w)
         {
-            totalVisHh += _interviewer[i].routes[w].households.size();
-            totalRemainingTime += 5*8*60. -_interviewer[i].routes[w].time;
+            totalVisHh += _interviewer[i].routes_weeks[w].households.size();
+            totalRemainingTime += 5*8*60. -_interviewer[i].routes_weeks[w].time;
         }
     }
 
@@ -740,6 +768,6 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     std::cout << "                    Plan for a day                            " << std::endl;
 
     for (unsigned int i=0; i<_interviewer.size(); ++i)
-        planForADay( _interviewer);
+        planForADay( _interviewer[i], planITimes_week, _households, _distmatrix, _distmatrixRain);
 
 }
