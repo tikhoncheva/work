@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->tableWidget_dayplans, SIGNAL(cellClicked(int, int)), this, SLOT(daySelected(int, int)));
 
     // table of week plans
-    ui->tableWidget_weekplans->setRowCount(constant::nweeks);
+    ui->tableWidget_weekplans->setRowCount(constant::nweeks * constant::P);
     ui->tableWidget_weekplans->setColumnCount(4);
 
     QStringList Header;
@@ -220,7 +220,7 @@ void MainWindow::on_checkBoxVillageNames_clicked()
     }
 
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
     ui->widget->replot();
 }
@@ -241,7 +241,7 @@ void MainWindow::on_checkBoxVillageIDs_clicked()
     }
 
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
     ui->widget->replot();
 }
@@ -256,7 +256,7 @@ void MainWindow::on_checkBoxShowRoads_clicked()
 {
     if (ui->checkBoxShowRoads->isChecked())
     {
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
     } else {
         ui->widget->clearItems();
 
@@ -286,17 +286,16 @@ void MainWindow::on_pushButtonShowRoute_clicked()
     if (ui->checkBoxVillageIDs->isChecked())
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
     plot_villages(ui->widget, Village);
 
     QString qstrK = ui->comboBoxInterviewer->currentText();
     std::string strK = qstrK.toStdString();
 
-    unsigned int week = constant::nweeks;     // # week
+    unsigned int week = constant::nweeks * constant::P;     // # week
     unsigned int k;         // Interviewer number
 
-//    ui->textEditRouteInfo->clear();
 
     k = atoi(strK.c_str());    // Interviewer number
     if (k < 1)
@@ -314,32 +313,6 @@ void MainWindow::on_pushButtonShowRoute_clicked()
 
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
     ui->tableWidget_dayplans->clearContents();
-/*
-    {
-        week = atoi(strD.c_str());    // week
-        // plot route for the day Day and Interviewer k
-        plot_route(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
-
-        std::stringstream ss;
-        ss << "Week:" << week << "  ";
-        ss << "Work time:" <<Interviewer[k-1].routes[week-1].time << "/" << 5*8*60 << "  ";
-        ss << "\n\n";
-
-        ss << "#VisCitys:" << Interviewer[k-1].routes[week-1].villages.size()-2 << "  ";
-        ss << "\n";
-        for (unsigned int v=0; v<Interviewer[k-1].routes[week-1].villages.size(); ++v)
-            ss << Interviewer[k-1].routes[week-1].villages[v] + 101 << " ";
-        ss << "\n\n";
-
-        ss << "#VisHh:" << Interviewer[k-1].routes[week-1].households.size() << " ";
-        ss << "\n";
-        for (unsigned int h=0; h<Interviewer[k-1].routes[week-1].households.size(); ++h)
-            ss << Interviewer[k-1].routes[week-1].households[h] + 10001<< " ";
-        ss << "\n";
-
-//        ui->textEditRouteInfo->setText(QString::fromStdString(ss.str()));
-    }
-*/
 
     ui->widget->replot();
 }
@@ -363,6 +336,10 @@ void MainWindow::weekSelected(int i, int)
 
     ui->widget->clearItems();
 
+    std::cout << "Week route: " << std::endl;
+    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].villages.size(); ++i)
+         std::cout << Interviewer[k-1].routes_weeks[week-1].villages[i] + 101  << " " ;
+    std::cout << std::endl << std::endl;
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -370,7 +347,7 @@ void MainWindow::weekSelected(int i, int)
     if (ui->checkBoxVillageIDs->isChecked())
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
     plot_route_week(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
     plot_villages(ui->widget, Village);
@@ -400,6 +377,7 @@ void MainWindow::weekSelected(int i, int)
         ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].households.size())));
     }
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
+
 }
 
 
@@ -423,7 +401,7 @@ void MainWindow::daySelected(int i, int)
     if (ui->checkBoxVillageIDs->isChecked())
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
     plot_route_day(ui->widget, Village, Interviewer[k-1], 5*week + day, predecessorsDry);
     plot_villages(ui->widget, Village);
@@ -496,7 +474,7 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     if (ui->checkBoxVillageIDs->isChecked())
         plot_IDsVillages(ui->widget, Village);
     if (ui->checkBoxShowRoads->isChecked())
-        plot_roads(ui->widget, Village, Road, distmatrix, false);
+        plot_roads(ui->widget, Village, Road, distmatrix);
 
 
     initialsolution(Village,  // villages

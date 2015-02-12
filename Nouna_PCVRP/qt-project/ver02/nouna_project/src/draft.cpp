@@ -1,3 +1,18 @@
+bool compareTime ( const std::pair<int, double>& a,
+                   const std::pair<int, double>& b)
+{
+    return a.second > b.second;
+}
+
+bool isZero (const unsigned int a)
+{
+    return a==0;
+}
+
+bool visited (std::pair<unsigned int, bool> a)
+{
+    return !a.second;
+}
 
 std::vector<std::pair<unsigned int, bool> > specialPresorting(std::vector<stHousehold> _households)
 {

@@ -4,6 +4,9 @@
 #include "hrd/const.h"
 #include <QApplication>
 
+double constant::maxDistDry = 0.;
+double constant::maxDistRain = 0.;
+
 int unsigned constant::shortITime = 10; // 10 min
 int unsigned constant::longITime = 25;  // 25 min
 

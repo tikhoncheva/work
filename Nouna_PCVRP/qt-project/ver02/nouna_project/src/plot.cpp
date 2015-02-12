@@ -118,7 +118,7 @@ void plot_IDsVillages(QCustomPlot *plot,
 
         QCPItemText *textLabel = new QCPItemText(plot);
         textLabel->setText(QString::number(V[i].ID));
-        textLabel->position->setCoords(x[i], y[i]+0.007);
+        textLabel->position->setCoords(x[i]+0.007, y[i]);
         plot->addItem(textLabel);
     }
 
@@ -129,8 +129,7 @@ void plot_IDsVillages(QCustomPlot *plot,
 void plot_roads(QCustomPlot* plot,
                 std::vector<stVillage> V,
                 std::vector<stRoad> R,
-                std::vector<std::vector<uDist> > dist,
-                bool rainingSeason)
+                std::vector<std::vector<uDist> > dist)
 {
     QPointF p1, p2;
     unsigned int nV = V.size();
