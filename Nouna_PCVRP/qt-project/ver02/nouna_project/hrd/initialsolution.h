@@ -24,7 +24,7 @@ void initialsolution(std::vector<stVillage>,                // villages
                      std::vector<stInterviewer>& ,             // interviewers
                      std::vector<std::vector<double> >,       // distmatrix
                      std::vector<std::vector<double> >,       // distmatrix (raining season)
-                     std::vector<std::vector<std::pair<unsigned int, double> > >,
+                     std::vector<std::vector<unsigned int> >,
                      timeStatistic);
 
 void planForADay (unsigned int,                      // day

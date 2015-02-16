@@ -35,7 +35,7 @@ std::vector<std::vector<double> > timematrixRain;   // between all villages
 uintMatrix2D predecessorsDry;    // shortest ways
 uintMatrix2D predecessorsRain;   // between all villages
 
-std::vector<std::vector<std::pair<unsigned int, double> > > village_household;    // list of the households in a village
+std::vector<std::vector<unsigned int> > village_household;    // list of the households in a village
 
 timeStatistic TimeInfo;
 

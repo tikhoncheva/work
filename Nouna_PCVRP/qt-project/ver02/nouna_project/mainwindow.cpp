@@ -341,6 +341,11 @@ void MainWindow::weekSelected(int i, int)
          std::cout << Interviewer[k-1].routes_weeks[week-1].villages[i] + 101  << " " ;
     std::cout << std::endl << std::endl;
 
+    std::cout << "Households: " << std::endl;
+    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].households.size(); ++i)
+         std::cout << Interviewer[k-1].routes_weeks[week-1].households[i] + 10001  << " " ;
+    std::cout << std::endl << std::endl;
+
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
         plot_labelsVillages(ui->widget, Village);
@@ -383,7 +388,6 @@ void MainWindow::weekSelected(int i, int)
 
 void MainWindow::daySelected(int i, int)
 {
-
     int week = ui->tableWidget_weekplans->currentRow();
     int day = i+1;
 

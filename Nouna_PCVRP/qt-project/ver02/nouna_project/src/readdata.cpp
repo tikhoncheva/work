@@ -136,7 +136,7 @@ std::vector<stHousehold> readdata_households(std::string fileName)
             buf >> tmpHh.villageID;
 
             tmpHh.itime = (1-tmpHh.type)*10.  // 10 min for standart interview
-                        +    tmpHh.type *25.*tmpHh.nPersons;  // 30 min for special cases
+                        +    tmpHh.type *25.*tmpHh.nPersons;  // 25 min for special cases
             result.push_back(tmpHh);
 
             buf.clear();

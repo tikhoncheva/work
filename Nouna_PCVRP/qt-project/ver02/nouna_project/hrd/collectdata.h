@@ -26,17 +26,17 @@ public:
 };
 
 
-std::vector<std::vector<std::pair<unsigned int, double> > >
+std::vector<std::vector<unsigned int> >
                                         households_in_villages(std::vector<stVillage> villages,
                                                                std::vector<stHousehold> households)
 {
     // get list of households in each village
     unsigned int V = villages.size();
-    std::vector<std::vector<std::pair<unsigned int, double> > > _village_household(V);
+    std::vector<std::vector<unsigned int> > _village_household(V);
 
     unsigned int vID;   // village's ID
     unsigned int hID;   // household's ID
-    double it;          // interview time
+
     std::vector<stHousehold>::iterator household_in_vID;
 
     for (unsigned int i=0; i<V; ++i)    // for each village
@@ -50,14 +50,15 @@ std::vector<std::vector<std::pair<unsigned int, double> > >
         {
             // add household index in the list
             hID = int(household_in_vID-households.begin());
-            it = households[hID].itime;         // interview time
 
-            _village_household[i].push_back(std::make_pair(hID, it));
+            _village_household[i].push_back(hID);
             // find next household in the village i
             household_in_vID = std::find_if(household_in_vID + 1,
                                             households.end(),
                                             matchVillageID(vID));
         }
+
+        std::sort(_village_household[i].begin(), _village_household[i].end());
 
     }
     return _village_household;
