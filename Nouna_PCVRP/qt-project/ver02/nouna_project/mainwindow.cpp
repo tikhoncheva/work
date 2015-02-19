@@ -410,6 +410,11 @@ void MainWindow::daySelected(int i, int)
     plot_route_day(ui->widget, Village, Interviewer[k-1], 5*week + day, predecessorsDry);
     plot_villages(ui->widget, Village);
 
+    std::cout << "Households to visit on the day " << day << ": " << std::endl;
+    for (unsigned int i=0; i<Interviewer[k-1].routes_days[5*week + day-1].households.size(); ++i)
+        std::cout << Interviewer[k-1].routes_days[5*week + day-1].households[i] + 10001 << "  ";
+    std::cout << std::endl;
+
     ui->widget->replot();
 }
 

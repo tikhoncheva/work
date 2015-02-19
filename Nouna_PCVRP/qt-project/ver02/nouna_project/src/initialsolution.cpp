@@ -107,7 +107,7 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> vill
         for (unsigned int j=0; j < _village_household[vID].size(); ++j)
         {
             hhID = _village_household[vID][j];
-            households_sorted.push_back(households[hhID]);
+            households_sorted.insert(households_sorted.begin(), households[hhID]);
         }
     }
 
@@ -437,6 +437,7 @@ void dayplan_interviewer (stInterviewer& interviewer,
     double ti;                    // interview time
     double t_changev;             // time to move in other village
     double t_home;                // time to come back at the start
+    double t_home_prev = 0.;
 
     unsigned int day, newday, day_it;         // current week day
 
@@ -466,16 +467,16 @@ void dayplan_interviewer (stInterviewer& interviewer,
                     interviewer.routes_weeks[w].villages.end()-1,
                     vToVis.begin());
         V = vToVis.size();
-        std::cout << "V= " << V << " with " << hhToVis.size() << " households" << std::endl;
-        std::cout << "village IDs: ";
-        for(unsigned int v=0; v<V; ++v)
-            std::cout << vToVis[v] +101 << " ";
-        std::cout << std::endl;
+//        std::cout << "V= " << V << " with " << hhToVis.size() << " households" << std::endl;
+//        std::cout << "village IDs: ";
+//        for(unsigned int v=0; v<V; ++v)
+//            std::cout << vToVis[v] +101 << " ";
+//        std::cout << std::endl;
 
-        std::cout << "households IDs: ";
-        for(unsigned int h=0; h<N; ++h)
-            std::cout << hhToVis[h] + 10001 << " ";
-        std::cout << std::endl;
+//        std::cout << "households IDs: ";
+//        for(unsigned int h=0; h<N; ++h)
+//            std::cout << hhToVis[h] + 10001 << " ";
+//        std::cout << std::endl;
 
         // if there is nothing to be done on the current week
         if (hhToVis.empty()){
@@ -521,17 +522,19 @@ void dayplan_interviewer (stInterviewer& interviewer,
                 ti = (*TimePlan_hhID).second;
 
                 t_home    =    rainingSeason *_distmatrixRain[nextV][home] // if interviewer would come back home after this hh
-                        + (1-rainingSeason)*_distmatrixDry[nextV][home];
+                          + (1-rainingSeason)*_distmatrixDry[nextV][home];
                 t_changev =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
-                        + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                          + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+
+//                std::cout << "ti: " << ti << "  t_home " << t_home << " tchangev" << t_changev
+//                          << " rameining time "<< remaining_time[day] - (t_changev + ti + t_home) << std::endl;
 
                 if (remaining_time[day] - (t_changev + ti + t_home) <= 0 )
                 {
-
                     newday = std::min(int(day+1), 4);
                     if (newday!=day)
                     {
-                       remaining_time[day] -= (t_changev + ti + t_home);
+                       remaining_time[day] -= t_home_prev;
                        visitedV[day].push_back(home); // close day completely, if it is not the last day of the week
 
                        day = newday;        // switch to the next day
@@ -551,6 +554,7 @@ void dayplan_interviewer (stInterviewer& interviewer,
                 remaining_time[day] -= t_changev + ti;
 
                 predV = nextV;
+                t_home_prev = t_home;
             } // end while
         }   // end for v
 
@@ -561,6 +565,29 @@ void dayplan_interviewer (stInterviewer& interviewer,
                + (1-rainingSeason)*_distmatrixDry [predV][home];
         remaining_time[day] -= t_home;
 
+        // stay for a night, if the next day beginns in the same village
+        for (day_it=0; day_it<4; ++day_it)
+        {
+            if(visitedV[day_it].size()>=2 && visitedV[day_it+1].size()>=2)
+            {
+                lastV = visitedV[day_it][visitedV[day_it].size()-2];
+                firstV = visitedV[day_it+1][1];
+                if (lastV == firstV)
+                {
+                    visitedV[day_it].pop_back();
+                    t_changev =    rainingSeason *_distmatrixRain[lastV][home] // travel time between previous village and new village
+                              + (1-rainingSeason)*_distmatrixDry [lastV][home];
+                    remaining_time[day_it] += t_changev;
+
+                    visitedV[day_it+1].erase(visitedV[day_it+1].begin());
+                    t_changev =    rainingSeason *_distmatrixRain[home][firstV] // travel time between previous village and new village
+                              + (1-rainingSeason)*_distmatrixDry [home][firstV];
+                    remaining_time[day_it+1] += t_changev;
+                }
+            }
+        }
+
+
         // save all routes
         for (day_it=0; day_it<5; ++day_it)
         {
@@ -569,7 +596,6 @@ void dayplan_interviewer (stInterviewer& interviewer,
             tmpRoute.time = tmax - remaining_time[day_it];
             interviewer.routes_days.push_back(tmpRoute);
         }
-
     }   // end week
 
 }
