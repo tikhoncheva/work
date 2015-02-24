@@ -343,7 +343,7 @@ int weekplan_interviewers (std::vector <std::pair<int, double> > weekplan,
 
         nextV = _household[hhID].villageID - 101;   // village of the next household
 
-        std::cout << "Household " << hhID + 10001 << " with village ID " << nextV << std::endl;
+//        std::cout << "Household " << hhID + 10001 << " with village ID " << nextV << std::endl;
         t_home = _distmatrix[nextV][home]; // if interviewer would come back home after this hh
 
         //        predV= home;
@@ -559,11 +559,12 @@ void dayplan_interviewer (stInterviewer& interviewer,
         }   // end for v
 
         // return home at the end of the week
-        visitedV[day].push_back(home);
-        predV = visitedV[day].back();
         t_home =    rainingSeason *_distmatrixRain[predV][home]
                + (1-rainingSeason)*_distmatrixDry [predV][home];
+        std::cout << "work time: " << tmax - remaining_time[day] << " + t_home=" << t_home <<std::endl;
         remaining_time[day] -= t_home;
+        visitedV[day].push_back(home);
+        predV = visitedV[day].back();
 
         // stay for a night, if the next day beginns in the same village
         for (day_it=0; day_it<4; ++day_it)
