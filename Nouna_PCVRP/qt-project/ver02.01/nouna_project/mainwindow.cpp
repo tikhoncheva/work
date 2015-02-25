@@ -59,8 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_weekplans->setColumnWidth(3,90);
 
     // table of day plans
-    ui->tableWidget_dayplans->setRowCount(5);
-    ui->tableWidget_dayplans->setColumnCount(6);
+    ui->tableWidget_dayplans->setRowCount(240);
+    ui->tableWidget_dayplans->setColumnCount(4);
 
     Header.clear();
     Header << "Villages" << "#Hh" << "Househols" << "Itime" << "Ttime" << "Wtime";
@@ -72,12 +72,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
 //    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
 
-    ui->tableWidget_dayplans->setColumnWidth(0,40);
-    ui->tableWidget_dayplans->setColumnWidth(1,20);
-    ui->tableWidget_dayplans->setColumnWidth(2,40);
+    ui->tableWidget_dayplans->setColumnWidth(0,50);
+    ui->tableWidget_dayplans->setColumnWidth(1,30);
+    ui->tableWidget_dayplans->setColumnWidth(2,130);
     ui->tableWidget_dayplans->setColumnWidth(3,50);
-    ui->tableWidget_dayplans->setColumnWidth(4,50);
-    ui->tableWidget_dayplans->setColumnWidth(5,50);
 
 
     // default file selection
@@ -296,7 +294,8 @@ void MainWindow::on_pushButtonShowRoute_clicked()
     QString qstrK = ui->comboBoxInterviewer->currentText();
     std::string strK = qstrK.toStdString();
 
-    unsigned int week = constant::nweeks * constant::P;     // # week
+    unsigned int weeks = constant::nweeks * constant::P;     // # week
+    unsigned int days = weeks * 5;
     unsigned int k;         // Interviewer number
 
 
@@ -306,13 +305,16 @@ void MainWindow::on_pushButtonShowRoute_clicked()
     if (k > Interviewer.size())
         k = Interviewer.size();
 
-    for (unsigned int w=0; w<week; ++w)
+
+
+    for (unsigned int w=0; w<weeks; ++w)
     {
         ui->tableWidget_weekplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
         ui->tableWidget_weekplans->setItem(w, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].time)));
-        ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].villages.size()-2)));
+        ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].villages.size())));
         ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].households.size())));
     }
+
 
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
     ui->tableWidget_dayplans->clearContents();
@@ -382,12 +384,8 @@ void MainWindow::weekSelected(int i, int)
         ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].households.size())));
         // Households
         ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(ind))));
-        // itime
-//        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::number()));
-        //ttime
-//        ui->tableWidget_dayplans->setItem(d, 4, new QTableWidgetItem(QString::number()));
         //wtime
-        ui->tableWidget_dayplans->setItem(d, 5, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
+        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
     }
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
 
