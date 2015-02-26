@@ -25,8 +25,10 @@ ForwardIterator find_posmin( ForwardIterator first, ForwardIterator last )
     else
         return smallest;
 }
-
-
+//------------------------------------------------------------------------------------------------
+/*
+ * sort villages according to their distance to capital
+ */
 std::vector<unsigned int> sort_villages_dist(std::vector<unsigned int> villages,
                                              const std::vector<std::vector<double> > dist)
 {
@@ -46,9 +48,12 @@ std::vector<unsigned int> sort_villages_dist(std::vector<unsigned int> villages,
     return villages_sorted;
 
 }
-
-
-std::vector<std::vector<unsigned int> > sort_v_with_hh(std::vector<unsigned int> villagesID,
+//------------------------------------------------------------------------------------------------
+/*
+ * group households according to villages they belong to
+ * return matrix instead of two arrays
+ */
+std::vector<std::vector<unsigned int> > groupHH(std::vector<unsigned int> villagesID,
                                                        std::vector<unsigned int> householdsID,
                                                        const std::vector<stHousehold> _households)
 {
@@ -73,9 +78,10 @@ std::vector<std::vector<unsigned int> > sort_v_with_hh(std::vector<unsigned int>
 
     return _village_household;
 }
-
-
-// sort Villages (and households) in increasing order of the angle they make with the capital
+//------------------------------------------------------------------------------------------------
+/*
+ * sort Villages (and households) in increasing order of the angle they make with the capital
+ */
 std::vector<stHousehold> households_presorting(const std::vector<stVillage> villages,
                                                 const std::vector<stHousehold> households,
                                                 std::vector<std::vector<unsigned int> > _village_household)
@@ -117,16 +123,13 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> vill
 
 //------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------
-
 /*
- * Year plan of the interviews:
- * day |->   hhIDs to visit
- *
+ * Plan hh in the year: day |->   hhIDs to visit
  */
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(std::vector<stHousehold> _households_sorted, // _households
-                                                            unsigned int K,            // number of interviewers
-                                                            timeStatistic _TimeInfo)
+std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
+                                                        std::vector<stHousehold> _households_sorted, // _households
+                                                        unsigned int K,                              // number of interviewers
+                                                        timeStatistic _TimeInfo)                     // information about mean values
 {
     /*
      * Step 1: set interview times for long interviewes in each period, so that
@@ -408,6 +411,10 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
     return dayInterviews;
 }
 
+//------------------------------------------------------------------------------------------------
+/*
+ * Given a year plan of household, assign interviewer to each hh
+ */
 void assignInterviewersToHH(const std::vector<std::vector<std::pair<unsigned int, double> > > _dayplan_interviews,
                              std::vector<stHousehold> _households,         // _households
                             std::vector<stInterviewer>& _interviewer,
@@ -475,7 +482,7 @@ void assignInterviewersToHH(const std::vector<std::vector<std::pair<unsigned int
 //            else vToVis = sort_villages_dist(vToVis,_distmatrixDry);
 
 //        std::vector<std::vector<unsigned int> > village_household_Matrix;
-//        village_household_Matrix = sort_v_with_hh(vToVis, hhToVis, _households);
+//        village_household_Matrix = groupHH(vToVis, hhToVis, _households);
 
         predV = home;
         for (unsigned int h=0; h<hhToVis.size(); ++h)
@@ -522,7 +529,10 @@ void assignInterviewersToHH(const std::vector<std::vector<std::pair<unsigned int
     }// end day
 
 }
-
+//------------------------------------------------------------------------------------------------
+/*
+ * Make week plans from the given day plans
+ */
 void make_week_plans(std::vector<stInterviewer>& _interviewer)
 {
     unsigned int nI = _interviewer.size();
@@ -561,7 +571,8 @@ void make_week_plans(std::vector<stInterviewer>& _interviewer)
         }
     }
 }
-
+//------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------
 
 /*
  * Initial Solution
@@ -572,7 +583,8 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
                      std::vector<std::vector<double> >  _distmatrix,// distmatrix
                      std::vector<std::vector<double> >  _distmatrixRain,// distmatrix
                      std::vector<std::vector<unsigned int> > _village_household,
-                     timeStatistic _TimeInfo
+                     timeStatistic _TimeInfo,
+                     std::vector<std::vector<std::pair<unsigned int, double> > >&yearplan_hh
                      )
 {
 
@@ -599,13 +611,12 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     /*
      * Associate interviews with days
      */
-    std::vector<std::vector<std::pair<unsigned int, double> > > dayplan_interviews;
-    dayplan_interviews = planInterviewInYear(households_sorted, nI, _TimeInfo);
+    yearplan_hh = planInterviewInYear(households_sorted, nI, _TimeInfo);
 
     /*
      *  Assign Interviewers to the interview
      */
-    assignInterviewersToHH(dayplan_interviews, _households,_interviewer,
+    assignInterviewersToHH(yearplan_hh, _households,_interviewer,
                            _distmatrix, _distmatrixRain);
 
     /*

@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "qcustomplot/qcustomplot.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QColor>
@@ -10,7 +9,8 @@
 #include <limits>
 #include <sstream>
 
-//----------------
+#include "qcustomplot/qcustomplot.h"
+//---------------------
 
 
 

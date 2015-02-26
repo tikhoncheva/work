@@ -305,7 +305,7 @@ public:
 
         tableWidget_dayplans = new QTableWidget(layoutWidget);
         tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
-        tableWidget_dayplans->setMaximumSize(QSize(300, 16777215));
+        tableWidget_dayplans->setMaximumSize(QSize(350, 16777215));
         QFont font;
         font.setPointSize(7);
         tableWidget_dayplans->setFont(font);
@@ -346,7 +346,7 @@ public:
 
         tableWidget_weekplans = new QTableWidget(layoutWidget);
         tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
-        tableWidget_weekplans->setMaximumSize(QSize(325, 16777215));
+        tableWidget_weekplans->setMaximumSize(QSize(350, 16777215));
         tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
         tableWidget_weekplans->setTextElideMode(Qt::ElideMiddle);
 

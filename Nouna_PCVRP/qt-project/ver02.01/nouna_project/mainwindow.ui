@@ -419,7 +419,7 @@ border-radius: 10px;
             <widget class="QTableWidget" name="tableWidget_dayplans">
              <property name="maximumSize">
               <size>
-               <width>300</width>
+               <width>350</width>
                <height>16777215</height>
               </size>
              </property>
@@ -500,7 +500,7 @@ border-radius: 10px;
             <widget class="QTableWidget" name="tableWidget_weekplans">
              <property name="maximumSize">
               <size>
-               <width>325</width>
+               <width>350</width>
                <height>16777215</height>
               </size>
              </property>

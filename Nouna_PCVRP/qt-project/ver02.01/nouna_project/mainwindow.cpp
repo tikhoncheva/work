@@ -1,14 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//---------------------
+
 #include "hrd/datadef.h"
 #include "hrd/readdata.h"
 #include "hrd/collectdata.h"
 #include "hrd/plot.h"
+
 //#include "hrd/distmatrix.h"
 //#include "hrd/dijkstra2.h"
 
 #include "hrd/initialsolution.h"
+#include "hrd/report.h"
+
+//----------------
 
 std::string returnFilename (const std::string& str)
 {
@@ -59,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_weekplans->setColumnWidth(3,90);
 
     // table of day plans
-    ui->tableWidget_dayplans->setRowCount(240);
+    ui->tableWidget_dayplans->setRowCount(5);
     ui->tableWidget_dayplans->setColumnCount(4);
 
     Header.clear();
@@ -72,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
 //    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
 
-    ui->tableWidget_dayplans->setColumnWidth(0,50);
+    ui->tableWidget_dayplans->setColumnWidth(0,100);
     ui->tableWidget_dayplans->setColumnWidth(1,30);
     ui->tableWidget_dayplans->setColumnWidth(2,130);
     ui->tableWidget_dayplans->setColumnWidth(3,50);
@@ -492,13 +496,18 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
         plot_roads(ui->widget, Village, Road, distmatrix);
 
 
+    std::vector<std::vector<std::pair<unsigned int, double> > > hhITimePlan;
     initialsolution(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
                     timematrixRain,           // time matrix rain
                     village_household,
-                    TimeInfo);
+                    TimeInfo,
+                    hhITimePlan);
+
+    saveHH_ITPlan (hhITimePlan, "../results/hh_itime_plan.txt");
+    saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");
 
     ui->pushButtonShowRoute->setEnabled(true);
     ui->comboBoxInterviewer->setEnabled(true);
