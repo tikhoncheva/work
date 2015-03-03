@@ -68,7 +68,6 @@ public:
     QGridLayout *gridLayout_2;
     QLabel *labelSelectInterviewer;
     QComboBox *comboBoxInterviewer;
-    QTableWidget *tableWidget_dayplans;
     QSpacerItem *verticalSpacer;
     QLabel *label_2;
     QLabel *label;
@@ -76,6 +75,8 @@ public:
     QSpacerItem *verticalSpacer_2;
     QPushButton *pushButtonShowRoute;
     QTableWidget *tableWidget_weekplans;
+    QTableWidget *tableWidget_dayplans;
+    QPushButton *pbShow_report;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -84,7 +85,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(953, 624);
+        MainWindow->resize(958, 641);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -303,17 +304,6 @@ public:
 
         gridLayout_2->addWidget(comboBoxInterviewer, 0, 2, 1, 1);
 
-        tableWidget_dayplans = new QTableWidget(layoutWidget);
-        tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
-        tableWidget_dayplans->setMaximumSize(QSize(350, 16777215));
-        QFont font;
-        font.setPointSize(7);
-        tableWidget_dayplans->setFont(font);
-        tableWidget_dayplans->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tableWidget_dayplans->setTextElideMode(Qt::ElideMiddle);
-
-        gridLayout_2->addWidget(tableWidget_dayplans, 6, 0, 1, 4);
-
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         gridLayout_2->addItem(verticalSpacer, 2, 1, 1, 1);
@@ -352,6 +342,23 @@ public:
 
         gridLayout_2->addWidget(tableWidget_weekplans, 3, 0, 1, 4);
 
+        tableWidget_dayplans = new QTableWidget(layoutWidget);
+        tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
+        tableWidget_dayplans->setMaximumSize(QSize(350, 16777215));
+        QFont font;
+        font.setPointSize(7);
+        tableWidget_dayplans->setFont(font);
+        tableWidget_dayplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget_dayplans->setTextElideMode(Qt::ElideMiddle);
+
+        gridLayout_2->addWidget(tableWidget_dayplans, 6, 0, 1, 4);
+
+        pbShow_report = new QPushButton(layoutWidget);
+        pbShow_report->setObjectName(QStringLiteral("pbShow_report"));
+        pbShow_report->setEnabled(false);
+
+        gridLayout_2->addWidget(pbShow_report, 7, 3, 1, 1);
+
         tabWidget->addTab(tab_initsolution, QString());
 
         gridLayout->addWidget(tabWidget, 1, 1, 1, 1);
@@ -362,7 +369,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 953, 20));
+        menuBar->setGeometry(QRect(0, 0, 958, 20));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -398,6 +405,7 @@ public:
         label->setText(QApplication::translate("MainWindow", "Week plan", 0));
         pushButtonInitialSolution->setText(QApplication::translate("MainWindow", "Initial Solution", 0));
         pushButtonShowRoute->setText(QApplication::translate("MainWindow", "show routes", 0));
+        pbShow_report->setText(QApplication::translate("MainWindow", "Report", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_initsolution), QApplication::translate("MainWindow", "Initial Solution", 0));
     } // retranslateUi
 

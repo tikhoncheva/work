@@ -126,7 +126,7 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> vill
 /*
  * Plan hh in the year: day |->   hhIDs to visit
  */
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
+std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly(
                                                         std::vector<stHousehold> _households_sorted, // _households
                                                         unsigned int K,                              // number of interviewers
                                                         timeStatistic _TimeInfo)                     // information about mean values
@@ -162,6 +162,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
         if (_households_sorted[i].type == 1)    // only long interviews
         {
             hhID = _households_sorted[i].ID - 10001;// rand()%(N-1);
+
             //        while (!ToVis[hhID])
             //            hhID= (hhID+1)%N;
 
@@ -191,19 +192,20 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
     assert(indShortInterviews.size() == _TimeInfo.nShortInterviews);    // correct number of short interviews
 
 
-    double sum1 = 0., sum2 = 0., sum3 = 0.;
-    for (unsigned int i=0; i<nLongInterviews; ++i)
-    {
-        sum1 += planLongITimes[0][i].second;
-        sum2 += planLongITimes[1][i].second;
-        sum3 += planLongITimes[2][i].second;
-    }
+//    double sum1 = 0., sum2 = 0., sum3 = 0.;
+//    for (unsigned int i=0; i<nLongInterviews; ++i)
+//    {
+//        sum1 += planLongITimes[0][i].second;
+//        sum2 += planLongITimes[1][i].second;
+//        sum3 += planLongITimes[2][i].second;
+//    }
 
-    std::cout << "Period \t LongInterview Times" << std::endl;
-    std::cout << "Period 1 \t" << sum1 << std::endl;
-    std::cout << "Period 2 \t" << sum2 << std::endl;
-    std::cout << "Period 3 \t" << sum3 << std::endl;
-    std::cout << std::endl;
+//    std::cout << "Period \t LongInterview Times" << std::endl;
+//    std::cout << "Period 1 \t" << sum1 << std::endl;
+//    std::cout << "Period 2 \t" << sum2 << std::endl;
+//    std::cout << "Period 3 \t" << sum3 << std::endl;
+//    std::cout << std::endl;
+
     //-------------------------------------------------------------------------------------------
 
     /*
@@ -289,6 +291,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
 
        if (itime > constant::shortITime /*10*/)
        {
+
            // for each week calculate the remaining time, if hh will be assign to this week
            for (unsigned int week=0; week<constant::nweeks; ++week)
                remainingTime_new[week] = remainingTime[week] - itime;
@@ -304,6 +307,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
        }
            //ToVis[hhID] = false;
     }
+
 
     for (unsigned int i=0; i< nLongInterviews; ++i)
     {
@@ -357,9 +361,11 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
         hhID  = planLongITimes[0][i].first;
         itime = planLongITimes[0][i].second;
 
+        assert(planLongITimes[0][i].first == planLongITimes[1][i].first);
+        assert(planLongITimes[0][i].first == planLongITimes[2][i].first);
+
         d = days[w];
         days[w] = (days[w]+1)%5;
-        d = std::min(int(d),4);
 
         dayInterviews [w*5+d].push_back(std::make_pair(hhID, itime));
         remaining_time[w*5+d] -= itime;
@@ -372,6 +378,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
 
         sum += itime + planLongITimes[1][i].second + planLongITimes[2][i].second;
     }
+
 
     //plan short interviews
     d = 0; // here d \in [0, nweeks-1]
@@ -393,6 +400,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
 
         sum += 3*itime;
     }
+
 
     std::cout << "day\t" << "households \t" << "free time" << std::endl;
     for (unsigned int d=0; d< constant::nweeks * 5 ; ++d)
@@ -611,7 +619,7 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     /*
      * Associate interviews with days
      */
-    yearplan_hh = planInterviewInYear(households_sorted, nI, _TimeInfo);
+    yearplan_hh =  planInterviews_dayly(households_sorted, nI, _TimeInfo);
 
     /*
      *  Assign Interviewers to the interview

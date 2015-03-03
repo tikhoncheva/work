@@ -42,7 +42,7 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> ,
 //------------------------------------------------------------------------------------------------
 
 // Plan interview times of hhs in the year: day |->   hhIDs to visit
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviewInYear(
+std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_daily(
                                                         std::vector<stHousehold> , //  sorted households
                                                         unsigned int ,             // number of interviewers
                                                         timeStatistic );           // information about mean values
@@ -67,16 +67,6 @@ void initialsolution(std::vector<stVillage> ,           // villages
                      std::vector<std::vector<unsigned int> > ,  // grouped households
                      timeStatistic,
                      std::vector<std::vector<std::pair<unsigned int, double> > >&); // year interview plan for hh
-
-void setNInterviwer();
-
-void initialsolution(std::vector<stVillage>,                // villages
-                     std::vector<stHousehold> ,               // households
-                     std::vector<stInterviewer>& ,             // interviewers
-                     std::vector<std::vector<double> >,       // distmatrix
-                     std::vector<std::vector<double> >,       // distmatrix (raining season)
-                     std::vector<std::vector<unsigned int> >,
-                     timeStatistic, std::vector<std::vector<std::pair<unsigned int, double> > >&);
 
 void planForADay (unsigned int,                      // day
                   std::vector<std::pair<int, bool> >& ToVis,

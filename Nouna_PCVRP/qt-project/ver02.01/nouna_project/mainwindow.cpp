@@ -9,7 +9,7 @@
 //#include "hrd/distmatrix.h"
 //#include "hrd/dijkstra2.h"
 
-#include "hrd/initialsolution.h"
+#include "hrd/initialsolution2.h"
 #include "hrd/report.h"
 
 //----------------
@@ -81,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_dayplans->setColumnWidth(2,130);
     ui->tableWidget_dayplans->setColumnWidth(3,50);
 
+    // show report window
+    connect(ui->pbShow_report, SIGNAL(clicked()), this, SLOT(showReportWindow()));
 
     // default file selection
     MainWindow::on_buttonOpenVillages_clicked();
@@ -495,22 +497,30 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix);
 
+//    initialsolution(Village,  // villages
+//                    Household,               // households
+//                    Interviewer,             // Interviewer
+//                    timematrixDry,           // time matrix dry
+//                    timematrixRain,           // time matrix rain
+//                    village_household,
+//                    TimeInfo,
+//                    hhITimePlan_day);
 
-    std::vector<std::vector<std::pair<unsigned int, double> > > hhITimePlan;
-    initialsolution(Village,  // villages
+    initialsolution2(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
                     timematrixRain,           // time matrix rain
                     village_household,
                     TimeInfo,
-                    hhITimePlan);
+                    hhITimePlan_week);
 
-    saveHH_ITPlan (hhITimePlan, "../results/hh_itime_plan.txt");
-    saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");
+    //    saveHH_ITPlan (hhITimePlan_day, "../results/hh_itime_plan.txt");
+    //saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");
 
     ui->pushButtonShowRoute->setEnabled(true);
     ui->comboBoxInterviewer->setEnabled(true);
+    ui->pbShow_report->setEnabled(true);    // show report
 
     std::cout << "Find initial solution ... finished" << std::endl;
 }
@@ -518,6 +528,12 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 //---------------------------------------------------------------------------------------------------
 
 
+/*
+ * Show window with report forms
+ */
 
-
-
+void MainWindow::showReportWindow()
+{
+    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day);
+    rw->show();
+}

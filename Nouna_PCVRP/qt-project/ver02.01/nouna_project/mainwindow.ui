@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>953</width>
-    <height>624</height>
+    <width>958</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -415,27 +415,6 @@ border-radius: 10px;
              </property>
             </widget>
            </item>
-           <item row="6" column="0" colspan="4">
-            <widget class="QTableWidget" name="tableWidget_dayplans">
-             <property name="maximumSize">
-              <size>
-               <width>350</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>7</pointsize>
-              </font>
-             </property>
-             <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
-             </property>
-             <property name="textElideMode">
-              <enum>Qt::ElideMiddle</enum>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="1">
             <spacer name="verticalSpacer">
              <property name="orientation">
@@ -512,6 +491,37 @@ border-radius: 10px;
              </property>
             </widget>
            </item>
+           <item row="6" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_dayplans">
+             <property name="maximumSize">
+              <size>
+               <width>350</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>7</pointsize>
+              </font>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="textElideMode">
+              <enum>Qt::ElideMiddle</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="3">
+            <widget class="QPushButton" name="pbShow_report">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Report</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -526,7 +536,7 @@ border-radius: 10px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>953</width>
+     <width>958</width>
      <height>20</height>
     </rect>
    </property>

@@ -9,6 +9,7 @@
 #include <limits>
 #include <sstream>
 
+#include "reportwindow.h"
 #include "qcustomplot/qcustomplot.h"
 //---------------------
 
@@ -61,8 +62,11 @@ private slots:
 
     void on_pushButtonShowRoute_clicked();
 
+    void showReportWindow();
+
 private:
     Ui::MainWindow *ui;
+    Ui::reportWindow *rw;
 };
 
 #endif // MAINWINDOW_H

@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     src/plot.cpp \
     src/readdata.cpp \
     src/initialsolution.cpp \
-    src/report.cpp
+    src/initialsolution2.cpp \
+    src/report.cpp \
+    reportwindow.cpp
 
 HEADERS  += mainwindow.h \
     readdata.h \
@@ -38,6 +40,7 @@ HEADERS  += mainwindow.h \
     hrd/readdata.h \
     hrd/village.h \
     hrd/initialsolution.h \
+    hrd/initialsolution2.h \
     hrd/interviewer.h \
     hrd/road.h \
     hrd/dijkstra.h \
@@ -45,8 +48,10 @@ HEADERS  += mainwindow.h \
     hrd/collectdata.h \
     hrd/statistic.h \
     hrd/const.h \
-    hrd/report.h
+    hrd/report.h \
+    reportwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    reportwindow.ui
 
 CONFIG += c++11

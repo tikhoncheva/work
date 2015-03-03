@@ -52,8 +52,11 @@ SOURCES       = ../nouna_project/main.cpp \
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
 		../nouna_project/src/initialsolution.cpp \
-		../nouna_project/src/report.cpp moc_mainwindow.cpp \
-		moc_qcustomplot.cpp
+		../nouna_project/src/initialsolution2.cpp \
+		../nouna_project/src/report.cpp \
+		../nouna_project/reportwindow.cpp moc_mainwindow.cpp \
+		moc_qcustomplot.cpp \
+		moc_reportwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		qcustomplot.o \
@@ -61,9 +64,12 @@ OBJECTS       = main.o \
 		plot.o \
 		readdata.o \
 		initialsolution.o \
+		initialsolution2.o \
 		report.o \
+		reportwindow.o \
 		moc_mainwindow.o \
-		moc_qcustomplot.o
+		moc_qcustomplot.o \
+		moc_reportwindow.o
 DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/common/shell-unix.conf \
 		/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/common/unix.conf \
@@ -179,7 +185,9 @@ DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
 		../nouna_project/src/initialsolution.cpp \
-		../nouna_project/src/report.cpp
+		../nouna_project/src/initialsolution2.cpp \
+		../nouna_project/src/report.cpp \
+		../nouna_project/reportwindow.cpp
 QMAKE_TARGET  = nouna_project
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = nouna_project
@@ -209,7 +217,7 @@ first: all
 
 all: Makefile $(TARGET)
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_reportwindow.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../nouna_project/nouna_project.pro /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++/qmake.conf /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf \
@@ -446,7 +454,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/nouna_project1.0.0 || mkdir -p .tmp/nouna_project1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/dijkstra2.h ../nouna_project/hrd/collectdata.h ../nouna_project/hrd/statistic.h ../nouna_project/hrd/const.h ../nouna_project/hrd/report.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp ../nouna_project/src/report.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h readdata.h datadef.h add_func.h village.h route.h household.h ../nouna_project/qcustomplot/qcustomplot.h distmatrix.h plot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/initialsolution2.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/dijkstra2.h ../nouna_project/hrd/collectdata.h ../nouna_project/hrd/statistic.h ../nouna_project/hrd/const.h ../nouna_project/hrd/report.h ../nouna_project/reportwindow.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp ../nouna_project/src/initialsolution2.cpp ../nouna_project/src/report.cpp ../nouna_project/reportwindow.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui ../nouna_project/reportwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
 
 
 clean:compiler_clean 
@@ -469,9 +477,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_qcustomplot.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_qcustomplot.cpp moc_reportwindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_qcustomplot.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_qcustomplot.cpp moc_reportwindow.cpp
 moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
@@ -582,6 +590,10 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
+		../nouna_project/reportwindow.h \
+		../nouna_project/hrd/report.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h \
 		../nouna_project/qcustomplot/qcustomplot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
@@ -936,20 +948,6 @@ moc_mainwindow.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWi
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
-		../nouna_project/hrd/datadef.h \
-		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/road.h \
-		../nouna_project/hrd/household.h \
-		../nouna_project/hrd/interviewer.h \
-		../nouna_project/hrd/statistic.h \
-		../nouna_project/hrd/readdata.h \
-		../nouna_project/hrd/collectdata.h \
-		../nouna_project/hrd/distmatrix.h \
-		../nouna_project/hrd/dijkstra2.h \
-		../nouna_project/hrd/const.h \
-		../nouna_project/hrd/plot.h \
-		../nouna_project/hrd/initialsolution.h \
-		../nouna_project/hrd/report.h \
 		../nouna_project/mainwindow.h
 	/home/kitty/Software/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/kitty/Documents/ComOpt/GIT/work/Nouna_PCVRP/qt-project/ver02.01/nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. ../nouna_project/mainwindow.h -o moc_mainwindow.cpp
 
@@ -1416,13 +1414,130 @@ moc_qcustomplot.cpp: /home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
 		../nouna_project/qcustomplot/qcustomplot.h
 	/home/kitty/Software/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/kitty/Documents/ComOpt/GIT/work/Nouna_PCVRP/qt-project/ver02.01/nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. ../nouna_project/qcustomplot/qcustomplot.h -o moc_qcustomplot.cpp
 
+moc_reportwindow.cpp: ../nouna_project/hrd/report.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmargins.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrect.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsize.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpoint.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpalette.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qcolor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrgb.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvector.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpolygon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qregion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qline.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtransform.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfont.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qcursor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qkeysequence.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvariant.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdebug.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextstream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlocale.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qset.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
+		../nouna_project/reportwindow.h
+	/home/kitty/Software/Qt/5.3/gcc_64/bin/moc $(DEFINES) -I/home/kitty/Software/Qt/5.3/gcc_64/mkspecs/linux-g++ -I/home/kitty/Documents/ComOpt/GIT/work/Nouna_PCVRP/qt-project/ver02.01/nouna_project -I/home/kitty/Software/Qt/5.3/gcc_64/include -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui -I/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore -I. ../nouna_project/reportwindow.h -o moc_reportwindow.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_reportwindow.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_reportwindow.h
 ui_mainwindow.h: ../nouna_project/mainwindow.ui
 	/home/kitty/Software/Qt/5.3/gcc_64/bin/uic ../nouna_project/mainwindow.ui -o ui_mainwindow.h
+
+ui_reportwindow.h: ../nouna_project/reportwindow.ui
+	/home/kitty/Software/Qt/5.3/gcc_64/bin/uic ../nouna_project/reportwindow.ui -o ui_reportwindow.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -1545,6 +1660,10 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
+		../nouna_project/reportwindow.h \
+		../nouna_project/hrd/report.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h \
 		../nouna_project/qcustomplot/qcustomplot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
@@ -1899,20 +2018,7 @@ main.o: ../nouna_project/main.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
-		../nouna_project/hrd/datadef.h \
-		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/road.h \
-		../nouna_project/hrd/household.h \
-		../nouna_project/hrd/interviewer.h \
-		../nouna_project/hrd/statistic.h \
-		../nouna_project/hrd/readdata.h \
-		../nouna_project/hrd/collectdata.h \
-		../nouna_project/hrd/distmatrix.h \
-		../nouna_project/hrd/dijkstra2.h \
 		../nouna_project/hrd/const.h \
-		../nouna_project/hrd/plot.h \
-		../nouna_project/hrd/initialsolution.h \
-		../nouna_project/hrd/report.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../nouna_project/main.cpp
 
@@ -2027,6 +2133,10 @@ mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/QColor \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointF \
+		../nouna_project/reportwindow.h \
+		../nouna_project/hrd/report.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h \
 		../nouna_project/qcustomplot/qcustomplot.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QObject \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPointer \
@@ -2381,20 +2491,6 @@ mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QPair \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
-		../nouna_project/hrd/datadef.h \
-		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/road.h \
-		../nouna_project/hrd/household.h \
-		../nouna_project/hrd/interviewer.h \
-		../nouna_project/hrd/statistic.h \
-		../nouna_project/hrd/readdata.h \
-		../nouna_project/hrd/collectdata.h \
-		../nouna_project/hrd/distmatrix.h \
-		../nouna_project/hrd/dijkstra2.h \
-		../nouna_project/hrd/const.h \
-		../nouna_project/hrd/plot.h \
-		../nouna_project/hrd/initialsolution.h \
-		../nouna_project/hrd/report.h \
 		ui_mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
@@ -2414,7 +2510,18 @@ mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTabWidget \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTableWidget \
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTextEdit \
-		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QToolBar \
+		../nouna_project/hrd/datadef.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/road.h \
+		../nouna_project/hrd/statistic.h \
+		../nouna_project/hrd/readdata.h \
+		../nouna_project/hrd/collectdata.h \
+		../nouna_project/hrd/distmatrix.h \
+		../nouna_project/hrd/dijkstra2.h \
+		../nouna_project/hrd/const.h \
+		../nouna_project/hrd/plot.h \
+		../nouna_project/hrd/initialsolution2.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../nouna_project/mainwindow.cpp
 
 qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcustomplot/qcustomplot.h \
@@ -3368,15 +3475,188 @@ initialsolution.o: ../nouna_project/src/initialsolution.cpp ../nouna_project/hrd
 		../nouna_project/hrd/const.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialsolution.o ../nouna_project/src/initialsolution.cpp
 
+initialsolution2.o: ../nouna_project/src/initialsolution2.cpp ../nouna_project/hrd/initialsolution2.h \
+		../nouna_project/hrd/village.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/road.h \
+		../nouna_project/hrd/household.h \
+		../nouna_project/hrd/statistic.h \
+		../nouna_project/hrd/const.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialsolution2.o ../nouna_project/src/initialsolution2.cpp
+
 report.o: ../nouna_project/src/report.cpp ../nouna_project/hrd/report.h \
-		../nouna_project/hrd/interviewer.h
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o report.o ../nouna_project/src/report.cpp
+
+reportwindow.o: ../nouna_project/reportwindow.cpp ../nouna_project/reportwindow.h \
+		../nouna_project/hrd/report.h \
+		../nouna_project/hrd/interviewer.h \
+		../nouna_project/hrd/household.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QFileDialog \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qfiledialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdir.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstring.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qchar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobal.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qconfig.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfeatures.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsystemdetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qprocessordetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcompilerdetection.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtypeinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtypetraits.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsysinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlogging.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qflags.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbasicatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qgenericatomic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_msvc.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv7.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv6.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_armv5.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_ia64.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_mips.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_x86.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_gcc.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qatomic_unix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qglobalstatic.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmutex.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnumeric.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qbytearray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrefcount.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qnamespace.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qarraydata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringbuilder.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfileinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfile.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qfiledevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiodevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qalgorithms.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qiterator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qscopedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmetatype.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvarlengtharray.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontainerfwd.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qisenum.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qobject_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qshareddata.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringlist.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdatastream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpair.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregexp.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qstringmatcher.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qurlquery.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdialog.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmargins.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpaintdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qrect.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsize.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qpoint.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpalette.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qcolor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qrgb.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qbrush.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvector.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qmatrix.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpolygon.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qregion.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qline.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtransform.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpainterpath.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qimage.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qpixmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qhash.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfont.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontmetrics.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qfontinfo.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qcursor.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qkeysequence.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qevent.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qvariant.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qmap.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qdebug.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qtextstream.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qlocale.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qset.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcontiguouscache.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvector2d.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qtouchdevice.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QMainWindow \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qmainwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qicon.h \
+		ui_reportwindow.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/QVariant \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QAction \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qaction.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qactiongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QApplication \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qcoreapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qeventloop.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qguiapplication.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qinputmethod.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QButtonGroup \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QGridLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qgridlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qboxlayout.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QHeaderView \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qheaderview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qframe.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyleoption.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtGui/qvalidator.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtCore/qregularexpression.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractslider.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qstyle.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtabbar.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qrubberband.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QPushButton \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QSpacerItem \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTabWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QTableWidget \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtablewidget.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/qtableview.h \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QVBoxLayout \
+		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o reportwindow.o ../nouna_project/reportwindow.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
 moc_qcustomplot.o: moc_qcustomplot.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qcustomplot.o moc_qcustomplot.cpp
+
+moc_reportwindow.o: moc_reportwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_reportwindow.o moc_reportwindow.cpp
 
 ####### Install
 

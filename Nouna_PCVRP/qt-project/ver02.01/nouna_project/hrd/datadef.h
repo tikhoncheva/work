@@ -37,6 +37,9 @@ uintMatrix2D predecessorsRain;   // between all villages
 
 std::vector<std::vector<unsigned int> > village_household;    // list of the households in a village
 
+std::vector<std::vector<std::pair<unsigned int, double> > > hhITimePlan_day;
+std::vector<std::vector<std::pair<unsigned int, double> > > hhITimePlan_week;
+
 timeStatistic TimeInfo;
 
 #endif // DATADEF_H
