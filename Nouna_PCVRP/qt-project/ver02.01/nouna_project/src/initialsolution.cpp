@@ -220,10 +220,11 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly
     std::vector< double > remainingTime (constant::nweeks, wmeanLongITime);
     std::vector< double > remainingTime_new(constant::nweeks, 0.);
 
+    /*
     std::vector<double> worktime_week1 (constant::nweeks, 0.);
     std::vector<double> worktime_week2 (constant::nweeks, 0.);
     std::vector<double> worktime_week3 (constant::nweeks, 0.);
-
+    */
     //----------------------------------------------------------------------------------
     // assign long interview from the first period
     for (unsigned int i=0; i< nLongInterviews; ++i)
@@ -309,6 +310,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly
     }
 
 
+    /*
     for (unsigned int i=0; i< nLongInterviews; ++i)
     {
        w = weeks[i];
@@ -327,6 +329,8 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly
     }
     std::cout << std::endl;
     std::cout << std::endl;
+    */
+
     //-------------------------------------------------------------------------------------------
 
     /*
@@ -402,6 +406,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly
     }
 
 
+    /*
     std::cout << "day\t" << "households \t" << "free time" << std::endl;
     for (unsigned int d=0; d< constant::nweeks * 5 ; ++d)
     {
@@ -414,6 +419,8 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_dayly
     }
 
     std::cout << "summary work time= " << sum << std::endl;
+    */
+
     //-------------------------------------------------------------------------------------------
 
     return dayInterviews;
@@ -563,14 +570,19 @@ void make_week_plans(std::vector<stInterviewer>& _interviewer)
             {
                 if (!_interviewer[i].routes_days[w*5+d].households.empty())
                 {
-                    for (unsigned int j=0; j< _interviewer[i].routes_days[w*5+d].villages.size(); ++j)
+                    for (unsigned int j=1; j< _interviewer[i].routes_days[w*5+d].villages.size()-1; ++j)
                         visitedV.push_back(_interviewer[i].routes_days[w*5+d].villages[j]);
 
                     for (unsigned int j=0; j< _interviewer[i].routes_days[w*5+d].households.size(); ++j)
                         visitedHh.push_back(_interviewer[i].routes_days[w*5+d].households[j]);
+
                     worktime += _interviewer[i].routes_days[w*5+d].time;
                 }
             }
+
+            std::vector<unsigned int>::iterator it;
+            it = std::unique(visitedV.begin(), visitedV.end());
+            visitedV.resize( std::distance(visitedV.begin(),it) );
 
             tmpRoute.villages = visitedV;
             tmpRoute.households = visitedHh;
@@ -592,7 +604,7 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
                      std::vector<std::vector<double> >  _distmatrixRain,// distmatrix
                      std::vector<std::vector<unsigned int> > _village_household,
                      timeStatistic _TimeInfo,
-                     std::vector<std::vector<std::pair<unsigned int, double> > >&yearplan_hh
+                     std::vector<std::vector<std::pair<unsigned int, double> > >& _hhITimePlan_dayly
                      )
 {
 
@@ -619,12 +631,12 @@ void initialsolution(std::vector<stVillage> _villages,           // villages
     /*
      * Associate interviews with days
      */
-    yearplan_hh =  planInterviews_dayly(households_sorted, nI, _TimeInfo);
+    _hhITimePlan_dayly =  planInterviews_dayly(households_sorted, nI, _TimeInfo);
 
     /*
      *  Assign Interviewers to the interview
      */
-    assignInterviewersToHH(yearplan_hh, _households,_interviewer,
+    assignInterviewersToHH(_hhITimePlan_dayly, _households,_interviewer,
                            _distmatrix, _distmatrixRain);
 
     /*

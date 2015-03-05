@@ -24,15 +24,7 @@ SOURCES += main.cpp\
     reportwindow.cpp
 
 HEADERS  += mainwindow.h \
-    readdata.h \
-    datadef.h \
-    add_func.h \
-    village.h \
-    route.h \
-    household.h \
     qcustomplot/qcustomplot.h \
-    distmatrix.h \
-    plot.h \
     hrd/datadef.h \
     hrd/distmatrix.h \
     hrd/household.h \

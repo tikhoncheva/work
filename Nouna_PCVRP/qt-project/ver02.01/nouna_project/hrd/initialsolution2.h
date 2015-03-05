@@ -1,5 +1,5 @@
-#ifndef INITIALSOLUTION_H
-#define INITIALSOLUTION_H
+#ifndef INITIALSOLUTION2_H
+#define INITIALSOLUTION2_H
 
 #include <iostream>
 #include <vector>
@@ -58,15 +58,15 @@ void make_week_plans(std::vector<stInterviewer>&);      // interviewer
 void initialsolution2(std::vector<stVillage> ,           // villages
                      std::vector<stHousehold> ,         // _households
                      std::vector<stInterviewer>& ,      // _interviewer
-                     std::vector<std::vector<double> > ,// distmatrix
-                     std::vector<std::vector<double> > ,// distmatrix
+                     std::vector<std::vector<double> > , // distmatrix
+                     std::vector<std::vector<double> > , // distmatrix
                      std::vector<std::vector<unsigned int> > ,  // grouped households
                      timeStatistic,
-                     std::vector<std::vector<std::pair<unsigned int, double> > >&); // weekly interview plan for hh
+                     std::vector<std::vector<std::pair<unsigned int, double> > > &); // weekly interview plan for hh
 
 void planForADay (unsigned int,                      // day
                   std::vector<std::pair<int, bool> >& ToVis,
                   std::vector<std::vector<double> >,       // distmatrix
                   std::vector<stInterviewer>             // Interviewer
                   );
-#endif // INITIALSOLUTION_H
+#endif // INITIALSOLUTION2_H

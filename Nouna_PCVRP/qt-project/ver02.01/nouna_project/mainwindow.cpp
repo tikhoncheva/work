@@ -9,6 +9,7 @@
 //#include "hrd/distmatrix.h"
 //#include "hrd/dijkstra2.h"
 
+#include "hrd/initialsolution.h"
 #include "hrd/initialsolution2.h"
 #include "hrd/report.h"
 
@@ -365,7 +366,7 @@ void MainWindow::weekSelected(int i, int)
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix);
 
-    plot_route_week(ui->widget, Village, Interviewer[k-1], week, predecessorsDry);
+    plot_route_week(ui->widget, Village, Interviewer[k-1], week-1, predecessorsDry);
     plot_villages(ui->widget, Village);
 
     ui->widget->replot();
@@ -497,23 +498,23 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     if (ui->checkBoxShowRoads->isChecked())
         plot_roads(ui->widget, Village, Road, distmatrix);
 
-//    initialsolution(Village,  // villages
-//                    Household,               // households
-//                    Interviewer,             // Interviewer
-//                    timematrixDry,           // time matrix dry
-//                    timematrixRain,           // time matrix rain
-//                    village_household,
-//                    TimeInfo,
-//                    hhITimePlan_day);
-
-    initialsolution2(Village,  // villages
+    initialsolution(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
                     timematrixRain,           // time matrix rain
                     village_household,
                     TimeInfo,
-                    hhITimePlan_week);
+                    hhITimePlan_day);
+
+//    initialsolution2(Village,  // villages
+//                    Household,               // households
+//                    Interviewer,             // Interviewer
+//                    timematrixDry,           // time matrix dry
+//                    timematrixRain,           // time matrix rain
+//                    village_household,
+//                    TimeInfo,
+//                    hhITimePlan_week);
 
     //    saveHH_ITPlan (hhITimePlan_day, "../results/hh_itime_plan.txt");
     //saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");

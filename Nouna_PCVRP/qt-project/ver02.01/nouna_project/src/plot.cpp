@@ -169,11 +169,11 @@ void plot_roads(QCustomPlot* plot,
 void plot_route_week(QCustomPlot* plot,
                 const std::vector<stVillage> V,
                 stInterviewer I,
-                unsigned int day,
+                unsigned int week,// counting starts with 0
                 const std::vector<std::vector<unsigned int> > preds)
 {
 
-    unsigned int l = I.routes_weeks[day-1].villages.size();
+//    unsigned int l = I.routes_weeks[day-1].villages.size();
     std::vector<unsigned int> shortestWay;
 
     unsigned int next;
@@ -191,22 +191,26 @@ void plot_route_week(QCustomPlot* plot,
     Curve1->setScatterStyle(myScatter);
     Curve1->setPen(QPen(Qt::blue,3));
 
-    pred = I.routes_weeks[day-1].villages[0];
+    pred = I.routes_days[week*5].villages[0];
 
-    for (unsigned int i=1; i< l; ++i)
+    for (unsigned int d=0; d<5; ++d)
     {
-        next = I.routes_weeks[day-1].villages[i];
-
-        shortestWay = getShortestWay(pred, next, preds[pred]);
-
-        for (unsigned int j = 0; j< shortestWay.size(); ++j)
+        for (unsigned int i=1; i< I.routes_days[week*5+d].villages.size(); ++i)
         {
-            next = shortestWay[j];
+            next = I.routes_days[week*5 + d].villages[i];
 
-            x.push_back(V[next].coord.first);
-            y.push_back(V[next].coord.second);
+            shortestWay = getShortestWay(pred, next, preds[pred]);
+
+            for (unsigned int j = 0; j< shortestWay.size(); ++j)
+            {
+                next = shortestWay[j];
+
+                x.push_back(V[next].coord.first);
+                y.push_back(V[next].coord.second);
+            }
+            pred = next;
         }
-        pred = next;
+
     }
 
     // replot everything
@@ -215,7 +219,6 @@ void plot_route_week(QCustomPlot* plot,
     Curve1->setData(x,y);
 
     plot->replot();
-
 }
 
 void plot_route_day(QCustomPlot* plot,
