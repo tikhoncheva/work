@@ -56,14 +56,19 @@ struct writeFormat2
 };
 
 // save itime schedule
-void saveHH_ITPlan (const std::vector<std::vector<std::pair<unsigned int, double> > >,
+void saveHH_ITPlan_d (const std::vector<std::vector<std::pair<unsigned int, double> > >,
+                    const std::string);
+void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, double> > >,
                     const std::string);
 // save initial scheduling of households
-std::set<writeFormat2> saveHHSchedule_d(const std::vector<stInterviewer>,
+std::set<writeFormat2> saveHHSchedule1_d(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
                                       //const std::string);
-std::set<writeFormat2> saveHHSchedule_w(const std::vector<stInterviewer>,
+std::set<writeFormat2> saveHHSchedule2_d(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
                                       //const std::string);
 
+std::set<writeFormat2> saveHHSchedule2_w(const std::vector<stInterviewer>,
+                                      std::vector<std::vector<std::pair<unsigned int, double> > >,
+                                      const std::string);
 #endif // REPORT_H

@@ -516,7 +516,9 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
                     TimeInfo,
                     hhITimePlan_week);
 
-    //    saveHH_ITPlan (hhITimePlan_day, "../results/hh_itime_plan.txt");
+//        saveHH_ITPlan_w (hhITimePlan_week, "../results/hh_itime_plan_week.txt");
+//        saveHHSchedule2_w(Interviewer, hhITimePlan_week, "../results/hh_schedule_init.txt");
+//        saveHH_ITPlan (hhITimePlan_day, "../results/hh_itime_plan.txt");
     //saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");
 
     ui->pushButtonShowRoute->setEnabled(true);

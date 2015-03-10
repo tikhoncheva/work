@@ -12,9 +12,9 @@ reportWindow::reportWindow(QWidget *parent, const std::vector<stInterviewer> _in
 
     // get report structure
     if (planType == 0)
-        report_HH_yearplan = saveHHSchedule_d(interviewer, ITimePlan); // day time plan is given
+        report_HH_yearplan = saveHHSchedule1_d(interviewer, ITimePlan); // day time plan is given
     else
-        report_HH_yearplan = saveHHSchedule_w(interviewer, ITimePlan); // day time plan is given
+        report_HH_yearplan = saveHHSchedule2_d(interviewer, ITimePlan); // day time plan is given
 
     // fill report table
     rw->twSchedule_hh_itime->setRowCount(report_HH_yearplan.size());

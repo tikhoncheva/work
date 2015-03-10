@@ -487,8 +487,6 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
 
     bool rainingSeason = 0;         // raining Season
 
-    /*bool allFull = false*/;
-
     for (unsigned int w = 0; w<nWeeks; ++w)
     {
         if (w>=20 && w<=40) rainingSeason = 1;
@@ -519,17 +517,17 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
             nextV = _households[hhID].villageID - 101;   // village of the next household
 
             t_home = 0.;
-            //            t_home =    rainingSeason *_distmatrixRain[nextV][home] // time to return home
-            //                   + (1-rainingSeason)*_distmatrixDry[nextV][home];
+//            t_home =    rainingSeason *_distmatrixRain[nextV][home] // time to return home
+//                   + (1-rainingSeason)*_distmatrixDry[nextV][home];
 
-            //        predV= home;
-            // for each Interviewer calculate the remaining time, if he takes the hh
+//        predV= home;
+// for each Interviewer calculate the remaining time, if he takes the hh
             for (unsigned int k=0; k<nI; ++k)
             {
-                //                predV = visitedV[k].back(); // previous village in tour k
+//                predV = visitedV[k].back(); // previous village in tour k
                 t_changev = 0;
-                //                t_changev =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
-                //                          + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+//                t_changev =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
+//                          + (1-rainingSeason)*_distmatrixDry[predV][nextV];
                 remaining_time_new[k] = remaining_time[k] - (t_changev + ti + t_home);
             }
 
@@ -539,14 +537,14 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
 
             k_min = std::min(k_min, nI-1);
 
-            if (visitedV[k_min].size()>0)
-                predV = visitedV[k_min].back();
-            else
-                predV = 99999;
-            //            t_changev =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
-            //                      + (1-rainingSeason)*_distmatrixDry[predV][nextV];
-            //            t_home =    rainingSeason *_distmatrixRain[nextV][home] // time to return home
-            //                   + (1-rainingSeason)*_distmatrixDry[nextV][home];
+//            if (visitedV[k_min].size()>0)
+//                predV = visitedV[k_min].back();
+//            else
+//                predV = 99999;
+//            t_changev =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
+//                      + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+//            t_home =    rainingSeason *_distmatrixRain[nextV][home] // time to return home
+//                   + (1-rainingSeason)*_distmatrixDry[nextV][home];
 
             //?????????????????????????????????????????????????????????????????????????????
             remaining_time[k_min] = remaining_time_new[k_min];// + t_home; // we dont want to come back immediately
@@ -554,8 +552,10 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
 
             visitedHh[k_min].push_back(hhID);
 
-            if (predV !=nextV)
+            if (std::find(visitedV[k_min].begin(), visitedV[k_min].end(), nextV) == visitedV[k_min].end())
                 visitedV[k_min].push_back(nextV);
+//            if (predV !=nextV)
+//                visitedV[k_min].push_back(nextV);
 
         }
 
@@ -597,7 +597,7 @@ void make_day_plans (stInterviewer& interviewer,
     unsigned int nWeeks = constant::nweeks * constant::P;
     unsigned int nDays = 5;
 
-    unsigned int N;                    // number of hh to visit on the current week
+    unsigned int N;
     std::vector<unsigned int> hhToVis; // households to visit on the current week
 
     unsigned int V;     // number of villages to visit on the current week
@@ -607,7 +607,7 @@ void make_day_plans (stInterviewer& interviewer,
     unsigned int predV; // predecessor of the hh j in the tour
     unsigned int nextV; // next village to go
 
-    unsigned int firstV, lastV; // last villaege of previous day, first village of current day
+//    unsigned int firstV, lastV; // last villaege of previous day, first village of current day
 
     unsigned int hhID; // hhID
 
@@ -616,7 +616,6 @@ void make_day_plans (stInterviewer& interviewer,
 
     const double tmax = 8*60.;    // maximal worktime pro day (in min)
     double ti;                    // interview time
-    double ti_rest;
     double t_changev;             // time to move in other village
     double t_home;                // time to come back at the start
 
@@ -650,8 +649,6 @@ void make_day_plans (stInterviewer& interviewer,
 
         vToVis = interviewer.routes_weeks[w].villages;
         V = vToVis.size();
-//        std::cout << "\n\nweek " << w << "  #villages to visit " << V
-//                  << "  #hh to visit " << N << std::endl;
 
         // if there is nothing to be done on the current week
         if (hhToVis.empty()){
@@ -667,18 +664,23 @@ void make_day_plans (stInterviewer& interviewer,
             continue;
         }
 
-        /*
-         * sort households in ascending order of distance to the village they belong to
-         */
-        //        vToVis = sort_villages_dist(vToVis,_distmatrixDry);
-        /*
-         * sort households in increasing order of the angle they make with the capital
-         */
 
+        // sort households in ascending order of distance to the village they belong to
+//        vToVis = sort_villages_dist(vToVis,_distmatrixDry);
+
+        // sort households in increasing order of the angle they make with the capital
         vToVis = sort_villages_angles(vToVis, _villages);
 
         std::vector<std::vector<unsigned int> > village_household_Matrix;
         village_household_Matrix = groupHH(vToVis, hhToVis, _households);
+
+//
+        assert(village_household_Matrix.size() == V);
+        unsigned int count = 0;
+        for (unsigned int p=0; p<village_household_Matrix.size(); ++p)
+            count += village_household_Matrix[p].size();
+        assert(count == N);
+//
 
         // each week starts at capital (home)
         predV = home;
@@ -900,6 +902,7 @@ void initialsolution2(std::vector<stVillage> _villages,           // villages
      * Define interview times of each hh in each of three visits and assign weeks of visits
      */
     _hhITimePlan_weekly = planInterviews_weekly(_households_sorted, nI, _TimeInfo);
+
 
     /*
      *  Assign Interviewers to the interview

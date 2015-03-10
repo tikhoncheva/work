@@ -111,7 +111,7 @@ public:
 
         retranslateUi(reportWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(reportWindow);
