@@ -503,7 +503,7 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
                     timematrixRain,           // time matrix rain
-                    village_household,
+                    village_households,
                     TimeInfo,
                     hhITimePlan_day);
 
@@ -512,7 +512,7 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 //                    Interviewer,             // Interviewer
 //                    timematrixDry,           // time matrix dry
 //                    timematrixRain,           // time matrix rain
-//                    village_household,
+//                    village_households,
 //                    TimeInfo,
 //                    hhITimePlan_week);
 
