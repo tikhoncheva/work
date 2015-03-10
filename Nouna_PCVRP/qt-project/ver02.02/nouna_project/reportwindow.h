@@ -5,6 +5,7 @@
 
 #include <QFileDialog>
 #include <QMainWindow>
+#include <QString>
 
 
 namespace Ui {
@@ -16,8 +17,10 @@ class reportWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    reportWindow(QWidget *parent, const std::vector<stInterviewer> _interviewer,
-                 std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan);
+    reportWindow(QWidget *parent, const std::vector<stInterviewer> ,
+                 std::vector<std::vector<std::pair<unsigned int, double> > > , bool ,
+                 std::vector<std::vector<double> >,
+                 std::vector<std::vector<double> > );
     ~reportWindow();
 
 private slots:
@@ -27,6 +30,9 @@ private:
     Ui::reportWindow *rw;
     const std::vector<stInterviewer> interviewer;
     std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan;
+    bool planType;
+    std::vector<std::vector<double> > distDry;
+    std::vector<std::vector<double> > distRain;
 
     std::set<writeFormat2> report_HH_yearplan;
 };

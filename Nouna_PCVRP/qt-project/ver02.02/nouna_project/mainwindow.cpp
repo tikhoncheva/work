@@ -535,6 +535,7 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 
 void MainWindow::showReportWindow()
 {
-    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day);
+//    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day,  0);
+    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
     rw->show();
 }

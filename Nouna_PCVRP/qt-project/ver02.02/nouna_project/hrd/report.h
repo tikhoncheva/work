@@ -59,7 +59,10 @@ struct writeFormat2
 void saveHH_ITPlan (const std::vector<std::vector<std::pair<unsigned int, double> > >,
                     const std::string);
 // save initial scheduling of households
-std::set<writeFormat2> saveHHSchedule(const std::vector<stInterviewer>,
+std::set<writeFormat2> saveHHSchedule_d(const std::vector<stInterviewer>,
+                                      std::vector<std::vector<std::pair<unsigned int, double> > >);
+                                      //const std::string);
+std::set<writeFormat2> saveHHSchedule_w(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
                                       //const std::string);
 

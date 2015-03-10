@@ -2,13 +2,19 @@
 #include "ui_reportwindow.h"
 
 reportWindow::reportWindow(QWidget *parent, const std::vector<stInterviewer> _interviewer,
-                           std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan):
-    QMainWindow(parent), rw(new Ui::reportWindow), interviewer(_interviewer), ITimePlan(_ITimePlan)
+                           std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan, bool _planType,
+                           std::vector<std::vector<double> >  _distDry,
+                           std::vector<std::vector<double> >  _distRain):
+    QMainWindow(parent), rw(new Ui::reportWindow), interviewer(_interviewer), ITimePlan(_ITimePlan), planType(_planType),
+    distDry(_distDry),distRain(_distRain)
 {
     rw->setupUi(this);
 
     // get report structure
-    report_HH_yearplan = saveHHSchedule(interviewer, ITimePlan);
+    if (planType == 0)
+        report_HH_yearplan = saveHHSchedule_d(interviewer, ITimePlan); // day time plan is given
+    else
+        report_HH_yearplan = saveHHSchedule_w(interviewer, ITimePlan); // day time plan is given
 
     // fill report table
     rw->twSchedule_hh_itime->setRowCount(report_HH_yearplan.size());
@@ -37,6 +43,19 @@ reportWindow::reportWindow(QWidget *parent, const std::vector<stInterviewer> _in
         rw->twSchedule_hh_itime->setItem(count, 6,
                                          new QTableWidgetItem(QString::fromStdString((*it).Interviewer)));
         ++count;
+    }
+
+    // show distance matrices
+    rw->twDistances_Dry->setColumnCount(distDry.size());   rw->twDistances_Dry->setRowCount(distDry.size());
+    rw->twDistances_Rain->setColumnCount(distRain.size()); rw->twDistances_Rain->setRowCount(distDry.size());
+    for (unsigned int j=0; j<distDry[0].size(); ++j)
+    {
+        rw->twDistances_Dry->setItem(0,j, new QTableWidgetItem(QString::number(j)));
+        for (unsigned int i=0; i<distDry.size(); ++i)
+        {
+            rw->twDistances_Dry->setItem (i, j, new QTableWidgetItem(QString::number(distDry[i][j])) );
+            rw->twDistances_Rain->setItem(i, j, new QTableWidgetItem(QString::number(distRain[i][j])) );
+        }
     }
 }
 

@@ -65,7 +65,7 @@ void saveHH_ITPlan (const std::vector<std::vector<std::pair<unsigned int, double
  *                   days and weeks of visits
  *                   and ID of the interviewers
  */
-std::set<writeFormat2>  saveHHSchedule(const std::vector<stInterviewer> _interviewer,
+std::set<writeFormat2>  saveHHSchedule_d(const std::vector<stInterviewer> _interviewer,
                     std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
 //                    const std::string fileName)
 {
@@ -88,6 +88,75 @@ std::set<writeFormat2>  saveHHSchedule(const std::vector<stInterviewer> _intervi
                 timeplan_it = std::find_if(_ITimePlan[d].begin(),_ITimePlan[d].end(),
                                            [hhID] (std::pair<unsigned int, double> time)
                 {return time.first == hhID;});
+                itime = (*timeplan_it).second;
+
+                writeFormat2 searchEntry;
+                searchEntry.hhID = hhID + 10001;
+
+                it = dataset.find(searchEntry);
+
+                if (it==dataset.end())
+                {   // make new entry
+                    writeFormat2 writeEntry;
+                    writeEntry.hhID = hhID + 10001;
+                    writeEntry.itime = std::to_string(itime);
+                    writeEntry.day = std::to_string(d + 1) + "("
+                            + std::to_string(d/5 + 1) + ")";
+                    writeEntry.Interviewer = std::to_string(i + 1);
+
+                    dataset.insert( writeEntry);
+                }
+                else
+                {   // make new entry, which complements the already existing entry
+                    writeFormat2 writeEntry;
+
+                    writeEntry.hhID = (*it).hhID;
+                    writeEntry.itime = (*it).itime + ", " + std::to_string(itime);
+                    writeEntry.day = (*it).day + ", " + std::to_string(d + 1)
+                            + "(" + std::to_string(d/5 + 1) + ")";
+                    writeEntry.Interviewer = (*it).Interviewer + ", " + std::to_string(i + 1);
+                    // delete the old one
+                    dataset.erase(it);
+                    // insert the new one
+                    dataset.insert( writeEntry);
+                }
+            }
+
+//    // write set in to the file
+//    file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
+//         << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
+
+//    for (it=dataset.begin(); it!=dataset.end(); ++it)
+//        file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
+//             << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
+
+//    file.close();
+    return dataset;
+}
+
+std::set<writeFormat2>  saveHHSchedule_w(const std::vector<stInterviewer> _interviewer,
+                    std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
+//                    const std::string fileName)
+{
+    std::set<writeFormat2> dataset;
+    std::set<writeFormat2> ::iterator it;
+    std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
+    int itime;
+
+//    std::ofstream file(fileName.c_str());	// file to open
+//    assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
+
+
+    for (unsigned int i=0; i<_interviewer.size(); ++i)
+        for (unsigned int d=0; d< _interviewer[i].routes_days.size(); ++d)
+            for (unsigned int h=0; h<_interviewer[i].routes_days[d].households.size(); ++h)
+            {
+                const unsigned hhID = _interviewer[i].routes_days[d].households[h];
+
+                // find planed interview time for current hh on the day d
+                timeplan_it = std::find_if(_ITimePlan[d/5].begin(),_ITimePlan[d/5].end(),
+                                           [hhID] (std::pair<unsigned int, double> time)
+                                            {return time.first == hhID;});
                 itime = (*timeplan_it).second;
 
                 writeFormat2 searchEntry;
