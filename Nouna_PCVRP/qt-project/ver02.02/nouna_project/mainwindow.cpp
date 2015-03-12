@@ -348,15 +348,15 @@ void MainWindow::weekSelected(int i, int)
 
     ui->widget->clearItems();
 
-    std::cout << "Week route: " << std::endl;
-    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].villages.size(); ++i)
-         std::cout << Interviewer[k-1].routes_weeks[week-1].villages[i] + 101  << " " ;
-    std::cout << std::endl << std::endl;
+//    std::cout << "Week route: " << std::endl;
+//    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].villages.size(); ++i)
+//         std::cout << Interviewer[k-1].routes_weeks[week-1].villages[i] + 101  << " " ;
+//    std::cout << std::endl << std::endl;
 
-    std::cout << "Households: " << std::endl;
-    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].households.size(); ++i)
-         std::cout << Interviewer[k-1].routes_weeks[week-1].households[i] + 10001  << " " ;
-    std::cout << std::endl << std::endl;
+//    std::cout << "Households: " << std::endl;
+//    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].households.size(); ++i)
+//         std::cout << Interviewer[k-1].routes_weeks[week-1].households[i] + 10001  << " " ;
+//    std::cout << std::endl << std::endl;
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -381,8 +381,8 @@ void MainWindow::weekSelected(int i, int)
     {
         unsigned int ind = (week-1)*5+d;
 
-        if (Interviewer[k-1].routes_days[ind].villages.empty())
-            continue;
+//        if (Interviewer[k-1].routes_days[ind].villages.empty())
+//            continue;
 
 //        ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
         // Villages
@@ -430,17 +430,6 @@ void MainWindow::daySelected(int i, int)
 
     ui->widget->replot();
 }
-
-//---------------------------------------------------------------------------------------------------
-
-/*
- * Is it now a raining season?
- */
-void MainWindow::on_checkBoxRainingSeazon_clicked()
-{
-
-}
-
 //---------------------------------------------------------------------------------------------------
 
 /*

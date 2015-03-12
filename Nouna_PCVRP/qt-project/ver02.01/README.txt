@@ -30,6 +30,15 @@ Ver02.01
     1. Plan long interview times as in previous version
     2. Plan households for each day independent on the interviewer
     3. Asssign interviewrs to day plans
-  
+
+    
+    ToDo: better sorting of villages/hh
+          allow to stay over night
+          split too longs interviews
+          
+ Old approach (week assignments):
+   do not close bins(days)
+   
+ Common problem: split too long interviews
        
     

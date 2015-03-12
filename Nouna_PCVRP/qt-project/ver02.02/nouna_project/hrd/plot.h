@@ -2,6 +2,8 @@
 #define PLOT_H
 
 #include <QColor>
+#include <QVector>
+
 #include <iostream>
 #include <vector>
 #include <assert.h>
@@ -11,6 +13,9 @@
 #include <hrd/road.h>
 #include <hrd/interviewer.h>
 
+
+extern QVector<double> highlightx;
+extern QVector<double> highlighty;
 
 void plot_villages(QCustomPlot*, std::vector<stVillage>);
 

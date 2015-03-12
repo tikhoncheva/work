@@ -1,5 +1,9 @@
 #include <hrd/plot.h>
 
+
+QVector<double> highlightx;
+QVector<double> highlighty;
+
 std::vector<unsigned int> getShortestWay(unsigned int source, unsigned int target,
                                          const std::vector<unsigned int>& _prev)
 {
@@ -67,15 +71,28 @@ void plot_villages(QCustomPlot *plot,
 
     plot->graph(0)->setData(x, y);
 
+    if (highlightx.size()>0)
+    {
+        plot->addGraph();
+        myScatter.setBrush(QBrush(Qt::blue));
+        myScatter.setSize(7);
+        plot->graph(1)->setScatterStyle(myScatter);
+        plot->graph(1)->setLineStyle( QCPGraph::lsNone);
+        plot->graph(1)->setData(highlightx, highlighty);
+    }
+
+
     // extra mark capital
     xNouna[0] = V[142-101].coord.first;
     yNouna[0] = V[142-101].coord.second;
 
+    int ind = plot->graphCount();
+
     plot->addGraph();
     myScatter.setBrush(QBrush(Qt::red));
     myScatter.setSize(7);
-    plot->graph(1)->setScatterStyle(myScatter);
-    plot->graph(1)->setData(xNouna, yNouna);
+    plot->graph(ind)->setScatterStyle(myScatter);
+    plot->graph(ind)->setData(xNouna, yNouna);
 
     // set axes ranges, so we see all data:
     plot->xAxis->setRange(xmin-0.1, xmax+0.1);
@@ -181,6 +198,9 @@ void plot_route_week(QCustomPlot* plot,
 
     QVector<double> x, y;
 
+    highlightx.erase(highlightx.begin(), highlightx.end());
+    highlighty.erase(highlighty.begin(), highlighty.end());
+
     QCPScatterStyle myScatter;
     myScatter.setShape(QCPScatterStyle::ssCircle);
     myScatter.setPen(QPen(Qt::blue,1));
@@ -192,6 +212,8 @@ void plot_route_week(QCustomPlot* plot,
     Curve1->setPen(QPen(Qt::blue,3));
 
     pred = I.routes_days[week*5].villages[0];
+    highlightx.push_back(V[pred].coord.first);
+    highlighty.push_back(V[pred].coord.second);
 
     for (unsigned int d=0; d<5; ++d)
     {
@@ -208,6 +230,10 @@ void plot_route_week(QCustomPlot* plot,
                 x.push_back(V[next].coord.first);
                 y.push_back(V[next].coord.second);
             }
+
+            highlightx.push_back(V[next].coord.first);
+            highlighty.push_back(V[next].coord.second);
+
             pred = next;
         }
 
@@ -234,6 +260,9 @@ void plot_route_day(QCustomPlot* plot,
     unsigned int next;
     unsigned int pred;
 
+    highlightx.erase(highlightx.begin(), highlightx.end());
+    highlighty.erase(highlighty.begin(), highlighty.end());
+
     QVector<double> x, y;
 
     QCPScatterStyle myScatter;
@@ -246,7 +275,12 @@ void plot_route_day(QCustomPlot* plot,
     Curve1->setScatterStyle(myScatter);
     Curve1->setPen(QPen(Qt::blue,3));
 
-    pred = I.routes_days[day-1].villages[0];
+    if (l>0)
+    {
+        pred = I.routes_days[day-1].villages[0];
+        highlightx.push_back(V[pred].coord.first);
+        highlighty.push_back(V[pred].coord.second);
+    }
 
     for (unsigned int i=1; i< l; ++i)
     {
@@ -261,11 +295,17 @@ void plot_route_day(QCustomPlot* plot,
             x.push_back(V[next].coord.first);
             y.push_back(V[next].coord.second);
         }
+
+        highlightx.push_back(V[next].coord.first);
+        highlighty.push_back(V[next].coord.second);
+
         pred = next;
+
     }
 
     // replot everything
     plot->clearPlottables();
+
     plot->addPlottable(Curve1);
     Curve1->setData(x,y);
 

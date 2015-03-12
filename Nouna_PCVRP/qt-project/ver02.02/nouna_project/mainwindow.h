@@ -40,8 +40,6 @@ private slots:
 
     void on_checkBoxShowRoads_clicked();
 
-    void on_checkBoxRainingSeazon_clicked();
-
     void on_horizontalScrollBar_valueChanged(int value);
 
     void on_verticalScrollBar_valueChanged(int value);
