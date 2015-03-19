@@ -5,8 +5,8 @@
 /*
  * for each hh print on which day it will be visited and what interview time is required
  */
-void saveHH_ITPlan_d (const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan,
-                      const std::string fileName)
+void saveHH_ITPlan_d(const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan,
+                     const std::string fileName)
 {
     std::set<writeFormat1> dataset;
     std::set<writeFormat1> ::iterator it;
@@ -116,8 +116,9 @@ void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, doub
  *                   days and weeks of visits
  *                   and ID of the interviewers
  */
-std::set<writeFormat2>  saveHHSchedule1_d(const std::vector<stInterviewer> _interviewer,
-                                          std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
+// _ITimePlan has a day view
+std::set<writeFormat2>  saveHHSchedule_dayview_d(const std::vector<stInterviewer> _interviewer,
+                                                 std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
 //                    const std::string fileName)
 {
     std::set<writeFormat2> dataset;
@@ -185,13 +186,14 @@ std::set<writeFormat2>  saveHHSchedule1_d(const std::vector<stInterviewer> _inte
     return dataset;
 }
 
-std::set<writeFormat2>  saveHHSchedule2_d(const std::vector<stInterviewer> _interviewer,
-                                          std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
-//                    const std::string fileName)
+// _ITimePlan has a week view
+std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer> _interviewer,
+                                                 std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan) //                    const std::string fileName)
 {
     std::set<writeFormat2> dataset;
     std::set<writeFormat2> ::iterator it;
     std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
+
     int itime;
 
     //    std::ofstream file(fileName.c_str());	// file to open
@@ -203,8 +205,9 @@ std::set<writeFormat2>  saveHHSchedule2_d(const std::vector<stInterviewer> _inte
             for (unsigned int h=0; h<_interviewer[i].routes_days[d].households.size(); ++h)
             {
                 const unsigned hhID = _interviewer[i].routes_days[d].households[h];
-
                 // find planed interview time for current hh on the day d
+
+
                 timeplan_it = std::find_if(_ITimePlan[d/5].begin(),_ITimePlan[d/5].end(),
                         [hhID] (std::pair<unsigned int, double> time)
                 {return time.first == hhID;});
@@ -240,6 +243,7 @@ std::set<writeFormat2>  saveHHSchedule2_d(const std::vector<stInterviewer> _inte
                     // insert the new one
                     dataset.insert( writeEntry);
                 }
+
             }
 
     //    // write set in to the file
@@ -275,7 +279,7 @@ std::set<writeFormat2>  saveHHSchedule2_w(const std::vector<stInterviewer> _inte
 
                 // find planed interview time for current hh on the day d
                 timeplan_it = std::find_if(_ITimePlan[w].begin(),_ITimePlan[w].end(),
-                        [hhID] (std::pair<unsigned int, double> time)
+                                           [hhID] (std::pair<unsigned int, double> time)
                 {return time.first == hhID;});
                 itime = (*timeplan_it).second;
 
@@ -309,14 +313,14 @@ std::set<writeFormat2>  saveHHSchedule2_w(const std::vector<stInterviewer> _inte
                 }
             }
 
-        // write set in to the file
-        file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
-             << "week"  << std::setw(20)  << "Interviewer ID" << std::endl;
+    // write set in to the file
+    file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
+         << "week"  << std::setw(20)  << "Interviewer ID" << std::endl;
 
-        for (it=dataset.begin(); it!=dataset.end(); ++it)
-            file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
-                 << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
+    for (it=dataset.begin(); it!=dataset.end(); ++it)
+        file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
+             << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
 
-        file.close();
+    file.close();
     return dataset;
 }

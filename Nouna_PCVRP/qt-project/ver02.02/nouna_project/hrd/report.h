@@ -61,10 +61,11 @@ void saveHH_ITPlan_d (const std::vector<std::vector<std::pair<unsigned int, doub
 void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, double> > >,
                     const std::string);
 // save initial scheduling of households
-std::set<writeFormat2> saveHHSchedule1_d(const std::vector<stInterviewer>,
+std::set<writeFormat2> saveHHSchedule_dayview_d(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
                                       //const std::string);
-std::set<writeFormat2> saveHHSchedule2_d(const std::vector<stInterviewer>,
+
+std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
                                       //const std::string);
 

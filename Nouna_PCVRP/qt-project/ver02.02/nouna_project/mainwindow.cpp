@@ -65,22 +65,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // table of day plans
     ui->tableWidget_dayplans->setRowCount(5);
-    ui->tableWidget_dayplans->setColumnCount(4);
+    ui->tableWidget_dayplans->setColumnCount(5);
 
     Header.clear();
-    Header << "Villages" << "#Hh" << "Househols" << "Itime" << "Ttime" << "Wtime";
+    Header << "Day" << "Villages" << "#Hh" << "Househols" << "Itime" << "Ttime" << "Wtime";
     ui->tableWidget_dayplans->setHorizontalHeaderLabels(Header);
 
-//    ui->tableWidget_dayplans->setItem(0,0, new QTableWidgetItem(QString::number(1)));
-//    ui->tableWidget_dayplans->setItem(1,0, new QTableWidgetItem(QString::number(2)));
-//    ui->tableWidget_dayplans->setItem(2,0, new QTableWidgetItem(QString::number(3)));
-//    ui->tableWidget_dayplans->setItem(3,0, new QTableWidgetItem(QString::number(4)));
-//    ui->tableWidget_dayplans->setItem(4,0, new QTableWidgetItem(QString::number(5)));
-
-    ui->tableWidget_dayplans->setColumnWidth(0,100);
-    ui->tableWidget_dayplans->setColumnWidth(1,30);
-    ui->tableWidget_dayplans->setColumnWidth(2,130);
-    ui->tableWidget_dayplans->setColumnWidth(3,50);
+    ui->tableWidget_dayplans->setColumnWidth(0,30);
+    ui->tableWidget_dayplans->setColumnWidth(1,100);
+    ui->tableWidget_dayplans->setColumnWidth(2,30);
+    ui->tableWidget_dayplans->setColumnWidth(3,130);
+    ui->tableWidget_dayplans->setColumnWidth(4,50);
 
     // show report window
     connect(ui->pbShow_report, SIGNAL(clicked()), this, SLOT(showReportWindow()));
@@ -384,15 +379,16 @@ void MainWindow::weekSelected(int i, int)
 //        if (Interviewer[k-1].routes_days[ind].villages.empty())
 //            continue;
 
-//        ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
+        // Day
+        ui->tableWidget_dayplans->setItem(d, 0, new QTableWidgetItem(QString::number(ind + 1)));
         // Villages
-        ui->tableWidget_dayplans->setItem(d, 0, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visVilToString(ind))));
+        ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visVilToString(ind))));
         // #Hh
-        ui->tableWidget_dayplans->setItem(d, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].households.size())));
+        ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].households.size())));
         // Households
-        ui->tableWidget_dayplans->setItem(d, 2, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(ind))));
+        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::fromStdString(Interviewer[k-1].visHhToString(ind))));
         //wtime
-        ui->tableWidget_dayplans->setItem(d, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
+        ui->tableWidget_dayplans->setItem(d, 4, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_days[ind].time)));
     }
     ui->tableWidget_dayplans->selectionModel()->clearSelection();
 
@@ -527,6 +523,8 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 void MainWindow::showReportWindow()
 {
 //    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day,  0);
+    // 0  hhITimePlan_day  day view
+    // 1  hhITimePlan week week view
     reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
     rw->show();
 }

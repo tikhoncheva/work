@@ -1102,27 +1102,30 @@ void stay_over_night(std::vector<stInterviewer>& _interviewer,
  *
  */
 
-void split_longinterviews(std::vector<stInterviewer>& _interviewer,
-                          const std::vector<stHousehold> _households,         // _households
-                          std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
-                          std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
-                          std::vector<std::vector <std::pair<unsigned int, double> > > _hhITimePlan_week)
+// start from the end of the current day (day) of the week (week) and adapt sequentially working time on each day before
+// moving sequentially to the left,
+// Interviews, which takes too long, can be split and started on the day before
+void propagateToTheLeft(unsigned int week, unsigned int day,
+                             stInterviewer& _interviewer,
+                             const std::vector<stHousehold> _households,         // _households
+                             const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                             const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
+                             std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
 {
-    unsigned int nI = _interviewer.size();
-    unsigned int nWeeks = constant::P * constant::nweeks;
     unsigned int d = 0;
 
     double tmax = 8 * 60.;
     double ti;      // interview time
-    double ti_free;
+    double ti_rest;
     double thome;
     double tmove;
     double twork;
 
-    unsigned int nextV;
     unsigned int predV;
     unsigned int V;
 
+
+    std::vector<unsigned int> hhVecToReorder; // new vector of hh
 
     std::vector<unsigned int> newHhVec; // new vector of hh
     std::vector<unsigned int> newVVec;  // new vector of villages
@@ -1133,98 +1136,351 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
 
     bool rainingSeason = 0;
 
+    if (week>=20 && week<=40) rainingSeason = 1;
+    else rainingSeason = 0;
+
+
+    // fill new array of hh to be reordered
+    for(d = week*5; d <= day; ++d)
+    {
+        for (unsigned int h = 0;
+                          h < _interviewer.routes_days[d].households.size();++h)
+            hhVecToReorder.push_back(_interviewer.routes_days[d].households[h]);
+
+        // delete old schedules
+        _interviewer.routes_days[d].households.erase(
+                    _interviewer.routes_days[d].households.begin(),
+                    _interviewer.routes_days[d].households.end());
+        _interviewer.routes_days[d].villages.erase(
+                    _interviewer.routes_days[d].villages.begin(),
+                    _interviewer.routes_days[d].villages.end());
+
+        _interviewer.routes_days[d].time = 0.;
+        _interviewer.routes_days[d].villages.push_back(home);
+        _interviewer.routes_days[d].villages.push_back(home);
+    }
+    predV = home;
+    thome =    rainingSeason *_distmatrixRain[predV][home]
+          + (1-rainingSeason)*_distmatrixDry[predV][home];
+
+    twork = 2 * thome;
+    assert( twork == 0.);
+
+    newVVec.push_back(home);
+
+    // rearange array
+    do { // while(! hhVecToReorder.empty());
+
+            twork -= thome;
+            hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
+            V    = _households[hhID].villageID - 101;
+
+            _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
+                                           _hhITimePlan_week[week].end(),
+                                           [hhID] (std::pair<unsigned int, double> const& element)
+                                             { return element.first == hhID;});
+            ti = (*_hhITimePlan_it).second;  // it's interview time
+
+            tmove =    rainingSeason *_distmatrixRain[predV][V]
+                  + (1-rainingSeason)*_distmatrixDry[predV][V];
+
+            thome =    rainingSeason *_distmatrixRain[V][home]
+                  + (1-rainingSeason)*_distmatrixDry[V][home];
+
+            twork += tmove + ti + thome;
+
+            predV = V;
+
+            newHhVec.push_back(hhID);
+            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+                newVVec.push_back(V);
+
+        if (twork>tmax){
+
+            ti_rest = (twork - tmax) - thome;
+            ti -= ti_rest;
+            if (ti<0)
+                std::cout << "!!!!!!!!!!!!!!!!!!!" << std::endl;
+            // add to the time table, that interview time of hh hhID was splitted
+            (*_hhITimePlan_it).second = ti;
+            _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
+            //
+
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            newVVec.push_back(home);
+
+            std::reverse(newHhVec.begin(), newHhVec.end());
+            std::reverse(newVVec.begin(), newVVec.end());
+
+            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            twork = thome + ti_rest;
+
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+
+            day = std::max(day - 1 , week*5);
+        }
+    } while(! hhVecToReorder.empty());
+
+    // save last array
+
+    _interviewer.routes_days[day].households.erase(
+                _interviewer.routes_days[day].households.begin(),
+                _interviewer.routes_days[day].households.end());
+
+    _interviewer.routes_days[day].villages.erase(
+                _interviewer.routes_days[day].villages.begin(),
+                _interviewer.routes_days[day].villages.end());
+
+    newVVec.push_back(home);
+
+    std::reverse(newHhVec.begin(), newHhVec.end());
+    std::reverse(newVVec.begin(), newVVec.end());
+
+    _interviewer.routes_days[day].time = twork + thome;
+    _interviewer.routes_days[day].households = newHhVec;
+    _interviewer.routes_days[day].villages = newVVec;
+}
+
+
+// start from the beginning of the current day (day) of the week (week) and adapt sequentially working time on each day after
+// moving sequentially to the right,
+// Interviews, which takes too long, can be split and continued on the next day
+void propagateToTheRight(unsigned int week, unsigned int day,
+                       stInterviewer& _interviewer,
+                       const std::vector<stHousehold> _households,         // _households
+                       const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                       const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
+                       std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
+{
+    unsigned int d = 0;
+
+    double tmax = 8 * 60.;
+    double ti;      // interview time
+    double ti_rest;
+    double thome;
+    double tmove;
+    double twork;
+
+    unsigned int predV;
+    unsigned int V;
+
+
+    std::vector<unsigned int> hhVecToReorder; // new vector of hh
+
+    std::vector<unsigned int> newHhVec; // new vector of hh
+    std::vector<unsigned int> newVVec;  // new vector of villages
+
+    unsigned int home = 142 - 101;
+    unsigned int hhID;
+    std::vector<std::pair<unsigned int, double> >::iterator _hhITimePlan_it;
+
+    bool rainingSeason = 0;
+
+    if (week>=20 && week<=40) rainingSeason = 1;
+    else rainingSeason = 0;
+
+    // fill new array of hh to be reordered
+    for(d = day; d < (week+1)*5; ++d)
+    {
+        for (unsigned int h = 0;
+                          h < _interviewer.routes_days[d].households.size();++h)
+            hhVecToReorder.push_back(_interviewer.routes_days[d].households[h]);
+
+        _interviewer.routes_days[d].households.erase(
+                    _interviewer.routes_days[d].households.begin(),
+                    _interviewer.routes_days[d].households.end());
+        _interviewer.routes_days[d].villages.erase(
+                    _interviewer.routes_days[d].villages.begin(),
+                    _interviewer.routes_days[d].villages.end());
+        _interviewer.routes_days[d].time = 0.;
+
+        _interviewer.routes_days[d].villages.push_back(home);
+        _interviewer.routes_days[d].villages.push_back(home);
+    }
+    std::reverse(hhVecToReorder.begin(), hhVecToReorder.end());
+
+    predV = home;
+    thome =    rainingSeason *_distmatrixRain[predV][home]
+          + (1-rainingSeason)*_distmatrixDry[predV][home];
+
+    twork = 2 * thome;
+    assert( twork == 0.);
+
+    newVVec.push_back(home);
+
+    // rearange array
+    do { // while(! hhVecToReorder.empty());
+
+            twork -= thome;
+            hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
+            V    = _households[hhID].villageID - 101;
+
+            _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
+                                           _hhITimePlan_week[week].end(),
+                                           [hhID] (std::pair<unsigned int, double> const& element)
+                                             { return element.first == hhID;});
+            ti = (*_hhITimePlan_it).second;  // it's interview time
+
+            tmove =    rainingSeason *_distmatrixRain[predV][V]
+                  + (1-rainingSeason)*_distmatrixDry[predV][V];
+
+            thome =    rainingSeason *_distmatrixRain[V][home]
+                  + (1-rainingSeason)*_distmatrixDry[V][home];
+
+            twork += tmove + ti + thome;
+
+            predV = V;
+
+            newHhVec.push_back(hhID);
+            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+                newVVec.push_back(V);
+
+        if (twork>tmax){
+
+            ti_rest = (twork - tmax) - thome;
+            ti -= ti_rest;
+            if (ti<0)
+                std::cout << "\n!!!!!!!!!!!!!!!!!!!" << std::endl;
+            // add to the time table, that interview time of hh hhID was splitted
+            (*_hhITimePlan_it).second = ti;
+            _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
+            //
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            newVVec.push_back(home);
+
+            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            twork = thome + ti_rest;
+
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+
+            day = std::min(day + 1, (week+1)*5 - 1);
+        }
+    } while(! hhVecToReorder.empty());
+
+    // save last array
+    _interviewer.routes_days[day].households.erase(
+                _interviewer.routes_days[day].households.begin(),
+                _interviewer.routes_days[day].households.end());
+
+    _interviewer.routes_days[day].villages.erase(
+                _interviewer.routes_days[day].villages.begin(),
+                _interviewer.routes_days[day].villages.end());
+
+    newVVec.push_back(home);
+
+    _interviewer.routes_days[day].time = twork + thome;
+    _interviewer.routes_days[day].households = newHhVec;
+    _interviewer.routes_days[day].villages = newVVec;
+}
+
+
+void split_longinterviews(std::vector<stInterviewer>& _interviewer,
+                          const std::vector<stHousehold> _households,         // _households
+                          std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                          std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
+                          std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
+{
+    unsigned int nI = _interviewer.size();
+    unsigned int nWeeks = constant::P * constant::nweeks;
+
+    unsigned int d = 0, day_r, day_l = 0;
+
+    double freetime_left = 0.;
+    double freetime_right = 0.;
+
+    double tmax = 8 * 60.;
+    double twork;
+
+    bool overhours = false;
+
     for (unsigned int i=0; i< nI; ++i) // for each interviewer
     {
+//        unsigned int i = 1;
         // check each week if there are too long working days
         for (unsigned int w=0; w<nWeeks; ++w )
         {
-            for (d = w*5; d<(w+1)*5; ++d)
+//            unsigned int w = 4;
+            overhours = false;
+
+            for (day_l = w*5; day_l < (w+1)*5; ++day_l)
             {
-                twork = _interviewer[i].routes_days[d].time;
+                twork = _interviewer[i].routes_days[day_l].time;
                 if (twork > tmax)
                 {
-                    if (w>=20 && w <=40) rainingSeason = 1;
-                    else rainingSeason = 0;
+                    overhours = true;
+                    break;
+                }
+            }
 
-                    newHhVec.erase(newHhVec.begin(), newHhVec.end());
-                    newVVec.erase(newVVec.begin(), newVVec.end());
+            for (day_r = (w+1)*5 - 1; day_r>=w*5 && day_r<(w+1)*5; --day_r)
+            {
+                twork = _interviewer[i].routes_days[day_r].time;
+                if (twork > tmax)
+                {
+                    overhours = true;
+                    break;
+                }
+            }
 
+            if (overhours)
+            {
+                // decide to expand time to the beginning of the week or to the end according to the free time
+                freetime_left = 0.;
+                for (d=w*5; d < day_r; ++d)
+                    freetime_left += tmax - _interviewer[i].routes_days[d].time;
 
-                    hhID = _interviewer[i].routes_days[d].households[0];//.back();  // hh which causes the problems
-                    _hhITimePlan_it = std::find_if(_hhITimePlan_week[w].begin(), _hhITimePlan_week[w].end(),
-                                                   [hhID] (std::pair<unsigned int, double> const& element){ return element.first == hhID;});
-                    ti = (*_hhITimePlan_it).second;                         // it's interview time
-                    V = _households[hhID].villageID - 101;   // village of this household
+                freetime_right = 0.;
+                for (d=day_l+1; d < (w+1)*5; ++d)
+                    freetime_right += tmax - _interviewer[i].routes_days[d].time;
 
-                    switch(d%5)
-                    {
+                if (freetime_right > freetime_left)
+                    propagateToTheRight(w /*week*/, day_l /*day*/,
+                                      _interviewer[i] /* current interviewer*/,
+                                      _households /* households */,
+                                      _distmatrixDry /* distmatrix */,
+                                      _distmatrixRain /* distmatrix */,
+                                      _hhITimePlan_week /* year time schedule*/);
+                else
+                    propagateToTheLeft(w /*week*/, day_r /*day*/,
+                                       _interviewer[i] /* current interviewer*/,
+                                       _households /* households */,
+                                       _distmatrixDry /* distmatrix */,
+                                       _distmatrixRain /* distmatrix */,
+                                       _hhITimePlan_week /* year time schedule*/);
+            } // if overhours
 
-                    case(0): // first day of the week
-                        // the first day of the week can not include a too long interview
-/*
-                        _interviewer[i].routes_days[d].time = tmax;
-
-                        // extand interviewing of the hhID on the next day
-                        nextV = _interviewer[i].routes_days[d+1].villages[1];
-
-                        newVVec.push_back(home);
-                        newVVec.push_back(V);
-                        for(unsigned int j=1; j<_interviewer[i].routes_days[d+1].villages.size(); ++j)
-                            newVVec.push_back(_interviewer[i].routes_days[d+1].villages[j]);
-
-                        tmove =    rainingSeason *_distmatrixRain[V][nextV]
-                              + (1-rainingSeason)*_distmatrixDry[V][nextV];
-                        thome =    rainingSeason *_distmatrixRain[nextV][home]
-                              + (1-rainingSeason)*_distmatrixDry[nextV][home];
-
-                        _interviewer[i].routes_days[d+1].time += ti_rest + tmove - thome;
-                        _interviewer[i].routes_days[d+1].villages = newVVec;
-                        _interviewer[i].routes_days[d+1].households.push_back(hhID);
-*/
-                        break;
-                    case 1: ;
-                    case 2: ;
-                    case 3: ;
-                    case 4: // not the first day of the week
-
-                        // start this long interview on the previous day
-                        _interviewer[i].routes_days[d-1].villages.pop_back();
-
-                        predV = _interviewer[i].routes_days[d-1].villages.back();
-
-                        thome =    rainingSeason *_distmatrixRain[predV][home]  // old time to get home
-                              +  (1-rainingSeason)*_distmatrixDry[predV][home];
-
-                        _interviewer[i].routes_days[d-1].time -= thome; // delete old time to get home
-
-                        thome =    rainingSeason *_distmatrixRain[V][home] // new time to get home
-                              +  (1-rainingSeason)*_distmatrixDry[V][home];// don't need this because we may stay over night in the village
-
-                        tmove =    rainingSeason *_distmatrixRain[predV][V]
-                              + (1-rainingSeason)*_distmatrixDry[predV][V];
-
-                        ti_free  = tmax - _interviewer[i].routes_days[d-1].time - tmove;
-
-
-                        _interviewer[i].routes_days[d-1].time = tmax + thome;
-                        _interviewer[i].routes_days[d-1].villages.push_back(V);
-                        _interviewer[i].routes_days[d-1].villages.push_back(home);
-                        _interviewer[i].routes_days[d-1].households.push_back(hhID);
-
-                        _interviewer[i].routes_days[d].time -= ti_free;
-
-                        // add splitted hh in the time table _hhITimePlan_week
-                        (*_hhITimePlan_it).second = ti_free;
-                        _hhITimePlan_week[w].push_back(std::make_pair(hhID, ti - ti_free));
-                        break;
-                    }// end switch
-
-                } // if
-            } // for d
-        } // for w
+        }   // for w
     } // for i
-
-
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1324,11 +1580,12 @@ void initialsolution2(std::vector<stVillage> _villages,           // villages
     for (unsigned int k=0; k< _interviewer.size(); ++k)
     {
         for (unsigned int d=0; d<_interviewer[k].routes_days.size(); ++d )
-            if (_interviewer[k].routes_days[d].time > 8*60.)
+            if (_interviewer[k].routes_days[d].time - 8*60. > 0.001)
             {
                 ++count2;
                 std::cout << "interviewer " << k + 1 << " has extra hours on the day " << d % 5 + 1
-                          << "(week " << d/5 + 1 << "): " << 8*60 - _interviewer[k].routes_days[d].time << " min"<< std::endl;
+                          << "(week " << d/5 + 1 << "): "
+                          << 8*60 - _interviewer[k].routes_days[d].time << " min"<< std::endl;
 
             }
     }
