@@ -1,0 +1,78 @@
+Start with the file ./data/hexagonal_lattice_d4.dat
+Tried aggregator 1 time.
+MIP Presolve eliminated 25 rows and 1 columns.
+Reduced MIP has 402 rows, 214 columns, and 1182 nonzeros.
+Reduced MIP has 189 binaries, 25 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 2 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.01 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        4.0000   189                      4.0000      189         
+      0     0        4.0000   165                   Cuts: 129      310         
+      0     0        4.0000   163                   Cuts: 111      396         
+      0     0        4.0000   162                    Cuts: 88      468         
+      0     0        4.0000   135                    Cuts: 57      523         
+      0     0        4.0000   167                   Cuts: 103      653         
+*     0+    0                           32.0000        4.0000      653   87.50%
+      0     2        4.0000   120       32.0000        4.0000      653   87.50%
+Elapsed time =   0.10 sec. (tree size =  0.01 MB, solutions = 1)
+*   366   352      integral     0       31.0000        4.0000     4154   87.10%
+*   390   373      integral     0       30.0000        4.0000     4222   86.67%
+*   394   374      integral     0       29.0000        4.0000     4242   86.21%
+*   409+  382                           28.0000        4.0000     4411   85.71%
+*   462   409      integral     0       27.0000        4.0000     5013   85.19%
+*   812+  739                           26.0000        4.0000     8046   84.62%
+*   812+  739                           25.0000        4.0000     8046   84.00%
+*   812+  739                           24.0000        4.0000     8046   83.33%
+*   876+  741                           23.0000        4.0000     9006   82.61%
+*  1000   832      integral     0       22.0000        4.0000    10136   81.82%
+*  2221  1712      integral     0       21.0000        6.0000    20879   71.43%
+   2475  1808        4.0000   160       21.0000        6.0000    24459   71.43%
+   2477  1809        5.0000   105       21.0000        6.0000    24597   71.43%
+   2486  1815        9.0000    59       21.0000        6.0000    24762   71.43%
+  13037  5796       13.0000    48       21.0000       11.0000   130357   47.62%
+Elapsed time =   5.16 sec. (tree size =  1.76 MB, solutions = 19)
+* 13076  5811      integral     0       20.0000       11.0000   130752   45.00%
+  24726  9853       13.0000    45       20.0000       12.0000   240115   40.00%
+  35091 13057       18.0000    20       20.0000       13.0000   336206   35.00%
+  46994 16482       18.0476    31       20.0000       13.0000   445532   35.00%
+  58787 19413       16.0000    38       20.0000       14.0000   556300   30.00%
+* 65059 20815      integral     0       19.0000       14.0000   612441   26.32%
+  72580 19023       17.0000    21       19.0000       14.0000   682440   26.32%
+  86689 18499       18.0000    22       19.0000       15.0000   798651   21.05%
+ 100213 17091       16.0000    24       19.0000       16.0000   899734   15.79%
+ 116339 14186       17.0000    24       19.0000       16.0000  1004338   15.79%
+Elapsed time =  31.08 sec. (tree size =  5.19 MB, solutions = 21)
+ 135949  6278    infeasible             19.0000       17.0000  1107227   10.53%
+ 148887  3928       18.0000    21       19.0000       18.0000  1177306    5.26%
+ 160951  2389        cutoff             19.0000       18.0000  1246199    5.26%
+ 173106   958       18.0000    23       19.0000       18.0000  1315226    5.26%
+ 184954   222       18.0000    17       19.0000       18.0000  1388550    5.26%
+
+Implied bound cuts applied:  360
+Flow cuts applied:  4
+Mixed integer rounding cuts applied:  87
+Zero-half cuts applied:  33
+Gomory fractional cuts applied:  56
+
+Root node processing (before b&c):
+  Real time             =    0.09
+Parallel b&c, 4 threads:
+  Real time             =   46.99
+  Sync time (average)   =    0.01
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =   47.08 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 47.09
+Solution value  = 19
+c(0)=18 c(1)=3 c(2)=1 c(3)=6 c(4)=13 c(5)=4 c(6)=11 c(7)=17 c(8)=9 c(9)=15 c(10)=0 c(11)=6 c(12)=13 c(13)=19 c(14)=4 c(15)=10 c(16)=2 c(17)=8 c(18)=14 c(19)=6 c(20)=12 c(21)=18 c(22)=16 c(23)=1 

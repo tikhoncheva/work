@@ -1,0 +1,81 @@
+LATTICE 1 Hexagonal Lattice 
+Number of variables 301
+Tried aggregator 1 time.
+MIP Presolve eliminated 25 rows and 1 columns.
+Reduced MIP has 584 rows, 301 columns, and 1752 nonzeros.
+Reduced MIP has 276 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 2 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Found feasible solution after 0.00 sec.  Objective = 72.0000
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.01 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                           72.0000                    162     --- 
+*     0+    0                           21.7513                    162     --- 
+      0     0        2.7679   135       21.7513        2.7679      162   87.27%
+      0     0        2.8235   135       21.7513     Cuts: 246      405   87.02%
+      0     0        3.4937    96       21.7513      Cuts: 74      542   83.94%
+      0     0        3.7680    84       21.7513      Cuts: 41      620   82.68%
+      0     0        3.7680    99       21.7513      Cuts: 23      685   82.68%
+      0     0        3.7680    92       21.7513      Cuts: 28      763   82.68%
+      0     0        3.7679   100       21.7513      Cuts: 36      843   82.68%
+*     0+    0                           12.1436        3.7680      843   68.97%
+      0     2        3.7679   100       12.1436        3.7680      843   68.97%
+Elapsed time =   0.19 sec. (tree size =  0.01 MB, solutions = 3)
+*   110+  109                           11.5123        3.7680     5117   67.27%
+*   122+  121                           11.4260        3.7680     5454   67.02%
+*   153+  152                           10.2444        3.7680     6367   63.22%
+*   252   237      integral     0        9.5986        3.7680     8247   60.74%
+*   296+  267                            9.5123        3.7680     9256   60.39%
+*   319+  284                            9.2444        3.7680     9687   59.24%
+*   359+  320                            9.1581        3.7680    10814   58.86%
+*   494   431      integral     0        9.0718        3.7680    13834   58.47%
+*   500   430      integral     0        8.8901        3.7680    13890   57.62%
+*   579   478      integral     0        8.7803        3.7680    15873   57.09%
+*   674+  537                            8.6222        3.7870    18495   56.08%
+*   787   617      integral     0        8.5359        3.7870    21588   55.63%
+*   832   636      integral     0        8.4260        3.7870    23043   55.06%
+*   927+  713                            8.2444        3.7870    25844   54.07%
+*   991   738      integral     0        8.1581        3.7870    28342   53.58%
+*  1006+  751                            7.8901        3.7870    28824   52.00%
+*  1012   753      integral     0        7.7712        3.7870    28885   51.27%
+*  1110   745      integral     0        7.7085        3.7906    31591   50.83%
+*  1114   745      integral     0        7.6222        3.7906    31741   50.27%
+Elapsed time =   0.94 sec. (tree size =  0.27 MB, solutions = 23)
+*  1227   796      integral     0        7.4170        3.9514    35152   46.73%
+*  1447+  906                            7.3307        3.9793    42658   45.72%
+*  2258  1365      integral     0        7.1581        4.1906    72104   41.46%
+   2429  1421        5.2679    30        7.1581        4.1906    79885   41.46%
+*  2645   588      integral     0        6.9529        4.2262    87393   39.22%
+*  3034   346      integral     0        6.6849        4.4793    99176   32.99%
+*  3190+  301                            6.4170        4.5023   104056   29.84%
+
+Cover cuts applied:  3
+Implied bound cuts applied:  11
+Flow cuts applied:  50
+Mixed integer rounding cuts applied:  95
+Gomory fractional cuts applied:  21
+
+Root node processing (before b&c):
+  Real time             =    0.18
+Parallel b&c, 4 threads:
+  Real time             =    4.17
+  Sync time (average)   =    0.00
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =    4.35 sec.
+STATUS : Optimal
+Solution status = Optimal
+ Number of constraints = 609
+Solution value  = 6.41699
+c(0)=5.41699 c(1)=3.97645 c(2)=1.7085 c(3)=0.354249 c(4)=6.41699 c(5)=4.06275 c(6)=2.7085 c(7)=1.35425 c(8)=0.354249 c(9)=6.41699 c(10)=5.06275 c(11)=3.6222 c(12)=2.7085 c(13)=1.35425 c(14)=0 c(15)=6.06275 c(16)=5.06275 c(17)=3.7085 c(18)=2.35425 c(19)=0 c(20)=6.06275 c(21)=4.7085 c(22)=2.35425 c(23)=1 
+4.35user 0.04system 0:04.27elapsed 103%CPU (0avgtext+0avgdata 51284maxresident)k
+41720inputs+11040outputs (2major+13252minor)pagefaults 0swaps

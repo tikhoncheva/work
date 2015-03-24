@@ -1,0 +1,55 @@
+Start with the file ./data/square_lattice_d3.dat
+Tried aggregator 1 time.
+MIP Presolve eliminated 26 rows and 1 columns.
+Reduced MIP has 371 rows, 199 columns, and 1088 nonzeros.
+Reduced MIP has 173 binaries, 26 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        3.0000   173                      3.0000      173         
+      0     0        3.0000   123                   Cuts: 114      281         
+      0     0        3.0000   173                    Cuts: 85      367         
+      0     0        3.0000   121                    Cuts: 40      432         
+      0     0        3.0000   160                    Cuts: 91      527         
+*     0+    0                           25.0000        3.0000      527   88.00%
+      0     2        3.0000   107       25.0000        3.0000      527   88.00%
+Elapsed time =   0.07 sec. (tree size =  0.01 MB, solutions = 1)
+*    79+   78                           22.0000        3.0000     2270   86.36%
+*   278   268      integral     0       21.0000        3.0000     3596   85.71%
+*   351   334      integral     0       18.0000        3.0000     4004   83.33%
+*   409   378      integral     0       17.0000        3.0000     4539   82.35%
+*   604   536      integral     0       15.0000        3.0000     6083   80.00%
+*   790   648      integral     0       14.0000        3.0000     7834   78.57%
+*   959   736      integral     0       13.0000        3.0002     9415   76.92%
+*  1342+  942                           12.0000        4.0000    12682   66.67%
+   1696  1052        8.0000    50       12.0000        4.0000    16233   66.67%
+*  2553   809      integral     0       11.0000        5.0000    25132   54.55%
+
+Implied bound cuts applied:  208
+Flow cuts applied:  8
+Mixed integer rounding cuts applied:  27
+Zero-half cuts applied:  20
+Gomory fractional cuts applied:  28
+
+Root node processing (before b&c):
+  Real time             =    0.07
+Parallel b&c, 4 threads:
+  Real time             =    1.65
+  Sync time (average)   =    0.00
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =    1.72 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 1.72
+Solution value  = 11
+c(0)=5 c(1)=10 c(2)=3 c(3)=8 c(4)=0 c(5)=8 c(6)=1 c(7)=6 c(8)=11 c(9)=4 c(10)=11 c(11)=4 c(12)=9 c(13)=2 c(14)=7 c(15)=2 c(16)=7 c(17)=0 c(18)=5 c(19)=10 c(20)=5 c(21)=10 c(22)=3 c(23)=8 c(24)=1 
