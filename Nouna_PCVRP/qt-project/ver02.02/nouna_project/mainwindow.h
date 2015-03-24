@@ -50,8 +50,6 @@ private slots:
 
     void on_pushButtonInitialSolution_clicked();
 
-    void on_pushButtonShowRoute_pressed();
-
     void on_checkBoxVillageIDs_clicked();
 
     void weekSelected(int, int);

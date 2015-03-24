@@ -525,6 +525,6 @@ void MainWindow::showReportWindow()
 //    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day,  0);
     // 0  hhITimePlan_day  day view
     // 1  hhITimePlan week week view
-    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
+    reportWindow *rw = new reportWindow(this, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
     rw->show();
 }

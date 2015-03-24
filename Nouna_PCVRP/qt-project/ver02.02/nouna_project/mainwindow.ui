@@ -565,6 +565,24 @@ border-radius: 10px;
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>checkBoxVillageNames</tabstop>
+  <tabstop>checkBoxVillageIDs</tabstop>
+  <tabstop>checkBoxShowRoads</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>textEditR</tabstop>
+  <tabstop>textEditH</tabstop>
+  <tabstop>buttonOpenHouseh</tabstop>
+  <tabstop>buttonOpenVillages</tabstop>
+  <tabstop>buttonOpenRoads</tabstop>
+  <tabstop>textEditN</tabstop>
+  <tabstop>comboBoxInterviewer</tabstop>
+  <tabstop>pushButtonInitialSolution</tabstop>
+  <tabstop>pushButtonShowRoute</tabstop>
+  <tabstop>tableWidget_weekplans</tabstop>
+  <tabstop>pbShow_report</tabstop>
+  <tabstop>tableWidget_dayplans</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

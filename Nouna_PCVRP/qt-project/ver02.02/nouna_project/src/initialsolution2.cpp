@@ -1191,20 +1191,51 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
 
             predV = V;
 
-            newHhVec.push_back(hhID);
-            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
-                newVVec.push_back(V);
-
-        if (twork>tmax){
-
+        if (twork-tmax - thome > 10 /*&& twork-tmax - thome < ti*/) // ti_rest > 10 min and ti_rest < ti
+        {
             ti_rest = (twork - tmax) - thome;
             ti -= ti_rest;
             if (ti<0)
-                std::cout << "!!!!!!!!!!!!!!!!!!!" << std::endl;
+                std::cout << "!!!!!!!!!!!!!!!!!!! ti = " << ti << std::endl;
             // add to the time table, that interview time of hh hhID was splitted
             (*_hhITimePlan_it).second = ti;
             _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
             //
+
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            newHhVec.push_back(hhID);
+            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+                newVVec.push_back(V);
+            newVVec.push_back(home);
+
+            std::reverse(newHhVec.begin(), newHhVec.end());
+            std::reverse(newVVec.begin(), newVVec.end());
+
+            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            twork = thome + ti_rest;
+
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+
+            day = std::max(day - 1 , week*5);
+        }
+/*
+        if (twork-tmax - thome > 10 && twork-tmax - thome >= ti)
+        {
 
             _interviewer.routes_days[day].households.erase(
                         _interviewer.routes_days[day].households.begin(),
@@ -1233,7 +1264,9 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
             newVVec.push_back(V);
 
             day = std::max(day - 1 , week*5);
+
         }
+        */
     } while(! hhVecToReorder.empty());
 
     // save last array
@@ -1350,12 +1383,12 @@ void propagateToTheRight(unsigned int week, unsigned int day,
             if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
                 newVVec.push_back(V);
 
-        if (twork>tmax){
+        if (twork-tmax > thome + 10 /*&& twork-tmax - thome < ti*/){ // ti_rest > 10 min and ti_rest < ti
 
             ti_rest = (twork - tmax) - thome;
             ti -= ti_rest;
             if (ti<0)
-                std::cout << "\n!!!!!!!!!!!!!!!!!!!" << std::endl;
+                std::cout << "\n!!!!!!!!!!!!!!!!!!! ti=" << ti << std::endl;
             // add to the time table, that interview time of hh hhID was splitted
             (*_hhITimePlan_it).second = ti;
             _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
@@ -1385,6 +1418,40 @@ void propagateToTheRight(unsigned int week, unsigned int day,
 
             day = std::min(day + 1, (week+1)*5 - 1);
         }
+        /*
+        if (twork-tmax - thome > 10 && twork-tmax - thome >= ti)
+        {
+
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            newVVec.push_back(home);
+
+            std::reverse(newHhVec.begin(), newHhVec.end());
+            std::reverse(newVVec.begin(), newVVec.end());
+
+            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            twork = thome + ti_rest;
+
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+
+            day = std::max(day - 1 , week*5);
+
+        }
+        */
     } while(! hhVecToReorder.empty());
 
     // save last array
@@ -1451,6 +1518,8 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
                     break;
                 }
             }
+            if (day_r > (w+1)*5)
+                day_r = w*5;
 
             if (overhours)
             {
