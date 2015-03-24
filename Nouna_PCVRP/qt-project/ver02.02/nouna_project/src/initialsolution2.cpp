@@ -124,7 +124,7 @@ std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villa
 
                 _hhITimePlan_it = std::find_if(_hhITimePlan_week.begin(), _hhITimePlan_week.end(),
                                                [hhID] (std::pair<unsigned int, double> const& element)
-                                                    { return element.first == hhID;});
+                { return element.first == hhID;});
                 ti = (*_hhITimePlan_it).second;
                 tmp.push_back(std::make_pair(ti, hhID));
             }
@@ -133,7 +133,7 @@ std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villa
 
         // sort household in the descending order of their interview times
         std::sort(tmp.begin(), tmp.end(), []( const std::pair<double, int>& a, const std::pair<double, int>& b)
-                                            { return a.first > b.first;});
+        { return a.first > b.first;});
         for (unsigned int j=0; j<tmp.size(); ++j)
             _village_household[i].push_back(tmp[j].second);
 
@@ -224,7 +224,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
     //    std::vector<bool> ToVis(N, true);
     std::vector<std::vector <std::pair<int, double> > > planLongITimes(3); // interview time of long interviews in each period
     std::vector<unsigned int > indShortInterviews;
-//    std::cout << "Mean long IT in period " << pmeanLongITime << std::endl;
+    //    std::cout << "Mean long IT in period " << pmeanLongITime << std::endl;
 
     for (unsigned int i=0; i<_households_sorted.size(); ++i)
     {
@@ -372,15 +372,15 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
         worktime_week3[w] += planLongITimes[2][i].second;
     }
 
-//    std::cout << "mean long it in week " << wmeanLongITime << std::endl;
-//    std::cout << "week \t period1 \t period2 \t period3" << std::endl;
-//    for (unsigned int i= 0; i< constant::nweeks; ++i)
-//    {
-//        std::cout << i+1 << "\t" << worktime_week1[i] << "\t"
-//                  << worktime_week2[i]<< "\t"
-//                  << worktime_week3[i]<< std::endl;
-//    }
-//    std::cout << std::endl;
+    //    std::cout << "mean long it in week " << wmeanLongITime << std::endl;
+    //    std::cout << "week \t period1 \t period2 \t period3" << std::endl;
+    //    for (unsigned int i= 0; i< constant::nweeks; ++i)
+    //    {
+    //        std::cout << i+1 << "\t" << worktime_week1[i] << "\t"
+    //                  << worktime_week2[i]<< "\t"
+    //                  << worktime_week3[i]<< std::endl;
+    //    }
+    //    std::cout << std::endl;
 
     std::cout << " ... finished" <<std::endl;
     //-------------------------------------------------------------------------------------------
@@ -392,7 +392,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
 
     std::cout << "Step 3: combine results of the two previuos steps to get matrix: week vs hhID/time";
     const double tmax = K * 5* 8*60.;
-//    std::cout << "Max week work time " << tmax << std::endl;
+    //    std::cout << "Max week work time " << tmax << std::endl;
     std::vector<double> remaining_time (nWeeks, tmax);
 
     std::vector<std::vector<std::pair<unsigned int, double>>> interviews_weekly;
@@ -453,16 +453,16 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
         sum += 3*itime;
     }
 
-//    std::cout << "week \t period1 \t period2 \t period3" << std::endl;
-//    for (unsigned int w=0; w< constant::nweeks ; ++w)
-//    {
-//        std::cout << w+1;
-//        std::cout << "\t" << remaining_time[w]
-//                     << "\t" << remaining_time[w + constant::nweeks]
-//                     << "\t" << remaining_time[w + constant::nweeks * 2] << std::endl;
-//    }
+    //    std::cout << "week \t period1 \t period2 \t period3" << std::endl;
+    //    for (unsigned int w=0; w< constant::nweeks ; ++w)
+    //    {
+    //        std::cout << w+1;
+    //        std::cout << "\t" << remaining_time[w]
+    //                     << "\t" << remaining_time[w + constant::nweeks]
+    //                     << "\t" << remaining_time[w + constant::nweeks * 2] << std::endl;
+    //    }
 
-//    std::cout << "summary work time= " << sum << std::endl;
+    //    std::cout << "summary work time= " << sum << std::endl;
 
     std::cout << " ... finished" << std::endl;
 
@@ -517,7 +517,7 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
         else rainingSeason = 0;
 
         tmax = 5*8*60. - 5 * constant::maxDistDry  *(1 - rainingSeason)
-                       - 5 * constant::maxDistRain *     rainingSeason;
+                - 5 * constant::maxDistRain *     rainingSeason;
 
         // delete entries from the previous iteration
         for (unsigned int i=0; i<nI; ++i)
@@ -576,10 +576,10 @@ void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsig
 }
 
 void assignInterviewersToHH_weekly2(const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan_weekly,
-                                   std::vector<stHousehold> _households,         // _households
-                                   std::vector<stInterviewer>& _interviewer,
-                                   const std::vector<std::vector<double> >  _distmatrixDry,// distmatrix
-                                   const std::vector<std::vector<double> >  _distmatrixRain)
+                                    std::vector<stHousehold> _households,         // _households
+                                    std::vector<stInterviewer>& _interviewer,
+                                    const std::vector<std::vector<double> >  _distmatrixDry,// distmatrix
+                                    const std::vector<std::vector<double> >  _distmatrixRain)
 {
     unsigned int nI = _interviewer.size();
     unsigned int nWeeks = _hhITimePlan_weekly.size();
@@ -612,7 +612,7 @@ void assignInterviewersToHH_weekly2(const std::vector<std::vector<std::pair<unsi
         else rainingSeason = 0;
 
         tmax = 5*8*60.;// - 2 * constant::maxDistDry  *(1 - rainingSeason)
-                       // - 2 * constant::maxDistRain *     rainingSeason;
+        // - 2 * constant::maxDistRain *     rainingSeason;
 
         // delete entries from the previous iteration
         for (unsigned int i=0; i<nI; ++i)
@@ -637,9 +637,9 @@ void assignInterviewersToHH_weekly2(const std::vector<std::vector<std::pair<unsi
             nextV = _households[hhID].villageID - 101;   // village of the next household
 
             thome =    rainingSeason *_distmatrixRain[nextV][home] // if interviewer would come back home after this hh
-                   + (1-rainingSeason)*_distmatrixDry[nextV][home];
+                    + (1-rainingSeason)*_distmatrixDry[nextV][home];
             tmove =    rainingSeason *_distmatrixRain[predV][nextV] // if interviewer would come back home after this hh
-                  + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                    + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
             if (remaining_time[k] - (ti + thome + tmove) < 0)
                 k = std::min(k + 1, nI-1);
@@ -751,7 +751,7 @@ void make_day_plans (stInterviewer& interviewer,
 
 
         // sort households in ascending order of distance to the village they belong to
-//        vToVis = sort_villages_dist(vToVis,_distmatrixDry);
+        //        vToVis = sort_villages_dist(vToVis,_distmatrixDry);
 
         // sort households in increasing order of the angle they make with the capital
         vToVis = sort_villages_angles(vToVis, _villages);
@@ -759,13 +759,13 @@ void make_day_plans (stInterviewer& interviewer,
         std::vector<std::vector<unsigned int> > village_household_Matrix;
         village_household_Matrix = groupHH(vToVis, hhToVis, _households);
 
-//
+        //
         assert(village_household_Matrix.size() == V);
         unsigned int count = 0;
         for (unsigned int p=0; p<village_household_Matrix.size(); ++p)
             count += village_household_Matrix[p].size();
         assert(count == N);
-//
+        //
 
         // each week starts at capital (home)
         predV = home;
@@ -785,19 +785,19 @@ void make_day_plans (stInterviewer& interviewer,
                 // interview time
                 _hhITimePlan_it = std::find_if(_hhITimePlan_weekly[w].begin(), _hhITimePlan_weekly[w].end(),
                                                [hhID] (std::pair<unsigned int, double> const& element)
-                                                    { return element.first == hhID;});
+                { return element.first == hhID;});
                 ti = (*_hhITimePlan_it).second;
 
 
                 thome    =    rainingSeason *_distmatrixRain[nextV][home] // if interviewer would come back home after this hh
-                          + (1-rainingSeason)*_distmatrixDry[nextV][home];
+                        + (1-rainingSeason)*_distmatrixDry[nextV][home];
 
                 // try to add into already started day
                 for (d=0; d<=day; ++d)
                 {
                     predV = visitedV[d].back();
                     tmove =    rainingSeason *_distmatrixRain[predV][nextV] // time to change village
-                              + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                            + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
                     if (remaining_time[d] - (tmove + ti + thome) >= 0 )
                     {
@@ -824,7 +824,7 @@ void make_day_plans (stInterviewer& interviewer,
                         predV = visitedV[day].back(); // continue the last day of the week
 
                     tmove =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
-                              + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                            + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
                     remaining_time[day] -= tmove + ti;
                     if (predV != nextV)
@@ -840,7 +840,7 @@ void make_day_plans (stInterviewer& interviewer,
         {
             predV = visitedV[d].back();
             thome =    rainingSeason *_distmatrixRain[predV][home]
-                   + (1-rainingSeason)*_distmatrixDry [predV][home];
+                    + (1-rainingSeason)*_distmatrixDry [predV][home];
 
             remaining_time[d] -= thome;
             visitedV[d].push_back(home);
@@ -859,12 +859,12 @@ void make_day_plans (stInterviewer& interviewer,
 }
 
 void make_day_plans2 (stInterviewer& interviewer,
-                     const std::vector<stVillage> _villages,
-                     const std::vector<stHousehold> _households,         // _households
-                     std::vector<std::vector <std::pair<unsigned int, double> > >  _hhITimePlan_weekly, // <hh, itime>
-                     const std::vector<std::vector<double> > _distmatrixDry,        // distmatrix
-                     const std::vector<std::vector<double> > _distmatrixRain        // distmatrix
-                     )
+                      const std::vector<stVillage> _villages,
+                      const std::vector<stHousehold> _households,         // _households
+                      std::vector<std::vector <std::pair<unsigned int, double> > >  _hhITimePlan_weekly, // <hh, itime>
+                      const std::vector<std::vector<double> > _distmatrixDry,        // distmatrix
+                      const std::vector<std::vector<double> > _distmatrixRain        // distmatrix
+                      )
 {
     unsigned int nWeeks = constant::nweeks * constant::P;
     unsigned int nDays = 5;
@@ -940,13 +940,13 @@ void make_day_plans2 (stInterviewer& interviewer,
         std::vector<std::vector<unsigned int> > village_household_Matrix;
         village_household_Matrix = groupHH2(vToVis, hhToVis, _households, _hhITimePlan_weekly[w]);
 
-//
+        //
         assert(village_household_Matrix.size() == V);
         unsigned int count = 0;
         for (unsigned int p=0; p<village_household_Matrix.size(); ++p)
             count += village_household_Matrix[p].size();
         assert(count == N);
-//
+        //
 
         // each week starts at capital (home)
         predV = home;
@@ -966,19 +966,19 @@ void make_day_plans2 (stInterviewer& interviewer,
                 // interview time
                 _hhITimePlan_it = std::find_if(_hhITimePlan_weekly[w].begin(), _hhITimePlan_weekly[w].end(),
                                                [hhID] (std::pair<unsigned int, double> const& element)
-                                                    { return element.first == hhID;});
+                { return element.first == hhID;});
                 ti = (*_hhITimePlan_it).second;
 
 
                 thome    =    rainingSeason *_distmatrixRain[nextV][home] // if interviewer would come back home after this hh
-                          + (1-rainingSeason)*_distmatrixDry[nextV][home];
+                        + (1-rainingSeason)*_distmatrixDry[nextV][home];
 
                 // try to add into already started day
                 for (d=0; d<=day; ++d)
                 {
                     predV = visitedV[d].back();
                     tmove =    rainingSeason *_distmatrixRain[predV][nextV] // time to change village
-                              + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                            + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
                     if (remaining_time[d] - (tmove + ti + thome) >= 0 )
                     {
@@ -1005,7 +1005,7 @@ void make_day_plans2 (stInterviewer& interviewer,
                         predV = visitedV[day].back(); // continue the last day of the week
 
                     tmove =    rainingSeason *_distmatrixRain[predV][nextV] // travel time between previous village and new village
-                              + (1-rainingSeason)*_distmatrixDry[predV][nextV];
+                            + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
                     remaining_time[day] -= tmove + ti;
                     if (predV != nextV)
@@ -1021,7 +1021,7 @@ void make_day_plans2 (stInterviewer& interviewer,
         {
             predV = visitedV[d].back();
             thome =    rainingSeason *_distmatrixRain[predV][home]
-                   + (1-rainingSeason)*_distmatrixDry [predV][home];
+                    + (1-rainingSeason)*_distmatrixDry [predV][home];
 
             remaining_time[d] -= thome;
             visitedV[d].push_back(home);
@@ -1078,13 +1078,13 @@ void stay_over_night(std::vector<stInterviewer>& _interviewer,
                     {
                         _interviewer[k].routes_days[w*5 + day].villages.pop_back();
                         thome =    rainingSeason *_distmatrixRain[lastV][home] // travel time between previous village and new village
-                              + (1-rainingSeason)*_distmatrixDry [lastV][home];
+                                + (1-rainingSeason)*_distmatrixDry [lastV][home];
                         _interviewer[k].routes_days[w*5 + day].time -= thome;
 
                         _interviewer[k].routes_days[w*5 + day + 1].villages.erase(
                                     _interviewer[k].routes_days[w*5 + day + 1].villages.begin());
                         thome =    rainingSeason *_distmatrixRain[home][firstV] // travel time between previous village and new village
-                                  + (1-rainingSeason)*_distmatrixDry [home][firstV];
+                                + (1-rainingSeason)*_distmatrixDry [home][firstV];
                         _interviewer[k].routes_days[w*5 + day + 1].time -= thome;
                     }
                 }
@@ -1106,11 +1106,11 @@ void stay_over_night(std::vector<stInterviewer>& _interviewer,
 // moving sequentially to the left,
 // Interviews, which takes too long, can be split and started on the day before
 void propagateToTheLeft(unsigned int week, unsigned int day,
-                             stInterviewer& _interviewer,
-                             const std::vector<stHousehold> _households,         // _households
-                             const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
-                             const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
-                             std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
+                        stInterviewer& _interviewer,
+                        const std::vector<stHousehold> _households,         // _households
+                        const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                        const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
+                        std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
 {
     unsigned int d = 0;
 
@@ -1144,7 +1144,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     for(d = week*5; d <= day; ++d)
     {
         for (unsigned int h = 0;
-                          h < _interviewer.routes_days[d].households.size();++h)
+             h < _interviewer.routes_days[d].households.size();++h)
             hhVecToReorder.push_back(_interviewer.routes_days[d].households[h]);
 
         // delete old schedules
@@ -1161,7 +1161,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     }
     predV = home;
     thome =    rainingSeason *_distmatrixRain[predV][home]
-          + (1-rainingSeason)*_distmatrixDry[predV][home];
+            + (1-rainingSeason)*_distmatrixDry[predV][home];
 
     twork = 2 * thome;
     assert( twork == 0.);
@@ -1171,25 +1171,29 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     // rearange array
     do { // while(! hhVecToReorder.empty());
 
-            twork -= thome;
-            hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
-            V    = _households[hhID].villageID - 101;
+        twork -= thome;
+        hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
+        V    = _households[hhID].villageID - 101;
 
-            _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
-                                           _hhITimePlan_week[week].end(),
-                                           [hhID] (std::pair<unsigned int, double> const& element)
-                                             { return element.first == hhID;});
-            ti = (*_hhITimePlan_it).second;  // it's interview time
+        newHhVec.push_back(hhID);
+        if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+            newVVec.push_back(V);
 
-            tmove =    rainingSeason *_distmatrixRain[predV][V]
-                  + (1-rainingSeason)*_distmatrixDry[predV][V];
+        _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
+                                       _hhITimePlan_week[week].end(),
+                                       [hhID] (std::pair<unsigned int, double> const& element)
+        { return element.first == hhID;});
+        ti = (*_hhITimePlan_it).second;  // it's interview time
 
-            thome =    rainingSeason *_distmatrixRain[V][home]
-                  + (1-rainingSeason)*_distmatrixDry[V][home];
+        tmove =    rainingSeason *_distmatrixRain[predV][V]
+                + (1-rainingSeason)*_distmatrixDry[predV][V];
 
-            twork += tmove + ti + thome;
+        thome =    rainingSeason *_distmatrixRain[V][home]
+                + (1-rainingSeason)*_distmatrixDry[V][home];
 
-            predV = V;
+        twork += tmove + ti + thome;
+
+        predV = V;
 
         if (twork-tmax - thome > 10 /*&& twork-tmax - thome < ti*/) // ti_rest > 10 min and ti_rest < ti
         {
@@ -1210,9 +1214,6 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
                         _interviewer.routes_days[day].villages.begin(),
                         _interviewer.routes_days[day].villages.end());
 
-            newHhVec.push_back(hhID);
-            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
-                newVVec.push_back(V);
             newVVec.push_back(home);
 
             std::reverse(newHhVec.begin(), newHhVec.end());
@@ -1233,7 +1234,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
 
             day = std::max(day - 1 , week*5);
         }
-/*
+        /*
         if (twork-tmax - thome > 10 && twork-tmax - thome >= ti)
         {
 
@@ -1294,11 +1295,11 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
 // moving sequentially to the right,
 // Interviews, which takes too long, can be split and continued on the next day
 void propagateToTheRight(unsigned int week, unsigned int day,
-                       stInterviewer& _interviewer,
-                       const std::vector<stHousehold> _households,         // _households
-                       const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
-                       const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
-                       std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
+                         stInterviewer& _interviewer,
+                         const std::vector<stHousehold> _households,         // _households
+                         const std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                         const std::vector<std::vector<double> >  _distmatrixRain, // distmatrix)
+                         std::vector<std::vector <std::pair<unsigned int, double> > >& _hhITimePlan_week)
 {
     unsigned int d = 0;
 
@@ -1331,7 +1332,7 @@ void propagateToTheRight(unsigned int week, unsigned int day,
     for(d = day; d < (week+1)*5; ++d)
     {
         for (unsigned int h = 0;
-                          h < _interviewer.routes_days[d].households.size();++h)
+             h < _interviewer.routes_days[d].households.size();++h)
             hhVecToReorder.push_back(_interviewer.routes_days[d].households[h]);
 
         _interviewer.routes_days[d].households.erase(
@@ -1349,7 +1350,7 @@ void propagateToTheRight(unsigned int week, unsigned int day,
 
     predV = home;
     thome =    rainingSeason *_distmatrixRain[predV][home]
-          + (1-rainingSeason)*_distmatrixDry[predV][home];
+            + (1-rainingSeason)*_distmatrixDry[predV][home];
 
     twork = 2 * thome;
     assert( twork == 0.);
@@ -1359,31 +1360,33 @@ void propagateToTheRight(unsigned int week, unsigned int day,
     // rearange array
     do { // while(! hhVecToReorder.empty());
 
-            twork -= thome;
-            hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
-            V    = _households[hhID].villageID - 101;
+        twork -= thome;
+        hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
+        V    = _households[hhID].villageID - 101;
 
-            _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
-                                           _hhITimePlan_week[week].end(),
-                                           [hhID] (std::pair<unsigned int, double> const& element)
-                                             { return element.first == hhID;});
-            ti = (*_hhITimePlan_it).second;  // it's interview time
+        newHhVec.push_back(hhID);
+        if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+            newVVec.push_back(V);
 
-            tmove =    rainingSeason *_distmatrixRain[predV][V]
-                  + (1-rainingSeason)*_distmatrixDry[predV][V];
+        _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
+                                       _hhITimePlan_week[week].end(),
+                                       [hhID] (std::pair<unsigned int, double> const& element)
+        { return element.first == hhID;});
+        ti = (*_hhITimePlan_it).second;  // it's interview time
 
-            thome =    rainingSeason *_distmatrixRain[V][home]
-                  + (1-rainingSeason)*_distmatrixDry[V][home];
+        tmove =    rainingSeason *_distmatrixRain[predV][V]
+                + (1-rainingSeason)*_distmatrixDry[predV][V];
 
-            twork += tmove + ti + thome;
+        thome =    rainingSeason *_distmatrixRain[V][home]
+                + (1-rainingSeason)*_distmatrixDry[V][home];
 
-            predV = V;
+        twork += tmove + ti + thome;
 
-            newHhVec.push_back(hhID);
-            if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
-                newVVec.push_back(V);
+        predV = V;
 
-        if (twork-tmax > thome + 10 /*&& twork-tmax - thome < ti*/){ // ti_rest > 10 min and ti_rest < ti
+
+        if (twork-tmax > thome + 10 /*&& twork-tmax - thome < ti*/) // ti_rest > 10 min and ti_rest < ti
+        {
 
             ti_rest = (twork - tmax) - thome;
             ti -= ti_rest;
@@ -1492,11 +1495,11 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
 
     for (unsigned int i=0; i< nI; ++i) // for each interviewer
     {
-//        unsigned int i = 1;
+        //        unsigned int i = 1;
         // check each week if there are too long working days
         for (unsigned int w=0; w<nWeeks; ++w )
         {
-//            unsigned int w = 4;
+            //            unsigned int w = 4;
             overhours = false;
 
             for (day_l = w*5; day_l < (w+1)*5; ++day_l)
@@ -1534,11 +1537,11 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
 
                 if (freetime_right > freetime_left)
                     propagateToTheRight(w /*week*/, day_l /*day*/,
-                                      _interviewer[i] /* current interviewer*/,
-                                      _households /* households */,
-                                      _distmatrixDry /* distmatrix */,
-                                      _distmatrixRain /* distmatrix */,
-                                      _hhITimePlan_week /* year time schedule*/);
+                                        _interviewer[i] /* current interviewer*/,
+                                        _households /* households */,
+                                        _distmatrixDry /* distmatrix */,
+                                        _distmatrixRain /* distmatrix */,
+                                        _hhITimePlan_week /* year time schedule*/);
                 else
                     propagateToTheLeft(w /*week*/, day_r /*day*/,
                                        _interviewer[i] /* current interviewer*/,
@@ -1593,12 +1596,12 @@ void initialsolution2(std::vector<stVillage> _villages,           // villages
 
     std::cout << "Define interview times of each hh in each of the three visits and assign weeks of the visits";
     _hhITimePlan_weekly = planInterviews_weekly(_households_sorted, nI, _TimeInfo);
-     std::cout << " ... finished\n" << std::endl;
+    std::cout << " ... finished\n" << std::endl;
 
 
     std::cout << "Make week plans for each interviewer";
     assignInterviewersToHH_weekly2(_hhITimePlan_weekly, _households,_interviewer,
-                                  _distmatrixDry, _distmatrixRain);
+                                   _distmatrixDry, _distmatrixRain);
     std::cout << " ... finished\n" << std::endl;
 
 
