@@ -7,6 +7,8 @@
 #include <QMainWindow>
 #include <QString>
 
+#include <math.h>
+
 
 namespace Ui {
 class reportWindow;

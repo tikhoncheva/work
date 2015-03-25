@@ -51,17 +51,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // table of week plans
     ui->tableWidget_weekplans->setRowCount(constant::nweeks * constant::P);
-    ui->tableWidget_weekplans->setColumnCount(4);
+    ui->tableWidget_weekplans->setColumnCount(3);
 
     QStringList Header;
-    Header << "Week"<<"Work time"<<"#Villages" << "#Households";
+    Header << "Work time" << "#Villages" << "#Households";
     ui->tableWidget_weekplans->setHorizontalHeaderLabels(Header);
 
-
-    ui->tableWidget_weekplans->setColumnWidth(0,45);
+    ui->tableWidget_weekplans->setColumnWidth(0,80);
     ui->tableWidget_weekplans->setColumnWidth(1,80);
-    ui->tableWidget_weekplans->setColumnWidth(2,70);
-    ui->tableWidget_weekplans->setColumnWidth(3,90);
+    ui->tableWidget_weekplans->setColumnWidth(2,100);
 
     // table of day plans
     ui->tableWidget_dayplans->setRowCount(5);
@@ -308,13 +306,14 @@ void MainWindow::on_pushButtonShowRoute_clicked()
         k = Interviewer.size();
 
 
-
     for (unsigned int w=0; w<weeks; ++w)
     {
-        ui->tableWidget_weekplans->setItem(w, 0, new QTableWidgetItem(QString::number(w+1)));
-        ui->tableWidget_weekplans->setItem(w, 1, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].time)));
-        ui->tableWidget_weekplans->setItem(w, 2, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].villages.size())));
-        ui->tableWidget_weekplans->setItem(w, 3, new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].households.size())));
+        ui->tableWidget_weekplans->setItem(w, 0,
+                                           new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].time)));
+        ui->tableWidget_weekplans->setItem(w, 1,
+                                           new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].villages.size())));
+        ui->tableWidget_weekplans->setItem(w, 2,
+                                          new QTableWidgetItem(QString::number(Interviewer[k-1].routes_weeks[w].households.size())));
     }
 
 
@@ -419,10 +418,10 @@ void MainWindow::daySelected(int i, int)
     plot_route_day(ui->widget, Village, Interviewer[k-1], 5*week + day, predecessorsDry);
     plot_villages(ui->widget, Village);
 
-    std::cout << "Households to visit on the day " << day << ": " << std::endl;
-    for (unsigned int i=0; i<Interviewer[k-1].routes_days[5*week + day-1].households.size(); ++i)
-        std::cout << Interviewer[k-1].routes_days[5*week + day-1].households[i] + 10001 << "  ";
-    std::cout << std::endl;
+//    std::cout << "Households to visit on the day " << day << ": " << std::endl;
+//    for (unsigned int i=0; i<Interviewer[k-1].routes_days[5*week + day-1].households.size(); ++i)
+//        std::cout << Interviewer[k-1].routes_days[5*week + day-1].households[i] + 10001 << "  ";
+//    std::cout << std::endl;
 
     ui->widget->replot();
 }

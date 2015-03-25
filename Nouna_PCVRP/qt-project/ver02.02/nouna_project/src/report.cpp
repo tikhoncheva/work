@@ -140,7 +140,7 @@ std::set<writeFormat2>  saveHHSchedule_dayview_d(const std::vector<stInterviewer
                 timeplan_it = std::find_if(_ITimePlan[d].begin(),_ITimePlan[d].end(),
                                            [hhID] (std::pair<unsigned int, double> time)
                 {return time.first == hhID;});
-                itime = (*timeplan_it).second;
+                itime = round( (*timeplan_it).second);
 
                 writeFormat2 searchEntry;
                 searchEntry.hhID = hhID + 10001;
@@ -218,7 +218,7 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
                 timeplan_it = std::find_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
                                            [hhID] (std::pair<unsigned int, double> weekday)
                                                 {return weekday.first == hhID;});
-                itime = (*timeplan_it).second;
+                itime = round( (*timeplan_it).second);
                 copyITimePlan[d/5].erase(timeplan_it);
 
                 writeFormat2 searchEntry;

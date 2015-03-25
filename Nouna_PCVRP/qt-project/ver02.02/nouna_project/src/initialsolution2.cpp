@@ -484,9 +484,9 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
 // 16 interviewers have extra hours
 void assignInterviewersToHH_weekly(const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan_weekly,
                                    std::vector<stHousehold> _households,         // _households
-                                   std::vector<stInterviewer>& _interviewer,
-                                   const std::vector<std::vector<double> >  _distmatrixDry,// distmatrix
-                                   const std::vector<std::vector<double> >  _distmatrixRain)
+                                   std::vector<stInterviewer>& _interviewer)
+//                                   const std::vector<std::vector<double> >  _distmatrixDry,// distmatrix
+//                                   const std::vector<std::vector<double> >  _distmatrixRain)
 {
     unsigned int nI = _interviewer.size();
     unsigned int nWeeks = _hhITimePlan_weekly.size();
@@ -1117,7 +1117,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     double tmax = 8 * 60.;
     double ti;      // interview time
     double ti_rest;
-    double thome;
+    double thome, thome_pred;
     double tmove;
     double twork;
 
@@ -1135,6 +1135,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     std::vector<std::pair<unsigned int, double> >::iterator _hhITimePlan_it;
 
     bool rainingSeason = 0;
+    bool addVillage = false;
 
     if (week>=20 && week<=40) rainingSeason = 1;
     else rainingSeason = 0;
@@ -1143,8 +1144,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     // fill new array of hh to be reordered
     for(d = week*5; d <= day; ++d)
     {
-        for (unsigned int h = 0;
-             h < _interviewer.routes_days[d].households.size();++h)
+        for (unsigned int h = 0;h < _interviewer.routes_days[d].households.size();++h)
             hhVecToReorder.push_back(_interviewer.routes_days[d].households[h]);
 
         // delete old schedules
@@ -1159,6 +1159,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
         _interviewer.routes_days[d].villages.push_back(home);
         _interviewer.routes_days[d].villages.push_back(home);
     }
+
     predV = home;
     thome =    rainingSeason *_distmatrixRain[predV][home]
             + (1-rainingSeason)*_distmatrixDry[predV][home];
@@ -1169,7 +1170,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     newVVec.push_back(home);
 
     // rearange array
-    do { // while(! hhVecToReorder.empty());
+    do {
 
         twork -= thome;
         hhID = hhVecToReorder.back();  hhVecToReorder.pop_back();
@@ -1177,7 +1178,10 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
 
         newHhVec.push_back(hhID);
         if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+        {
+            addVillage = true;
             newVVec.push_back(V);
+        }
 
         _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
                                        _hhITimePlan_week[week].end(),
@@ -1195,17 +1199,92 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
 
         predV = V;
 
-        if (twork-tmax - thome > 10 /*&& twork-tmax - thome < ti*/) // ti_rest > 10 min and ti_rest < ti
+        if (twork - tmax - thome >= 10 && day>week*5) // ti_rest >= 10 min
         {
             ti_rest = (twork - tmax) - thome;
-            ti -= ti_rest;
-            if (ti<0)
-                std::cout << "!!!!!!!!!!!!!!!!!!! ti = " << ti << std::endl;
-            // add to the time table, that interview time of hh hhID was splitted
-            (*_hhITimePlan_it).second = ti;
-            _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
-            //
+            if (ti_rest<ti) // split        // otherwise we cannot split (ti will be negative)
+                // but it can lead here to the ptoblem, that
+                // a day is too overloaded
+            {
+                ti -= ti_rest;
+                // add to the time table, that interview time of hh hhID was splitted
+                (*_hhITimePlan_it).second = ti;
+                _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
 
+
+                _interviewer.routes_days[day].households.erase(
+                            _interviewer.routes_days[day].households.begin(),
+                            _interviewer.routes_days[day].households.end());
+
+                _interviewer.routes_days[day].villages.erase(
+                            _interviewer.routes_days[day].villages.begin(),
+                            _interviewer.routes_days[day].villages.end());
+
+                newVVec.push_back(home);
+                std::reverse(newHhVec.begin(), newHhVec.end());
+                std::reverse(newVVec.begin(), newVVec.end());
+
+                _interviewer.routes_days[day].time = tmax + thome;
+                _interviewer.routes_days[day].households = newHhVec;
+                _interviewer.routes_days[day].villages = newVVec;
+
+                newHhVec.erase(newHhVec.begin(), newHhVec.end());
+                newVVec.erase(newVVec.begin(), newVVec.end());
+
+                newHhVec.push_back(hhID);
+                twork = thome + ti_rest + thome; /// 2x thome??
+
+                newVVec.push_back(home);
+                newVVec.push_back(V);
+
+                if (day!=0)
+                    day = std::max(day - 1 , week*5);
+            }
+        } // ti_split >=10
+
+        if (twork>tmax && day>week*5) // we cannot split (otherwise ti < 0)
+        {   // move last interview on the next day
+
+/*
+            newHhVec.erase(newHhVec.end()-1);
+            if (addVillage)
+                newVVec.erase(newVVec.end()-1);
+            twork -= tmove + ti + thome;
+
+
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            thome_pred =    rainingSeason *_distmatrixRain[newVVec.back()][home]
+                    + (1-rainingSeason)*_distmatrixDry [newVVec.back()][home];
+            twork += thome_pred;
+            newVVec.push_back(home);
+
+            std::reverse(newHhVec.begin(), newHhVec.end());
+            std::reverse(newVVec.begin(), newVVec.end());
+
+            _interviewer.routes_days[day].time += twork;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+
+            predV = newVVec.back();
+            twork = thome + ti + thome;
+ */
+
+// /*
+            // leaf last interview on the same day and close it/ start to plan new day
             _interviewer.routes_days[day].households.erase(
                         _interviewer.routes_days[day].households.begin(),
                         _interviewer.routes_days[day].households.end());
@@ -1219,55 +1298,23 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
             std::reverse(newHhVec.begin(), newHhVec.end());
             std::reverse(newVVec.begin(), newVVec.end());
 
-            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].time = twork;
             _interviewer.routes_days[day].households = newHhVec;
             _interviewer.routes_days[day].villages = newVVec;
 
             newHhVec.erase(newHhVec.begin(), newHhVec.end());
             newVVec.erase(newVVec.begin(), newVVec.end());
 
-            newHhVec.push_back(hhID);
-            twork = thome + ti_rest;
-
             newVVec.push_back(home);
-            newVVec.push_back(V);
+            predV = home;
+            twork = 0.;
+            thome = 0.;
+// */
+            if (day!=0)
+                day = std::max(day - 1 , week*5);
 
-            day = std::max(day - 1 , week*5);
-        }
-        /*
-        if (twork-tmax - thome > 10 && twork-tmax - thome >= ti)
-        {
+        } // if twork > tmax
 
-            _interviewer.routes_days[day].households.erase(
-                        _interviewer.routes_days[day].households.begin(),
-                        _interviewer.routes_days[day].households.end());
-
-            _interviewer.routes_days[day].villages.erase(
-                        _interviewer.routes_days[day].villages.begin(),
-                        _interviewer.routes_days[day].villages.end());
-
-            newVVec.push_back(home);
-
-            std::reverse(newHhVec.begin(), newHhVec.end());
-            std::reverse(newVVec.begin(), newVVec.end());
-
-            _interviewer.routes_days[day].time = tmax + thome;
-            _interviewer.routes_days[day].households = newHhVec;
-            _interviewer.routes_days[day].villages = newVVec;
-
-            newHhVec.erase(newHhVec.begin(), newHhVec.end());
-            newVVec.erase(newVVec.begin(), newVVec.end());
-
-            newHhVec.push_back(hhID);
-            twork = thome + ti_rest;
-
-            newVVec.push_back(home);
-            newVVec.push_back(V);
-
-            day = std::max(day - 1 , week*5);
-
-        }
-        */
     } while(! hhVecToReorder.empty());
 
     // save last array
@@ -1306,13 +1353,12 @@ void propagateToTheRight(unsigned int week, unsigned int day,
     double tmax = 8 * 60.;
     double ti;      // interview time
     double ti_rest;
-    double thome;
+    double thome, thome_pred;
     double tmove;
     double twork;
 
     unsigned int predV;
     unsigned int V;
-
 
     std::vector<unsigned int> hhVecToReorder; // new vector of hh
 
@@ -1324,6 +1370,7 @@ void propagateToTheRight(unsigned int week, unsigned int day,
     std::vector<std::pair<unsigned int, double> >::iterator _hhITimePlan_it;
 
     bool rainingSeason = 0;
+    bool addVillage = false;
 
     if (week>=20 && week<=40) rainingSeason = 1;
     else rainingSeason = 0;
@@ -1353,6 +1400,7 @@ void propagateToTheRight(unsigned int week, unsigned int day,
             + (1-rainingSeason)*_distmatrixDry[predV][home];
 
     twork = 2 * thome;
+    thome_pred = thome;
     assert( twork == 0.);
 
     newVVec.push_back(home);
@@ -1365,8 +1413,13 @@ void propagateToTheRight(unsigned int week, unsigned int day,
         V    = _households[hhID].villageID - 101;
 
         newHhVec.push_back(hhID);
+
+        addVillage = false;
         if (std::find(newVVec.begin(), newVVec.end(), V) == newVVec.end())
+        {
             newVVec.push_back(V);
+            addVillage = true;
+        }
 
         _hhITimePlan_it = std::find_if(_hhITimePlan_week[week].begin(),
                                        _hhITimePlan_week[week].end(),
@@ -1384,18 +1437,83 @@ void propagateToTheRight(unsigned int week, unsigned int day,
 
         predV = V;
 
-
-        if (twork-tmax > thome + 10 /*&& twork-tmax - thome < ti*/) // ti_rest > 10 min and ti_rest < ti
+        if (twork - tmax - thome >= 10 && day < (week+1)*5 - 1) // ti_rest >= 10 min
         {
-
             ti_rest = (twork - tmax) - thome;
-            ti -= ti_rest;
-            if (ti<0)
-                std::cout << "\n!!!!!!!!!!!!!!!!!!! ti=" << ti << std::endl;
-            // add to the time table, that interview time of hh hhID was splitted
-            (*_hhITimePlan_it).second = ti;
-            _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
-            //
+
+            if (ti_rest < ti)   // split
+            {
+                ti -= ti_rest;
+                // add to the time table, that interview time of hh hhID was splitted
+                (*_hhITimePlan_it).second = ti;
+                _hhITimePlan_week[week].push_back(std::make_pair(hhID, ti_rest));
+                //
+                _interviewer.routes_days[day].households.erase(
+                            _interviewer.routes_days[day].households.begin(),
+                            _interviewer.routes_days[day].households.end());
+
+                _interviewer.routes_days[day].villages.erase(
+                            _interviewer.routes_days[day].villages.begin(),
+                            _interviewer.routes_days[day].villages.end());
+
+                newVVec.push_back(home);
+
+                _interviewer.routes_days[day].time = tmax + thome;
+                _interviewer.routes_days[day].households = newHhVec;
+                _interviewer.routes_days[day].villages = newVVec;
+
+                newHhVec.erase(newHhVec.begin(), newHhVec.end());
+                newVVec.erase(newVVec.begin(), newVVec.end());
+
+                newHhVec.push_back(hhID);
+                twork = thome + ti_rest + thome;    /// 2x thome??
+
+                newVVec.push_back(home);
+                newVVec.push_back(V);
+
+                day = std::min(day + 1, (week+1)*5 - 1);
+            }
+        }   // if twork - tmax - thome > 10
+
+        if (twork>tmax && day < (week+1)*5 - 1)
+        { // move last interview on the next
+
+ /*
+            newHhVec.erase(newHhVec.end()-1);
+            if (addVillage)
+                newVVec.erase(newVVec.end()-1);
+            twork -= tmove + ti + thome;
+
+
+            _interviewer.routes_days[day].households.erase(
+                        _interviewer.routes_days[day].households.begin(),
+                        _interviewer.routes_days[day].households.end());
+
+            _interviewer.routes_days[day].villages.erase(
+                        _interviewer.routes_days[day].villages.begin(),
+                        _interviewer.routes_days[day].villages.end());
+
+            thome_pred =    rainingSeason *_distmatrixRain[newVVec.back()][home]
+                       + (1-rainingSeason)*_distmatrixDry [newVVec.back()][home];
+            twork += thome_pred;
+            newVVec.push_back(home);
+
+            _interviewer.routes_days[day].time = twork;
+            _interviewer.routes_days[day].households = newHhVec;
+            _interviewer.routes_days[day].villages = newVVec;
+
+            newHhVec.erase(newHhVec.begin(), newHhVec.end());
+            newVVec.erase(newVVec.begin(), newVVec.end());
+
+            newHhVec.push_back(hhID);
+            newVVec.push_back(home);
+            newVVec.push_back(V);
+            predV = V;
+            twork = thome + ti + thome;
+ */
+
+// /*
+            // leaf last interview on the same day abd close it/ start to plan new day
             _interviewer.routes_days[day].households.erase(
                         _interviewer.routes_days[day].households.begin(),
                         _interviewer.routes_days[day].households.end());
@@ -1406,55 +1524,22 @@ void propagateToTheRight(unsigned int week, unsigned int day,
 
             newVVec.push_back(home);
 
-            _interviewer.routes_days[day].time = tmax + thome;
+            _interviewer.routes_days[day].time = twork;
             _interviewer.routes_days[day].households = newHhVec;
             _interviewer.routes_days[day].villages = newVVec;
 
             newHhVec.erase(newHhVec.begin(), newHhVec.end());
             newVVec.erase(newVVec.begin(), newVVec.end());
 
-            newHhVec.push_back(hhID);
-            twork = thome + ti_rest;
-
             newVVec.push_back(home);
-            newVVec.push_back(V);
+            predV = home;
+            twork = 0.;
+            thome = 0.;
+// */
 
             day = std::min(day + 1, (week+1)*5 - 1);
-        }
-        /*
-        if (twork-tmax - thome > 10 && twork-tmax - thome >= ti)
-        {
+        }// if twork > tmax
 
-            _interviewer.routes_days[day].households.erase(
-                        _interviewer.routes_days[day].households.begin(),
-                        _interviewer.routes_days[day].households.end());
-
-            _interviewer.routes_days[day].villages.erase(
-                        _interviewer.routes_days[day].villages.begin(),
-                        _interviewer.routes_days[day].villages.end());
-
-            newVVec.push_back(home);
-
-            std::reverse(newHhVec.begin(), newHhVec.end());
-            std::reverse(newVVec.begin(), newVVec.end());
-
-            _interviewer.routes_days[day].time = tmax + thome;
-            _interviewer.routes_days[day].households = newHhVec;
-            _interviewer.routes_days[day].villages = newVVec;
-
-            newHhVec.erase(newHhVec.begin(), newHhVec.end());
-            newVVec.erase(newVVec.begin(), newVVec.end());
-
-            newHhVec.push_back(hhID);
-            twork = thome + ti_rest;
-
-            newVVec.push_back(home);
-            newVVec.push_back(V);
-
-            day = std::max(day - 1 , week*5);
-
-        }
-        */
     } while(! hhVecToReorder.empty());
 
     // save last array
@@ -1495,11 +1580,12 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
 
     for (unsigned int i=0; i< nI; ++i) // for each interviewer
     {
-        //        unsigned int i = 1;
+//                unsigned int i = 2;
         // check each week if there are too long working days
+        // repeat 5 times because after one run there still can be overloaded days
         for (unsigned int w=0; w<nWeeks; ++w )
         {
-            //            unsigned int w = 4;
+//                            unsigned int w = 40;
             overhours = false;
 
             for (day_l = w*5; day_l < (w+1)*5; ++day_l)
@@ -1552,6 +1638,7 @@ void split_longinterviews(std::vector<stInterviewer>& _interviewer,
             } // if overhours
 
         }   // for w
+
     } // for i
 }
 
