@@ -7,6 +7,8 @@
 #include <QMainWindow>
 #include <QString>
 
+#include <math.h>
+
 
 namespace Ui {
 class reportWindow;
@@ -15,9 +17,9 @@ class reportWindow;
 class reportWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
-    reportWindow(QWidget *parent, const std::vector<stInterviewer> ,
+    explicit reportWindow(QMainWindow *parent = 0);
+    reportWindow(QMainWindow *parent, const std::vector<stInterviewer> ,
                  std::vector<std::vector<std::pair<unsigned int, double> > > , bool ,
                  std::vector<std::vector<double> >,
                  std::vector<std::vector<double> > );

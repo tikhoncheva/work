@@ -140,7 +140,7 @@ std::set<writeFormat2>  saveHHSchedule_dayview_d(const std::vector<stInterviewer
                 timeplan_it = std::find_if(_ITimePlan[d].begin(),_ITimePlan[d].end(),
                                            [hhID] (std::pair<unsigned int, double> time)
                 {return time.first == hhID;});
-                itime = (*timeplan_it).second;
+                itime = round( (*timeplan_it).second);
 
                 writeFormat2 searchEntry;
                 searchEntry.hhID = hhID + 10001;
@@ -196,6 +196,13 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
 
     int itime;
 
+    std::vector<std::vector<std::pair<unsigned int, double> > > copyITimePlan; // copy of _ITimePlan
+    copyITimePlan.resize(_ITimePlan.size());
+    for (unsigned int w=0; w<_ITimePlan.size(); ++w)
+        for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
+            copyITimePlan[w].push_back(std::make_pair(_ITimePlan[w][p].first,_ITimePlan[w][p].second));
+
+
     //    std::ofstream file(fileName.c_str());	// file to open
     //    assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
 
@@ -208,10 +215,11 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
                 // find planed interview time for current hh on the day d
 
 
-                timeplan_it = std::find_if(_ITimePlan[d/5].begin(),_ITimePlan[d/5].end(),
-                        [hhID] (std::pair<unsigned int, double> time)
-                {return time.first == hhID;});
-                itime = (*timeplan_it).second;
+                timeplan_it = std::find_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
+                                           [hhID] (std::pair<unsigned int, double> weekday)
+                                                {return weekday.first == hhID;});
+                itime = round( (*timeplan_it).second);
+                copyITimePlan[d/5].erase(timeplan_it);
 
                 writeFormat2 searchEntry;
                 searchEntry.hhID = hhID + 10001;

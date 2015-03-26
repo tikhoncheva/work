@@ -377,6 +377,21 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
+        QWidget::setTabOrder(checkBoxVillageNames, checkBoxVillageIDs);
+        QWidget::setTabOrder(checkBoxVillageIDs, checkBoxShowRoads);
+        QWidget::setTabOrder(checkBoxShowRoads, tabWidget);
+        QWidget::setTabOrder(tabWidget, textEditR);
+        QWidget::setTabOrder(textEditR, textEditH);
+        QWidget::setTabOrder(textEditH, buttonOpenHouseh);
+        QWidget::setTabOrder(buttonOpenHouseh, buttonOpenVillages);
+        QWidget::setTabOrder(buttonOpenVillages, buttonOpenRoads);
+        QWidget::setTabOrder(buttonOpenRoads, textEditN);
+        QWidget::setTabOrder(textEditN, comboBoxInterviewer);
+        QWidget::setTabOrder(comboBoxInterviewer, pushButtonInitialSolution);
+        QWidget::setTabOrder(pushButtonInitialSolution, pushButtonShowRoute);
+        QWidget::setTabOrder(pushButtonShowRoute, tableWidget_weekplans);
+        QWidget::setTabOrder(tableWidget_weekplans, pbShow_report);
+        QWidget::setTabOrder(pbShow_report, tableWidget_dayplans);
 
         retranslateUi(MainWindow);
 

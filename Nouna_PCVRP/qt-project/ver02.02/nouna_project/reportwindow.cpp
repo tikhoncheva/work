@@ -1,7 +1,7 @@
 #include "reportwindow.h"
 #include "ui_reportwindow.h"
 
-reportWindow::reportWindow(QWidget *parent, const std::vector<stInterviewer> _interviewer,
+reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer> _interviewer,
                            std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan, bool _planType,
                            std::vector<std::vector<double> >  _distDry,
                            std::vector<std::vector<double> >  _distRain):
