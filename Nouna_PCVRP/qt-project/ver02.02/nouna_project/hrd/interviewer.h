@@ -22,7 +22,7 @@ struct stInterviewer
     std::vector<stRoute> routes_weeks;
     std::vector<stRoute> routes_days;
 
-    std::string visVilToString(unsigned int day)
+    std::string visVilToString(unsigned int day) const
     {
         std::stringstream ss;
         for (unsigned int i=0; i< routes_days[day].villages.size(); i++)
@@ -30,7 +30,7 @@ struct stInterviewer
         return ss.str();
     }
 
-    std::string visHhToString(unsigned int day)
+    std::string visHhToString(unsigned int day) const
     {
         std::stringstream ss;
         for (unsigned int i=0; i< routes_days[day].households.size(); i++)

@@ -295,7 +295,6 @@ void MainWindow::on_pushButtonShowRoute_clicked()
     std::string strK = qstrK.toStdString();
 
     unsigned int weeks = constant::nweeks * constant::P;     // # week
-    unsigned int days = weeks * 5;
     unsigned int k;         // Interviewer number
 
 
@@ -324,7 +323,7 @@ void MainWindow::on_pushButtonShowRoute_clicked()
 }
 
 /*
- * Plot interviewer's route beim selecting the row of the tableWidget_weekplans
+ * Plot interviewer's route by selecting the row of the tableWidget_weekplans
  */
 
 void MainWindow::weekSelected(int i, int)

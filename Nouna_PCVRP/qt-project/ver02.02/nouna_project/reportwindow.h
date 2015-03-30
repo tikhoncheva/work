@@ -2,6 +2,8 @@
 #define REPORTWINDOW_H
 
 #include <hrd/report.h>
+#include <hrd/interviewer.h>
+#include <hrd/const.h>
 
 #include <QFileDialog>
 #include <QMainWindow>
@@ -26,17 +28,22 @@ public:
     ~reportWindow();
 
 private slots:
-    void on_pbSaveReport_clicked();
+    void on_pbHHSchedule_clicked();
+    void interviewerSchedule_weekSelected(int i, int);
+
+    void on_comboBoxInterviewer_currentIndexChanged(int);
 
 private:
     Ui::reportWindow *rw;
-    const std::vector<stInterviewer> interviewer;
+    const std::vector<stInterviewer> Interviewer;
     std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan;
     bool planType;
     std::vector<std::vector<double> > distDry;
     std::vector<std::vector<double> > distRain;
 
     std::set<writeFormat2> report_HH_yearplan;
+
+    void show_interviewerSchedule();
 };
 
 #endif // REPORTWINDOW_H

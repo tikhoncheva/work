@@ -66,17 +66,17 @@ public:
     QWidget *tab_initsolution;
     QWidget *layoutWidget;
     QGridLayout *gridLayout_2;
+    QTableWidget *tableWidget_weekplans;
     QLabel *labelSelectInterviewer;
-    QComboBox *comboBoxInterviewer;
     QSpacerItem *verticalSpacer;
     QLabel *label_2;
     QLabel *label;
     QPushButton *pushButtonInitialSolution;
     QSpacerItem *verticalSpacer_2;
     QPushButton *pushButtonShowRoute;
-    QTableWidget *tableWidget_weekplans;
     QTableWidget *tableWidget_dayplans;
     QPushButton *pbShow_report;
+    QComboBox *comboBoxInterviewer;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -293,16 +293,18 @@ public:
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         gridLayout_2->setContentsMargins(8, 0, 5, 0);
+        tableWidget_weekplans = new QTableWidget(layoutWidget);
+        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
+        tableWidget_weekplans->setMaximumSize(QSize(350, 16777215));
+        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableWidget_weekplans->setTextElideMode(Qt::ElideMiddle);
+
+        gridLayout_2->addWidget(tableWidget_weekplans, 3, 0, 1, 4);
+
         labelSelectInterviewer = new QLabel(layoutWidget);
         labelSelectInterviewer->setObjectName(QStringLiteral("labelSelectInterviewer"));
 
         gridLayout_2->addWidget(labelSelectInterviewer, 0, 1, 1, 1);
-
-        comboBoxInterviewer = new QComboBox(layoutWidget);
-        comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
-        comboBoxInterviewer->setEnabled(false);
-
-        gridLayout_2->addWidget(comboBoxInterviewer, 0, 2, 1, 1);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -334,14 +336,6 @@ public:
 
         gridLayout_2->addWidget(pushButtonShowRoute, 0, 3, 1, 1);
 
-        tableWidget_weekplans = new QTableWidget(layoutWidget);
-        tableWidget_weekplans->setObjectName(QStringLiteral("tableWidget_weekplans"));
-        tableWidget_weekplans->setMaximumSize(QSize(350, 16777215));
-        tableWidget_weekplans->setSelectionBehavior(QAbstractItemView::SelectRows);
-        tableWidget_weekplans->setTextElideMode(Qt::ElideMiddle);
-
-        gridLayout_2->addWidget(tableWidget_weekplans, 3, 0, 1, 4);
-
         tableWidget_dayplans = new QTableWidget(layoutWidget);
         tableWidget_dayplans->setObjectName(QStringLiteral("tableWidget_dayplans"));
         tableWidget_dayplans->setMaximumSize(QSize(350, 16777215));
@@ -358,6 +352,12 @@ public:
         pbShow_report->setEnabled(false);
 
         gridLayout_2->addWidget(pbShow_report, 7, 3, 1, 1);
+
+        comboBoxInterviewer = new QComboBox(layoutWidget);
+        comboBoxInterviewer->setObjectName(QStringLiteral("comboBoxInterviewer"));
+        comboBoxInterviewer->setEnabled(false);
+
+        gridLayout_2->addWidget(comboBoxInterviewer, 0, 2, 1, 1);
 
         tabWidget->addTab(tab_initsolution, QString());
 

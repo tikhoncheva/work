@@ -401,17 +401,26 @@ border-radius: 10px;
            <property name="rightMargin">
             <number>5</number>
            </property>
+           <item row="3" column="0" colspan="4">
+            <widget class="QTableWidget" name="tableWidget_weekplans">
+             <property name="maximumSize">
+              <size>
+               <width>350</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="textElideMode">
+              <enum>Qt::ElideMiddle</enum>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="1">
             <widget class="QLabel" name="labelSelectInterviewer">
              <property name="text">
               <string>Interviewer</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QComboBox" name="comboBoxInterviewer">
-             <property name="enabled">
-              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -475,22 +484,6 @@ border-radius: 10px;
              </property>
             </widget>
            </item>
-           <item row="3" column="0" colspan="4">
-            <widget class="QTableWidget" name="tableWidget_weekplans">
-             <property name="maximumSize">
-              <size>
-               <width>350</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
-             </property>
-             <property name="textElideMode">
-              <enum>Qt::ElideMiddle</enum>
-             </property>
-            </widget>
-           </item>
            <item row="6" column="0" colspan="4">
             <widget class="QTableWidget" name="tableWidget_dayplans">
              <property name="maximumSize">
@@ -519,6 +512,13 @@ border-radius: 10px;
              </property>
              <property name="text">
               <string>Report</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QComboBox" name="comboBoxInterviewer">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
             </widget>
            </item>

@@ -1117,7 +1117,7 @@ void propagateToTheLeft(unsigned int week, unsigned int day,
     double tmax = 8 * 60.;
     double ti;      // interview time
     double ti_rest;
-    double thome, thome_pred;
+    double thome;//, thome_pred;
     double tmove;
     double twork;
 
