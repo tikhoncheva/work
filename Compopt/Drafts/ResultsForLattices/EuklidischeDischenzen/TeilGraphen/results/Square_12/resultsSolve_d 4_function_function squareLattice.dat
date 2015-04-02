@@ -1,0 +1,7 @@
+Name of file:	dummy.txt
+Optimal value:	30.283
+Number of constraints: 42
+Number of variables: 22
+Used time: 0.07sec
+Labeling:
+c[1]=0 c[2]=11.1137 c[3]=5.52786 c[4]=3.76393 c[5]=8.11365 c[6]=1.76393 

@@ -1,0 +1,7 @@
+File Name:	./data/square_lattice_d4.dat
+Optimal value	25
+Number of constraints: 665
+Number of variables: 333
+Used time: 20124.8sec
+Labeling
+c[1]=0 c[2]=4 c[3]=14 c[4]=23 c[5]=10 c[6]=22 c[7]=12 c[8]=8 c[9]=19 c[10]=0 c[11]=6 c[12]=17 c[13]=25 c[14]=3 c[15]=14 c[16]=14 c[17]=1 c[18]=21 c[19]=11 c[20]=7 c[21]=19 c[22]=9 c[23]=5 c[24]=16 c[25]=23 c[26]=3 c[27]=22 c[28]=13 c[29]=0 c[30]=20 

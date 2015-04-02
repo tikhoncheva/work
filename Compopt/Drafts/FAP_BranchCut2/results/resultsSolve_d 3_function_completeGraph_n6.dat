@@ -1,0 +1,7 @@
+Name of file:	completeGraph_n6.dat
+Optimal value:	5
+Number of constraints: 84
+Number of variables: 43
+Used time: 0.06sec
+Labeling:
+c[1]=0 c[2]=5 c[3]=3 c[4]=0 c[5]=2 c[6]=4 

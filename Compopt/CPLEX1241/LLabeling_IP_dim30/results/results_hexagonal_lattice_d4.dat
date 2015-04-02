@@ -1,0 +1,7 @@
+File Name:	./data/hexagonal_lattice_d4.dat
+Optimal value	20
+Number of constraints: 569
+Number of variables: 285
+Used time: 491.37sec
+Labeling
+c[1]=0 c[2]=8 c[3]=16 c[4]=17 c[5]=4 c[6]=12 c[7]=19 c[8]=6 c[9]=14 c[10]=1 c[11]=9 c[12]=2 c[13]=10 c[14]=18 c[15]=5 c[16]=11 c[17]=19 c[18]=7 c[19]=15 c[20]=16 c[21]=3 c[22]=11 c[23]=19 c[24]=4 c[25]=13 c[26]=0 c[27]=8 c[28]=9 c[29]=17 c[30]=4 

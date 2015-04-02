@@ -1,0 +1,2 @@
+g++ -I/opt/ibm/ILOG/CPLEX_Studio1251/cplex/include -I/opt/ibm/ILOG/CPLEX_Studio1251/concert/include -O0 -g3 -Wall -c -fmessage-length=0 -DIL_STD -MMD -MP -MF"CAP.d" -MT"CAP.d" -o "CAP.o" "../CAP.cpp"
+g++ -L/opt/ibm/ILOG/CPLEX_Studio1251/cplex/lib/x86_sles10_4.1/static_pic -L/opt/ibm/ILOG/CPLEX_Studio1251/concert/lib/x86_sles10_4.1/static_pic -o "Llabeling"  ./CAP.o   -lilocplex -lcplex -lconcert -lm -lpthread 

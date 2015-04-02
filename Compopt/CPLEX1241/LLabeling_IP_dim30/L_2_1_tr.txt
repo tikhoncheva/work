@@ -1,0 +1,54 @@
+Start with the file ./data/triangular_lattice_d2.dat
+Tried aggregator 1 time.
+MIP Presolve eliminated 31 rows and 1 columns.
+Reduced MIP has 378 rows, 205 columns, and 1104 nonzeros.
+Reduced MIP has 174 binaries, 31 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.01 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        2.0000   174                      2.0000      174         
+      0     0        2.0000   108                   Cuts: 132      254         
+      0     0        2.0000   168                   Cuts: 123      361         
+      0     0        2.0000   175                    Cuts: 82      407         
+      0     2        2.0000   136                      2.0000      407         
+Elapsed time =   0.10 sec. (tree size =  0.01 MB, solutions = 0)
+*   203+  202                           16.0000        2.0000     3097   87.50%
+*   292+  290                           13.0000        2.0000     3540   84.62%
+*   365   347      integral     0       12.0000        2.0000     4112   83.33%
+*   661+  597                           11.0000        2.0000     7240   81.82%
+*   719   613      integral     0       10.0000        2.0000     7671   80.00%
+*  2258  1569      integral     0        9.0000        3.0000    21115   66.67%
+   2469  1591        3.0000    77        9.0000        3.0000    24206   66.67%
+   2479  1597        4.0000    72        9.0000        3.0000    24366   66.67%
+*  2750   852      integral     0        8.0000        3.0000    26579   62.50%
+
+Implied bound cuts applied:  296
+Flow cuts applied:  3
+Mixed integer rounding cuts applied:  54
+Zero-half cuts applied:  14
+Gomory fractional cuts applied:  34
+
+Root node processing (before b&c):
+  Real time             =    0.09
+Parallel b&c, 4 threads:
+  Real time             =    2.50
+  Sync time (average)   =    0.00
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =    2.59 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 2.6
+Solution value  = 8
+c(0)=6 c(1)=4 c(2)=0 c(3)=2 c(4)=7 c(5)=1 c(6)=8 c(7)=6 c(8)=4 c(9)=0 c(10)=7 c(11)=5 c(12)=3 c(13)=1 c(14)=8 c(15)=2 c(16)=0 c(17)=7 c(18)=5 c(19)=3 c(20)=6 c(21)=8 c(22)=4 c(23)=2 c(24)=0 c(25)=3 c(26)=1 c(27)=6 c(28)=8 c(29)=4 
+2.60user 0.05system 0:01.98elapsed 134%CPU (0avgtext+0avgdata 45568maxresident)k
+0inputs+10984outputs (0major+11735minor)pagefaults 0swaps

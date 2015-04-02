@@ -1,0 +1,106 @@
+
+Debugging starts
+&"warning: GDB: Failed to set controlling terminal: Inappropriate ioctl for device\n"
+TERM environment variable not set.
+QMetaObject::connectSlotsByName: No matching signal for on_buttonPlot_clicked()
+QMetaObject::connectSlotsByName: No matching signal for on_checkBoxRainingSeazon_clicked()
+...read villages
+...read Roads
+...read households
+
+Data routine:
+  set number of available interviewers to 20 ...finished
+  compute adjazent matrix with distances ...finished
+  compute shortes ways between villages ...finished. Maximal travel time 149.64 (166.697 raining season)
+  get additional list of hh in villages ...finished
+  time statistic...
+      12241 short interviews with summary itime 122410
+      987 long interviews with summary itime 194750 or 9870
+
+      Summary (year) with 20 interviewers: 
+      Working time 2.304e+06
+      Short interviews 367230
+      Long interviews 214490
+      Summary 581720
+      -----------------------------------------
+      Remains for travel time 1.72228e+06
+
+finished
+
+Construct initial solution
+
+Period 1 summary interview time 193290/768000
+Period 2 summary interview time 193795/768000
+Period 3 summary interview time 194635/768000
+Summary : 581720
+
+Week 1 summary interview time 12100/48000
+Week 2 summary interview time 12100/48000
+Week 3 summary interview time 12100/48000
+Week 4 summary interview time 12100/48000
+Week 5 summary interview time 12100/48000
+Week 6 summary interview time 12090/48000
+Week 7 summary interview time 12090/48000
+Week 8 summary interview time 12090/48000
+Week 9 summary interview time 12090/48000
+Week 10 summary interview time 12090/48000
+Week 11 summary interview time 12090/48000
+Week 12 summary interview time 12090/48000
+Week 13 summary interview time 12090/48000
+Week 14 summary interview time 12090/48000
+Week 15 summary interview time 12065/48000
+Week 16 summary interview time 11915/48000
+Week 17 summary interview time 12135/48000
+Week 18 summary interview time 12155/48000
+Week 19 summary interview time 11505/48000
+Week 20 summary interview time 11655/48000
+Week 21 summary interview time 11355/48000
+Week 22 summary interview time 12710/48000
+Week 23 summary interview time 11760/48000
+Week 24 summary interview time 10990/48000
+Week 25 summary interview time 13690/48000
+Week 26 summary interview time 13475/48000
+Week 27 summary interview time 11445/48000
+Week 28 summary interview time 12280/48000
+Week 29 summary interview time 12570/48000
+Week 30 summary interview time 12495/48000
+Week 31 summary interview time 11680/48000
+Week 32 summary interview time 11895/48000
+Week 33 summary interview time 11730/48000
+Week 34 summary interview time 12450/48000
+Week 35 summary interview time 12370/48000
+Week 36 summary interview time 12040/48000
+Week 37 summary interview time 12575/48000
+Week 38 summary interview time 12955/48000
+Week 39 summary interview time 11960/48000
+Week 40 summary interview time 12710/48000
+Week 41 summary interview time 11925/48000
+Week 42 summary interview time 12190/48000
+Week 43 summary interview time 11430/48000
+Week 44 summary interview time 11525/48000
+Week 45 summary interview time 12135/48000
+Week 46 summary interview time 12105/48000
+Week 47 summary interview time 12115/48000
+Week 48 summary interview time 12420/48000
+Summary : 581720
+
+--------------------------------------------------------------
+                    First period                              
+Total number of the visited households in first period: 13228
+ Still to visite 0
+Total remaining free time: 170635min
+--------------------------------------------------------------
+                   Second period                              
+Total number of the visited households in second period: 13228
+ Still to visite 0
+Total remaining free time: 73162.2min
+--------------------------------------------------------------
+                    Third period                              
+Total number of the visited households in third period: 13228
+ Still to visite 0
+Total remaining free time: 85191.1min
+
+--------------------------------------------------------------
+--------------------------------------------------------------
+                    Plan for a day                            
+Find initial solution ... finished 

@@ -1,0 +1,52 @@
+################################################################################
+# Makefile
+################################################################################
+
+RM := rm -rf
+
+LIBS := -lilocplex -lcplex -lconcert -lm -lpthread 
+
+INC_cplex = -I/home/tikhoncheva/software/CPLEX_Studio124/cplex/include
+INC_concert = -I/home/tikhoncheva/software/CPLEX_Studio124/concert/include
+
+LIB_cplex = -L/home/tikhoncheva/software/CPLEX_Studio124/cplex/lib/x86-64_sles10_4.1/static_pic
+LIB_concert = -L/home/tikhoncheva/software/CPLEX_Studio124/concert/lib/x86-64_sles10_4.1/static_pic
+
+
+Target = CAP
+ExTarget = CAP
+
+CPP_SRCS += \
+./$(Target).cpp 
+
+OBJS += \
+./$(Target).o 
+
+CPP_DEPS += \
+./$(Target).d 
+
+all: clean $(Target).o $(Target)
+
+$(Target).o: $(CPP_SRCS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: GCC C++ Compiler'
+	g++ -DIL_STD $(INC_cplex) $(INC_concert) -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+$(Target): $(OBJS) 
+	@echo 'Building target: $@'
+	@echo 'Invoking: GCC C++ Linker'
+	g++ $(LIB_cplex) $(LIB_concert) -o $(ExTarget) $(OBJS) $(LIBS)
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+# Other Targets
+clean:
+	-$(RM) $(OBJS)$(CPP_DEPS)$(EXECUTABLES) $(ExTarget)
+	-@echo ' '
+
+.PHONY: all clean dependents
+.SECONDARY:
+
+-include ../makefile.targets

@@ -1,0 +1,7 @@
+Name of file:	../data/triangular_lattice.dat
+Optimal value:	8
+Number of constraints: 553
+Number of variables: 277
+Used time: 8.04sec
+Labeling:
+c[1]=4 c[2]=8 c[3]=6 c[4]=1 c[5]=5 c[6]=0 c[7]=2 c[8]=4 c[9]=8 c[10]=3 c[11]=5 c[12]=7 c[13]=0 c[14]=2 c[15]=8 c[16]=1 c[17]=3 c[18]=5 c[19]=2 c[20]=4 c[21]=6 c[22]=8 c[23]=1 

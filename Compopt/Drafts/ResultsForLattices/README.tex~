@@ -1,0 +1,591 @@
+\documentclass[
+	fontsize=12pt,
+	paper=a4,
+	twoside=false,
+	numbers=noenddot,
+	plainheadsepline,
+	toc=listof,
+	toc=bibliography
+]{scrartcl}
+
+\usepackage[german,ngerman]{babel} % Silbentrennung
+%\usepackage[T1]{fontenc} % Ligaturen, richtige Umlaute im PDF 
+\usepackage[utf8]{inputenc}% UTF8-Kodierung für Umlaute usw
+
+\usepackage[round]{natbib}
+
+\usepackage{amssymb,amsmath}
+
+\usepackage{placeins}
+\usepackage{float}
+\restylefloat{table}
+\restylefloat{figure}
+
+\usepackage{tikz}
+\usepackage{color,colortbl}
+
+\usepackage{hyperref}
+
+% Literaturverzeichnis
+\usepackage{natbib}
+
+% Absätze
+\setlength{\parindent}{0pt}
+
+\usepackage{graphicx}
+
+\begin{document}
+\section*{Ergebnisse der Berechnungen}
+% -------------------------------------------------------------------------------
+\subsection*{Allgemeine Begriffe}
+
+Gegeben seien ein Graph $G = (V,\ E)$ und eine positive ganze Zahl $k$. Die $k$-Färbung des Graphen $G$ ist eine Funktion $c:V\rightarrow\{1, 2, \dots k\}$ aus der Menge der Knoten des Graphen $G$ in die Menge von ganzen Zahlen, die kleiner gleich $k$ sind \citep[siehe][]{Harris}.
+
+Die Färbung heißt zulässig, wenn für alle Paare $u,v\in V$ adjanzenter Knoten $c(u)\not=c(v)$ gilt.
+
+Die $L(d_1, d_2, \dots, d_r)$-Labeling, wobei $r$ kleine gleich maximales Durchmesser des Graphen $G$ ist, ist eine Färbung mit der Eigenschaft, dass die Labels eines Paars von Knoten mit der Abstand $i$ sich mindestens um $d_i$ unterscheiden. Mit anderen Worten, es soll gelten $|c(u)-c(v)|\ge d_{i}\ \ \forall u,v\in V: dist(u,v)=i, 1\le i\le r$ \citep[vgl.][]{Bertossi}.
+
+Wir bezeichnen mit $dist(u,v)$ die Distanz zwischen den Knoten $u,v\in V$, d.h. den kürzest Weg zwischen Knoten $u$ und $v$. 
+
+
+% -------------------------------------------------------------------------------
+\subsection*{Modelle}
+
+Wir betrachten zur erst das klassische Modell zum Frequenzzuordnungsproblem (engl. Channel Assigment Problem, CAP). Dieses Problem ist dem $L(d_1, d_2, \dots, d_r)$-Labeling-Problem der Graphentheorie äquivalent.
+
+Gegeben seien ein zusammenhängender Graph $G=(V,\ E)$ und eine Folge $d_1\ge d_2\ge\dots\ge d_r$ der ganzen Zahlen, wobei $r$ kleine gleich maximales Durchmesser des Graphen $G$ ist. Gesucht wird eine minimale Zahl $\lambda$, sodass Graph $G$ eine $L(d_1, d_2, \dots, d_r)$-Labeling $c:V\rightarrow\mathbb{Z}$ mit $\lambda = \max\{c(u), u\in V\}$ hat.
+
+Wir nummerieren alle Knoten des Graphen $G$ durch und verwenden weiter die Schreibweise $c_i$ anstatt $c(i)$ für den $i$-ten Knoten des Graphen $G$.
+
+Das von uns betrachtete ganzzahliges Optimierungsproblem sieht folgendermaßen aus: 
+\begin{align}\label{model}
+& \min_{\lambda\in\mathbb{Z}}\lambda & \\
+\label{m1} & \text{\bf s.t.}\ c_{i}\le\lambda,& \forall i\in V \\
+\label{m2} & \hspace{23 pt} c_{i}\ge 0, & \forall i\in V \\
+\label{m3} & \hspace{23 pt} c_j-c_i + M z_{ij}\ge d_{dist(i,j)}, & \forall i,j\in V\\
+\label{m4} & \hspace{23 pt} c_i-c_j + M(1-z_{ij})\ge d_{dist(i,j)}& \forall i,j\in V\\
+\label{m5} & \hspace{23 pt} z_{ij}\in \{0,1\}& \forall i,j\in V \\ 
+\label{m6} & \hspace{23 pt} c_{i}\in \mathbb{Z},& \forall i\in V
+\end{align}
+
+Die zusätzliche Variable $z_{ij}$ ist gleich $1$, falls $c_{i}\ge c_{j}$ gilt, und $0$ sonst. Daraus folgt, dass die Bedingungen \ref{m3} und \ref{m4} mit dem hinreichend großen $M$ der Bedingung $\lvert c_i-c_j\rvert\ge d_{dist(i,j)}$ entsprechen.
+
+Wir möchten nun dieses Problem auf den mehr allgemeineren Fall der reellwertigen Variablen $c_i\in\mathbb{R},$ übertragen.
+Dafür formulieren wir ein erweitertes Modell:
+
+\begin{align}\label{model2}
+& \min_{\lambda\in\mathbb{R}}\lambda & \\
+\label{m21} & \text{\bf s.t.}\ c_{i}\le\lambda,& \forall i\in V \\
+\label{m22} & \hspace{23 pt} c_{i}\ge 0, & \forall i\in V \\
+\label{m23} & \hspace{23 pt} c_j-c_i + M z_{ij}\ge f({dist(i,j)}), & \forall i,j\in V\\
+\label{m24} & \hspace{23 pt} c_i-c_j + M(1-z_{ij})\ge f({dist(i,j)})& \forall i,j\in V\\
+\label{m25} & \hspace{23 pt} z_{ij}\in \{0,1\}& \forall i,j\in V \\
+\label{m26} & \hspace{23 pt} c_{i}\in \mathbb{R},& \forall i\in V
+\end{align}
+Hier unter der Distanz $dist(i,j)$ wird  eine euklidische Distanz zwischen den Knoten $i,j$ gemeint und Funktion $f$ ist eine Abbildung $\mathbb{R}\rightarrow\mathbb{R}$.
+
+Wir möchten die zwei formulierte Modelle vergleichen. Dafür betrachten wir im klassischen Fall die $L(2,1)$ und $L(3,2,1)$-Labelings. Dies entspricht der Wahl der linearen Funktion $f(x)= d-x$ mit den Konstanten $d=3$ und $d=4$ im zweiten Fall.
+
+Die weiter im Text aufgeführten Ergebnisse der Berechnungen sind mit Hilfe von IBM$\textregistered$ ILOG$\textregistered$ CPLEX$\textregistered$ Optimization Studio C++ Bibliothek von IBM (Version $12.51$) erhalten. Zur Lösung von gemischt-ganzzahligen Optimierungsproblemen wird in dieser Bibliothek {\it Branch\&Cut}-Algorithmus angewendet \footnote{\url{http://pic.dhe.ibm.com/infocenter/cosinfoc/v12r4/index.jsp?topic=\%2Filog.odms.cplex.help\%2Frefcppcplex\%2Fhtml\%2Fbranch.html}}.
+
+% -------------------------------------------------------------------------------
+\subsection*{Gridgraphen}
+Der Vergleich wird für spezielle Graphen durchgeführt, nämlich Gridgraphen. Dabei werden die Graphen mit den Zellen als Dreiecke (insgesamt $23$ Knoten), Vierecke (insgesamt $25$ Knoten) und Sechsecke (insgesamt $24$ Knoten) betrachtet (siehe Abb.\ref{Abb.1}). 
+
+\begin{figure}[hb]
+\begin{minipage}[h]{0.32\linewidth}
+	\centering
+    \vbox{ \begin{tikzpicture}
+		\node[label=above:$\bf{0}$] (v0) at (0,0) {};\fill (v0) circle (2pt);
+		\node[label=above:$\bf{1}$] (v1) at (1,0) {};\fill (v1) circle (2pt);
+		\node[label=above:$\bf{2}$] (v2) at (2,0) {};\fill (v2) circle (2pt);
+		\node[label=above:$\bf{3}$] (v3) at (3,0) {};\fill (v3) circle (2pt);
+		\node[label=above:$\bf{4}$] (v4) at (4,0) {};\fill (v4) circle (2pt);
+		
+		\node[label=above:$\bf{5}$] (v5) at (0,-1) {};\fill (v5) circle (2pt);
+		\node[label=above:$\bf{6}$] (v6) at (1,-1) {};\fill (v6) circle (2pt);
+		\node[label=above:$\bf{7}$] (v7) at (2,-1) {};\fill (v7) circle (2pt);
+		\node[label=above:$\bf{8}$] (v8) at (3,-1) {};\fill (v8) circle (2pt);
+		\node[label=above:$\bf{9}$] (v9) at (4,-1) {};\fill (v9) circle (2pt);
+	
+		\node[label=above:$\bf{10}$] (v10) at (0,-2) {};\fill (v10) circle (2pt);
+		\node[label=above:$\bf{11}$] (v11) at (1,-2) {};\fill (v11) circle (2pt);
+		\node[label=above:$\bf{12}$] (v12) at (2,-2) {};\fill (v12) circle (2pt);
+		\node[label=above:$\bf{13}$] (v13) at (3,-2) {};\fill (v13) circle (2pt);
+		\node[label=above:$\bf{14}$] (v14) at (4,-2) {};\fill (v14) circle (2pt);
+	
+		\node[label=above:$\bf{15}$] (v15) at (0,-3) {};\fill (v15) circle (2pt);
+		\node[label=above:$\bf{16}$] (v16) at (1,-3) {};\fill (v16) circle (2pt);
+		\node[label=above:$\bf{17}$] (v17) at (2,-3) {};\fill (v17) circle (2pt);
+		\node[label=above:$\bf{18}$] (v18) at (3,-3) {};\fill (v18) circle (2pt);
+		\node[label=above:$\bf{19}$] (v19) at (4,-3) {};\fill (v19) circle (2pt);
+	
+		\node[label=above:$\bf{20}$] (v20) at (0,-4) {};\fill (v20) circle (2pt);
+		\node[label=above:$\bf{21}$] (v21) at (1,-4) {};\fill (v21) circle (2pt);
+		\node[label=above:$\bf{22}$] (v22) at (2,-4) {};\fill (v22) circle (2pt);
+		\node[label=above:$\bf{23}$] (v23) at (3,-4) {};\fill (v23) circle (2pt);
+		\node[label=above:$\bf{24}$] (v24) at (4,-4) {};\fill (v24) circle (2pt);
+		
+		\draw[-] (v0) to (v1); \draw[-]  (v0) to (v5);
+		\draw[-] (v1) to (v2); \draw[-]  (v1) to (v6);
+		\draw[-] (v2) to (v3); \draw[-]  (v2) to (v7);
+		\draw[-] (v3) to (v4); \draw[-]  (v3) to (v8);
+		\draw[-] (v4) to (v9);
+		\draw[-] (v5) to (v6); \draw[-]  (v5) to (v10);
+		\draw[-] (v6) to (v7); \draw[-]  (v6) to (v11);
+		\draw[-] (v7) to (v8); \draw[-]  (v7) to (v12);
+		\draw[-] (v8) to (v9); \draw[-]  (v8) to (v13);
+		\draw[-] (v9) to (v14);
+		\draw[-] (v10) to (v11); \draw[-]  (v10) to (v15);
+		\draw[-] (v11) to (v12); \draw[-]  (v11) to (v16);
+		\draw[-] (v12) to (v13); \draw[-]  (v12) to (v17);
+		\draw[-] (v13) to (v14); \draw[-]  (v13) to (v18);
+		\draw[-] (v14) to (v19);
+	
+		\draw[-] (v15) to (v16); \draw[-]  (v15) to (v20);
+		\draw[-] (v16) to (v17); \draw[-]  (v16) to (v21);
+		\draw[-] (v17) to (v18); \draw[-]  (v17) to (v22);
+		\draw[-] (v18) to (v19); \draw[-]  (v18) to (v23);
+		\draw[-] (v19) to (v24);
+		\draw[-] (v20) to (v21);
+		\draw[-] (v21) to (v22);
+		\draw[-] (v22) to (v23);
+		\draw[-] (v23) to (v24);
+    \end{tikzpicture}}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.32\linewidth}
+	\centering
+    \vbox{ \begin{tikzpicture}
+		\node[label=above:$\bf{0}$] (v0) at (0,0) {};\fill (v0) circle (2pt);
+		\node[label=above:$\bf{1}$] (v1) at (1.73,0) {};\fill (v1) circle (2pt);
+
+		\node[label=above:$\bf{2}$] (v2) at (-0.87,-0.5) {};\fill (v2) circle (2pt);
+		\node[label=above:$\bf{3}$] (v3) at (0.87,-0.5) {};\fill (v3) circle (2pt);
+		\node[label=above:$\bf{4}$] (v4) at (2.6,-0.5) {};\fill (v4) circle (2pt);
+		
+		\node[label=above:$\bf{5}$] (v5) at (-0.87,-1.5) {};\fill (v5) circle (2pt);
+		\node[label=above:$\bf{6}$] (v6) at (0.87,-1.5) {};\fill (v6) circle (2pt);
+		\node[label=above:$\bf{7}$] (v7) at (2.6,-1.5) {};\fill (v7) circle (2pt);
+
+		\node[label=above:$\bf{8}$] (v8) at (-1.73,-2) {};\fill (v8) circle (2pt);
+		\node[label=above:$\bf{9}$] (v9) at (0,-2) {};\fill (v9) circle (2pt);
+		\node[label=above:$\bf{10}$] (v10) at (1.73,-2) {};\fill (v10) circle (2pt);
+		\node[label=above:$\bf{11}$] (v11) at (3.46,-2) {};\fill (v11) circle (2pt);
+
+		\node[label=above:$\bf{12}$] (v12) at (-1.73,-3) {};\fill (v12) circle (2pt);
+		\node[label=above:$\bf{13}$] (v13) at (0,-3) {};\fill (v13) circle (2pt);
+		\node[label=above:$\bf{14}$] (v14) at (1.73,-3) {};\fill (v14) circle (2pt);
+		\node[label=above:$\bf{15}$] (v15) at (3.46,-3) {};\fill (v15) circle (2pt);
+
+		\node[label=above:$\bf{16}$] (v16) at (-0.87,-3.5) {};\fill (v16) circle (2pt);
+		\node[label=above:$\bf{17}$] (v17) at (0.87,-3.5) {};\fill (v17) circle (2pt);
+		\node[label=above:$\bf{18}$] (v18) at (2.6,-3.5) {};\fill (v18) circle (2pt);
+
+		\node[label=above:$\bf{19}$] (v19) at (-0.87,-4.5) {};\fill (v19) circle (2pt);
+		\node[label=above:$\bf{20}$] (v20) at (0.87,-4.5) {};\fill (v20) circle (2pt);
+		\node[label=above:$\bf{21}$] (v21) at (2.6,-4.5) {};\fill (v21) circle (2pt);
+
+		\node[label=above:$\bf{22}$] (v22) at (0,-5) {};\fill (v22) circle (2pt);
+		\node[label=above:$\bf{23}$] (v23) at (1.73,-5) {};\fill (v23) circle (2pt);
+
+		
+		\draw[-] (v0) to (v2); \draw[-]  (v0) to (v3);
+		\draw[-] (v1) to (v3); \draw[-]  (v1) to (v4);
+		\draw[-] (v2) to (v5); 
+		\draw[-] (v3) to (v6);
+		\draw[-] (v4) to (v7);
+		\draw[-] (v5) to (v8); \draw[-] (v5) to (v9);
+		\draw[-] (v6) to (v9); \draw[-] (v6) to (v10);
+		\draw[-] (v7) to (v10);\draw[-] (v7) to (v11);
+		\draw[-] (v8) to (v12);
+		\draw[-] (v9) to (v13);
+		\draw[-] (v10) to (v14);
+		\draw[-] (v11) to (v15);
+		\draw[-] (v12) to (v16);
+		\draw[-] (v13) to (v16); \draw[-] (v13) to (v17);
+		\draw[-] (v14) to (v17); \draw[-] (v14) to (v18);
+		\draw[-] (v15) to (v18);
+		\draw[-] (v16) to (v19);
+		\draw[-] (v17) to (v20);
+		\draw[-] (v18) to (v21);
+		\draw[-] (v19) to (v22);
+		\draw[-] (v20) to (v22); \draw[-] (v20) to (v23);
+		\draw[-] (v21) to (v23);
+    \end{tikzpicture}}
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.32\linewidth}
+	\centering
+    \vbox{ \begin{tikzpicture}
+		\node[label=above:$\bf{0}$] (v0) at (0,0) {};\fill (v0) circle (2pt);
+		\node[label=above:$\bf{1}$] (v1) at (1,0) {};\fill (v1) circle (2pt);
+		\node[label=above:$\bf{2}$] (v2) at (2,0) {};\fill (v2) circle (2pt);
+		\node[label=above:$\bf{3}$] (v3) at (3,0) {};\fill (v3) circle (2pt);
+		\node[label=above:$\bf{4}$] (v4) at (4,0) {};\fill (v4) circle (2pt);
+		
+		\node[label=above:$\bf{5}$] (v5) at (0.5,-1) {};\fill (v5) circle (2pt);
+		\node[label=above:$\bf{6}$] (v6) at (1.5,-1) {};\fill (v6) circle (2pt);
+		\node[label=above:$\bf{7}$] (v7) at (2.5,-1) {};\fill (v7) circle (2pt);
+		\node[label=above:$\bf{8}$] (v8) at (3.5,-1) {};\fill (v8) circle (2pt);
+	
+		\node[label=above:$\bf{9}$] (v9) at (0,-2) {};\fill (v9) circle (2pt);
+		\node[label=above:$\bf{10}$] (v10) at (1,-2) {};\fill (v10) circle (2pt);
+		\node[label=above:$\bf{11}$] (v11) at (2,-2) {};\fill (v11) circle (2pt);
+		\node[label=above:$\bf{12}$] (v12) at (3,-2) {};\fill (v12) circle (2pt);
+		\node[label=above:$\bf{13}$] (v13) at (4,-2) {};\fill (v13) circle (2pt);
+	
+		\node[label=above:$\bf{14}$] (v14) at (0.5,-3) {};\fill (v14) circle (2pt);
+		\node[label=above:$\bf{15}$] (v15) at (1.5,-3) {};\fill (v15) circle (2pt);
+		\node[label=above:$\bf{16}$] (v16) at (2.5,-3) {};\fill (v16) circle (2pt);
+		\node[label=above:$\bf{17}$] (v17) at (3.5,-3) {};\fill (v17) circle (2pt);
+
+	
+		\node[label=above:$\bf{18}$] (v18) at (0,-4) {};\fill (v18) circle (2pt);
+		\node[label=above:$\bf{19}$] (v19) at (1,-4) {};\fill (v19) circle (2pt);
+		\node[label=above:$\bf{20}$] (v20) at (2,-4) {};\fill (v20) circle (2pt);
+		\node[label=above:$\bf{21}$] (v21) at (3,-4) {};\fill (v21) circle (2pt);
+		\node[label=above:$\bf{22}$] (v22) at (4,-4) {};\fill (v22) circle (2pt);
+		
+		\draw[-] (v0) to (v1); \draw[-]  (v0) to (v5);
+		\draw[-] (v1) to (v2); \draw[-]  (v1) to (v5); \draw[-]  (v1) to (v6);
+		\draw[-] (v2) to (v3); \draw[-]  (v2) to (v6); \draw[-]  (v2) to (v7);
+		\draw[-] (v3) to (v4); \draw[-]  (v3) to (v7); \draw[-]  (v3) to (v8);
+		\draw[-] (v4) to (v8);
+		\draw[-] (v5) to (v6); \draw[-]  (v5) to (v9); \draw[-]  (v5) to (v10);
+		\draw[-] (v6) to (v7); \draw[-]  (v6) to (v10); \draw[-]  (v6) to (v11);
+		\draw[-] (v7) to (v8); \draw[-]  (v7) to (v11); \draw[-]  (v7) to (v12);
+		\draw[-] (v8) to (v12); \draw[-]  (v8) to (v13);
+		\draw[-] (v9) to (v10); \draw[-] (v9) to (v14);
+		\draw[-] (v10) to (v11); \draw[-]  (v10) to (v14);\draw[-]  (v10) to (v15);
+		\draw[-] (v11) to (v12); \draw[-]  (v11) to (v15);\draw[-]  (v11) to (v16);
+		\draw[-] (v12) to (v13); \draw[-]  (v12) to (v16);\draw[-]  (v12) to (v17);
+		\draw[-]  (v13) to (v17);
+		\draw[-] (v14) to (v15); \draw[-] (v14) to (v18); \draw[-] (v14) to (v19);
+		\draw[-] (v15) to (v16); \draw[-] (v15) to (v19); \draw[-] (v15) to (v20);
+		\draw[-] (v16) to (v17); \draw[-] (v16) to (v20); \draw[-] (v16) to (v21);
+		\draw[-] (v17) to (v21); \draw[-] (v17) to (v22);
+		\draw[-] (v18) to (v19);
+		\draw[-] (v19) to (v20);
+		\draw[-] (v20) to (v21);
+		\draw[-] (v21) to (v22);
+    \end{tikzpicture}}
+\end{minipage}
+\begin{minipage}[ht]{1\linewidth}
+\begin{tabular}{p{0.32\linewidth}p{0.32\linewidth}p{0.32\linewidth}}
+\centering a) Square Lattice & \centering b) Hexagonal Lattice  & \centering c) Triangular Lattice \\
+\end{tabular}
+\end{minipage}
+\vspace*{-1cm}
+\caption{ In Betracht genommene Gridgraphen}
+\label{Abb.1}
+\end{figure}
+
+
+Für diese Graphen lassen sich die Werte der $L(2,1)$ und $L(3,2,1)$-Labelings einfach berechnen. Das Modell mit den reellen Zahlen ist schwerer zu lösen und braucht deswegen deutlich mehr Zeit (siehe Tabelle \ref{Table:Table1}). 
+
+\begin{table}[htbp]
+\centering
+  \begin{tabular}{|c|c|c| c|c|c|}
+  \hline Lattice & $f(x) =3-x$  & $L(2,1)$ & & $f(x) =4-x$  & $L(3,2,1)$\\ \hline 
+    Hexagonal & $6.41699$ & $5$ & &  $16.6243$ & $9$ \\ 
+			& $1.69$ sec & $0.08$ sec& & $1838.73$ sec	& $0.29$ sec\\ \hline
+	Triangular & $9.78029$ & $8$ & & $21.9068$ & $18$ \\
+			& $10.96$ sec	& $0.34$ sec& & $103883$ sec & $167.29$ sec\\ \hline
+    Square	& $8.63494$ & $6$ & & $19.9067$ & $11$ \\
+			& $4.92$ sec & $0.2$ sec & & $27793.8$ sec & $0.68$ sec\\
+  \hline
+  \end{tabular}
+\caption{Ergebnisse für  $L(2,1)$, $L(3,2,1)$ im klassischen Fall und Funktion $f(x)=3-x$, $f(x)=4-x$ im Fall der reellwertigen Labeling }
+\label{Table:Table1}
+\end{table}
+
+% -------------------------------------------------------------------------------
+\subsection{Treppenfunktion}
+
+Alternativ zu der linear absteigender Funktion kann für $f$ eine Treppenfunktion gewählt werden. Anhand der Zusammenhang zwischen den Graphdistanzen und euklidischen Distanzen,
+siehe Tabelle \ref{TreppFunk1}, \ref{TreppFunk2}, \ref{TreppFunk3}, haben wir die Treppenfunktionen für die entsprechende klassische Formulierung wie folgt definiert:
+\[ f_{hexagonal,L(2,1)}(x) = \left\{
+  \begin{array}{l l}
+    2 & \quad \text{wenn $x\le 1$}\\
+    1 & \quad \text{wenn $x\le \sqrt{3}$}
+  \end{array} \right.\]
+
+\[ f_{hexagonal,L(3,2,1)}(x) = \left\{
+  \begin{array}{l l}
+    3 & \quad \text{wenn $x\le 1$}\\
+    2 & \quad \text{wenn $x\le \sqrt{3}$}\\
+    1 & \quad \text{wenn $x\le \sqrt{7}$}
+  \end{array} \right.\]
+
+
+\[ f_{triangular,L(2,1)}(x) = \left\{
+  \begin{array}{l l}
+    2 & \quad \text{wenn $x\le 1$}\\
+    1 & \quad \text{wenn $x\le 2$}
+  \end{array} \right.\]
+
+\[ f_{triangular,L(3,2,1)}(x) = \left\{
+  \begin{array}{l l}
+    3 & \quad \text{wenn $x\le 1$}\\
+    2 & \quad \text{wenn $x\le 2$}\\
+    1 & \quad \text{wenn $x\le 3$}
+  \end{array} \right.\]
+
+\[ f_{square,L(2,1)}(x) = \left\{
+  \begin{array}{l l}
+    2 & \quad \text{wenn $x\le 1$}\\
+    1 & \quad \text{wenn $x\le 2$}
+  \end{array} \right.\]
+
+\[ f_{square,L(3,2,1)}(x) = \left\{
+  \begin{array}{l l}
+    3 & \quad \text{wenn $x\le 1$}\\
+    2 & \quad \text{wenn $x\le 2$}\\
+    1 & \quad \text{wenn $x\le 3$ und $x\neq\sqrt{8}$}
+  \end{array} \right.\]
+
+Die Ergebnisse der Berechnungen mit den Treppenfunktionen sind gleich den aus der klassischen Formulierung, brauchen aber mehr Zeit, um fertig zu werden (vgl. Tabelle \ref{Table3}).
+
+\begin{table}[htbp]
+\centering
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    Lattice& $f(x)$  & $L(2,1)$ & & f(x) & $L(3,2,1)$ \\ \hline
+    Hexagonal	& $5$ & $5$ & & $9$ & $9$ \\
+			& $0.61$ sec	& $0.08$ sec & & $1.59$ sec & $0.29$ sec\\ \hline
+    Triangular	& $8$ & $8$ & & $18$ &  $18$\\
+			& $7.94$ sec & $0.34$ sec & & $1170.4$ sec & $167.29$ sec \\ \hline
+    Square	& $6$ & $6$ & & $11$ & $11$\\
+			& $6.51$ sec & $0.2$ sec & & $68.91$ sec & $0.68$ sec\\   \hline
+  \end{tabular}
+\caption{Ergebnisse für $L(2,1)$ und $L(3,2,1)$ im klassischen Fall und Treppenfunktionen im Fall der reellwertigen Labeling}
+\label{Table3}
+\end{table}
+
+\begin{table}[tb]
+\centering
+  \begin{tabular}{|c|c|}
+  \hline
+   Graphdistanz	& euklidische Distanz \\ \hline
+		1	& $1$\\
+		2	& $\sqrt{3}$\\
+		3	& $2$,$\sqrt{7}$\\
+		4	& $3$, $\sqrt{12}$\\
+		5	& $3\sqrt{13}$, $4$, $\sqrt{19}$\\
+		6	& $\sqrt{21}$, $\sqrt{27}$\\
+		7	& $5$, $\sqrt{28}$\\
+  \hline
+  \end{tabular}
+\caption{Graph- und euklidische Distanzen in einem hexagonalen Gridgraphen mit 24 Knoten.}
+\label{TreppFunk1}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+  \begin{tabular}{|c|c|}
+  \hline
+   Graphdistanz	& euklidische Distanz \\ \hline
+		1	& $1$\\
+		2	& $\sqrt{3}$, $2$\\
+		3	& $\sqrt{7}$, $3$\\
+		4	& $\sqrt{12}$, $\sqrt{13}$, $4$\\
+		5	& $\sqrt{19}$, $\sqrt{21}$\\
+		6	& $\sqrt{28}$\\
+  \hline
+  \end{tabular}
+\caption{Graph- und euklidische Distanzen in einem Gridgraphen aus Dreiecken mit 23 Knoten.}
+\label{TreppFunk2}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+  \begin{tabular}{|c|c|}
+  \hline
+   Graphdistanz	& euklidische Distanz \\ \hline
+		1	& $1$\\
+		2	& $\sqrt{2}$, $2$\\
+		3	& $\sqrt{5}$, $3$\\
+		4	& $\sqrt{8}$, $\sqrt{10}$, $4$\\
+		5	& $\sqrt{13}$, $\sqrt{17}$\\
+		6	& $\sqrt{18}$, $\sqrt{20}$\\
+		7	& $5$\\
+		8	& $\sqrt{32}$\\
+  \hline
+  \end{tabular}
+\caption{Graph- und euklidische Distanzen in einem Gridgraphen aus Vierecken mit 25 Knoten.}
+\label{TreppFunk3}
+\end{table}
+
+%\newpage
+\FloatBarrier 
+% -------------------------------------------------------------------------------
+\subsection{Verbessern der Laufzeit}
+Wie wir gesehen haben, ist das Modell mit den reellen Zahlen viel langsamer als es mit den ganzen Zahlen. Da aber das erste nah an der Praxis liegt, ist es von Interesse, die Laufzeit des Modells zu verbessern. 
+Wir beschreiben weiter verschiedene Ansätze, die diesem Ziel dienen sollten.
+
+\begin{itemize}
+\item Beschränkung der Konstanten $M$\\
+	Um die Nichtkonvexität des Problems wegen der Ungleichung $\lvert c_i-c_j\rvert\ge d_{dist(i,j)}$ zu beheben, haben wir die Umschreibung mit dem "großen M" benutzt (Ungleichungen \ref{m23}, \ref{m24}). Die hohen Werte vom $M$ vergrößern die zulässige Menge vom Problem \ref{m2} und verlangsamen somit die Optimierung. 
+	
+	Aus der klassischen Formulierung folgt, dass es genügt, dass $M\ge d_1+\lambda$ ist \citep[siehe][]{HalaszSummary}. Durch die Abschätzungen für $\lambda$ können wir somit auch die Konstante $M$ abschätzen ($M>=nd_1$, wobei $n$ Anzahl der Knoten im Graphen ist \citep[siehe][]{HalaszSummary}).
+	Alternative können wir $M$ durch den Lösung $\lambda_Z$ des entsprechenden klassischen Problem beschränken, z.B. durch $ M\le 3\lambda_Z$. Die Ergebnisse der Berechnung mit dem so beschränkten Konstanten $M$ sind in der Tabelle \ref{Table:NewM} zusammengefasst.
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline Lattice& $d(x)=3-x$(new)  & $d(x)=3-x$(old) && $d(x)=4-x$(new)  & $d(x)=4-x$(old)\\ \hline 
+		Hexagonal	&  6.41699	& 6.41699 && 16.6243 & 16.6243 \\ 
+			& 1.82 sec	& $1.69$ sec && 6651.87 sec & $1838.73$ sec \\ \hline
+		Triangular	& 9.78029	&  9.78029 && 21.9068 & 21.9068 \\
+			& 8.88 sec	& $10.96$ sec && 59064.01 sec& $103898.60$ sec \\ \hline
+		Square	& 8.63494	&   8.63494 &&  19.9067 & 19.9067\\
+			& 7.25 sec & $4.92$ sec && 21222.8 sec & $27793.8$ sec \\
+	\hline
+	\end{tabular}
+	\caption{ Der Vergleich der Laufzeit des Modells und des Modells mit den zusätzlichen Beschränkungen auf Konstanten $M$:
+	für $d(x)=3-x$ ist $M\le 2\lambda_Z$, für $d(x)=4-x$ ist $M\le 3\lambda_Z$, wobei $\lambda_Z$  das Ergebnis des entsprechenden klassischen Problems ist, also $L(2,1)$ und $L(3,2,1)$.} 
+	\label{Table:NewM}
+	\end{table}
+	
+	Wie können sehen, dass bis auf einen Lauf ist das Modell schneller geworden. Die Erhöhung der Laufzeit im Fall des Graphen aus den Sechsecken kann daran liegen, dass die hinzugefügte Ungleichungen nicht hinreichend sind. Sie schaffen zusätzliche Schwierigkeiten für das Programm, da sie erfüllt werden müssen, helfen aber beim {\it Branch\&Bound} nicht. 
+
+	\item Beschränkung von $\lambda$ 
+	
+	Ein anderer Ansatz ist zu versuchen, gute obere Schranke für $\lambda$ zu finden. Dafür haben wir den Algorithmus der binären Suche verwendet.
+	
+	Die Idee ist, solange die obere und untere Schranken vom $\lambda$ zusammen zu ziehen, bis die Lücke zwischen ihnen klein genug ist, und erst danach die Optimierung mit den strengeren Schranken zu starten.
+	Als untere %Anfangs
+	Schranke ($LB$) für $\lambda$ wurde das Ergebnis der entsprechenden klassischen Formulierung genommen ($\lambda_Z$), und als obere Schranke ($UB$) die Werte $2\lambda_Z$ für die Funktion $d(x)=3-x$ und $3\lambda_Z$ für die Funktion $d(x)=4-x$. In jeder Iteration wird versucht entweder untere Schranke nach oben oder obere Schranke nach unten um die Hälfte der Lückengröße $UB-LB$ zu verschieben. Dabei wird jedes mal ein Zulässigkeitsproblem gelöst. 
+	
+	Die Ergebnisse dieses Ansatzes für die zulässige Lückengröße $0.5$ sind in der Tabelle \ref{Table:BB} aufgeführt.
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline Lattice& $d(x)=3-x$(new)  & $d(x)=3-x$(old) && $d(x)=4-x$(new)  & $d(x)=4-x$(old)\\ \hline 
+		Hexagonal	&  6.41699	& 6.41699 && 16.6243 & 16.6243 \\ 
+			& $5.18+21.59 =$ 	&  && $118061+139576 = $ &  \\ 
+			& $26.77$ sec	& $1.69$ sec && $257637$ sec &  $1838.73$ sec \\ \hline
+		Triangular	& 9.78029	&  9.78029 && 21.9068 & 21.9068 \\
+			& $105.8+253.17 = $ 	&  && &  \\ 
+			& $358.97$ sec	& $10.96$ sec && & $103898.60$ sec \\ \hline
+		Square	& 8.63494	&   8.63494 &&  19.9067 & 19.9067\\
+			& $33.99+55.26 = $ sec &  &&  &  sec \\
+			& $89.25$ sec & $4.92$ sec &&  & $27793.8$ sec \\
+	\hline
+	\end{tabular}
+	\caption{ Ansatz der {\it binären Suche} für die Bestimmung oberer und unterer Schranken für $\lambda$. Die Lückengröße ist $0.5$. Der erste Summand in der Summe steht für die Zeit, die die Suche nach den besseren Schranken braucht, und der zweite Summand steht für die eigentliche Optimierung.} 
+	\label{Table:BB}
+	\end{table}
+	
+	Man kann sehen, dass dieser Verfahren im Gegensatz zu den Erwartungen keine Zeitverbesserung geleistet hat. 
+	%Es liegt laut (REFERENZ) daran, dass die Aufgabe die Zulässigkeit vom $CAP$ zu prüfen, mindestens $NP-$schwer ist.
+	
+	Man kann es dadurch erklären, dass nach dem wir die zulässige Menge des Problems verkleinert haben, ist es dem Cutting Algorithmus schwer die nicht optimale Zweige im Suchbaum abzuschneiden und er enumeriert alle Möglichkeiten.
+	
+	\item Zusätzliche Ungleichungen
+	
+	Um das Lösungsprozess zu verbessern, kann man in das vorhandene Modell zusätzliche Ungleichungen hinzufügen, die die zusätzliche Abhängigkeiten zwischen den Variablen ausdrucken.
+	
+	Um solche Ungleichungen zu gewinnen, haben wir in unserer Untersuchung die Teilgraphen des ursprünglichen Graphen $G$ beobachtet. 
+	Dabei löst man für die Teilgraphen separat das Problem der Minimierung der Summe der Labels, die die Ungleichungen \ref{m21}-\ref{m26} erfüllen. 
+	
+	Sei $\lambda'$ das Ergebnis eines solchen Problems für einen Teilgraphen $G'$. Für den ganzen Gridgraphen fügt man dann für alle Knoten, die den Teilgraphen $G'$ bilden, zusätzliche Ungleichungen in Form $\sum_{i\in V(G')}{c(i)}\ge\lambda'$ hinzu.
+		
+	Die Form und die Größe der Teilgraphen $G'$ kann variiert werden. Wir haben hauptsächlich die Bauelemente der Gridgraphen (entspricht Dreiecke, Vierecke und Sechsecke) in Betracht benommen, u.a.: Dreiecke mit der Seitenlänge 1, 2, 3, Sechsecke mit der Seitenlänge $1$, $2$ , Trapez, das die Hälfte eines Sechseckes darstellt, Vierecke der Größe 1, 2, 3 und kleine viereckige Gridgraphen mit $4$, $9$ Knoten (siehe Tabelle \ref{Table:TG0}, wo für jeden untersuchten Teilgraphen optimale Werte der Summe $\sum_{i\in V(G')}{c(i)}$ eingeführt sind).
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|}
+	\hline Teilgraph & $d(x)=3-x$  & $d(x)=4-x$\\ \hline 
+		Dreieck mit der Seitenlänge $1$ & $\sum{c(i)}=6$ & $\sum{c(i)}=9$ \\
+		Dreieck mit der Seitenlänge $2$ & $\sum{c(i)}=3$ & $\sum{c(i)}=6$ \\
+		Dreieck mit der Seitenlänge $3$ & $\sum{c(i)}=0$ & $\sum{c(i)}=3$ \\ \hline
+		
+		Viereck $1\times 1$ (4 Konten) &  $\sum{c(i)}=10.3431$ & $\sum{c(i)}=16.3431$ \\ 
+		Viereck $2\times 2$ (4 Konten) &  $\sum{c(i)}=2.68629$ & $\sum{c(i)}=8.68629$ \\ 
+		Viereck $3\times 3$ (4 Konten) &  $\sum{c(i)}=0$ & $\sum{c(i)}=2$ \\ 
+		
+		Viereck $2\times 2$ (9 Konten) &  $\sum{c(i)}=29.1922$ & $\sum{c(i)}=59.4033$ \\  
+		
+		Viereck $1\times 2$ (6 Konten) &  $\sum{c(i)}=16.2273$ & $\sum{c(i)}=30.283$ \\  \hline
+		
+		Trapez mit der Seitenlänge $1$ &  $\sum{c(i)}=7.0718$ & $\sum{c(i)}=13.0718$ \\ \hline
+		
+		Sechseck mit der Seitenlänge $1$ & $\sum{c(i)}=16.6077$ & $\sum{c(i)}=31.6077$ \\
+		Sechseck mit der Seitenlänge $2$ & $\sum{c(i)}=3$ & $\sum{c(i)}=10.8231$ \\ \hline
+		
+	\end{tabular}
+	\caption{Teilgraphen mit entsprechenden optimalen Werten} 
+	\label{Table:TG0}
+	\end{table}
+	
+	Die Zusammenfassung der besten Ergebnisse für verschiedene Gridgraphen und Teilgraphen findet man in den Tabellen \ref{Table:TG1}, \ref{Table:TG2}, \ref{Table:TG3}.
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|}
+	\hline Hexagonal Lattice& $d(x)=3-x$  & $d(x)=4-x$\\ \hline 
+		Der ganze Graph	&  6.41699	& 16.6243 \\ 
+			& $1.69$ sec	& $1838.73$ sec \\ \hline
+		Teilgraphen & & \\\hline
+		Sechsecke mit der Seitenlänge $1$& $1.37$ sec	&  $1588.7$ sec \\ \hline
+		Sechsecke mit der Seitenlänge $1$, $2$	& $1.75$ sec	&  $1641.71$ sec \\ \hline
+		%Trapez& $1.77$ 	sec {\color{red} $4.55$ sec} &  $1529.24$ sec {\color{red} $5624.57$ sec}\\ \hline
+		Trapez& $2.5$ sec  &  $1538.48$ sec \\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
+	\label{Table:TG1}
+	\end{table}
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline Triangular Lattice& $d(x)=3-x$  & $d(x)=4-x$\\ \hline 
+		Der ganze Graph&  $9.78029$	& $21.9068$ \\ 
+			& $10.96$ sec	& $103883$ sec \\ \hline
+		Teilgraphen & & \\\hline
+		Dreiecke mit der Seitenlänge $1$& $12.59$ sec	& $46933$ sec \\ \hline
+		Dreiecke mit der Seitenlänge $1$,$2$,$3$& $10.02$ sec	& $92228.1$ sec \\ \hline
+		%Sechsecke mit der Seitenlänge $1$ &  $11.90$ sec {\color{red} $75.16$ sec}&  $42412$ sec {\color{red} $78910.6$ sec} \\ \hline
+		Sechsecke mit der Seitenlänge $1$ &  $11.32$ sec &  $28637.8$ sec  \\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Dreiecken.}
+	\label{Table:TG2}
+	\end{table}
+	
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|}
+	\hline Square Lattice& $d(x)=3-x$  & $d(x)=4-x$\\ \hline 
+		Der ganze Graph	&  8.63494	& 19.9067 \\ 
+			& $4.92$ sec	& $27793.8$ sec \\ \hline
+		Teilgraphen & & \\ \hline
+		Vierecke mit der Seitenlänge $1$& $12.76$ sec	& $37945.53$ sec \\ \hline
+		Vierecke mit der Seitenlänge $1$,$2$,$3$ ohne Überlappen& $7.11$ sec	& $19619.38$ sec \\ \hline
+		%Vierecke $1\times 2$ & $6.22$ sec {\color{red} $22.31$ sec}	& $28612.78$ sec  {\color{red} $51318.4$ sec}\\ \hline
+		Vierecke $1\times 2$ & $7.48$ sec& $36248.2$ sec  \\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Vierecken.} 
+	\label{Table:TG3}
+	\end{table}
+	
+	% {\color{red} sec}
+	Bei der Gridgraphen, die aus der Sechsecken bestehen, liefert der beschriebene Ansatz keine Verbesserung der Laufzeit.
+	
+	Bei der Gridgraphen aus der Dreiecken kann man eine Verbesserung der Laufzeit beobachten. Aber immerhin braucht die Berechnung viel Zeit und mit der Einführung der zusätzlichen Nebenbedingungen auch mehr Speicherplatz. 
+	
+	Und im dritten Fall des Gitters aus den Vierecken hat der Ansatz wiederum keine deutliche Verbesserung der Laufzeit gebracht.
+
+\end{itemize}
+\FloatBarrier 
+% Literaturverzeichnis
+\newpage
+\addcontentsline{toc}{section}{Literatur}
+
+\bibliographystyle{plainnat}
+\bibliography{literatur}
+
+\end{document}

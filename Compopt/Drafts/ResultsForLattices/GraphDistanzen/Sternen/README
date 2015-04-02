@@ -1,0 +1,5 @@
+Wir benutzen "Sternen"  als Teilgraohen, um die Berechnung zu beschleunigen.
+
+Die minimale Summe von Labels fuer ein Stern unter L(d1,d2)-Labeling ist gleich:
+
+(deg(i)+2)(deg(i)-1)/2 * d1 +d1 fuer alle i in V(G) (Egebnis: Veronika Halasz)

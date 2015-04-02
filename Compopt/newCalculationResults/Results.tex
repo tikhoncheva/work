@@ -1,0 +1,173 @@
+\documentclass[
+	fontsize=12pt,
+	paper=a4,
+	twoside=false,
+	numbers=noenddot,
+	plainheadsepline,
+	toc=listof,
+	toc=bibliography
+]{scrartcl}
+
+\usepackage[german,ngerman]{babel} % Silbentrennung
+%\usepackage[T1]{fontenc} % Ligaturen, richtige Umlaute im PDF 
+\usepackage[utf8]{inputenc}% UTF8-Kodierung für Umlaute usw
+
+\usepackage[round]{natbib}
+
+\usepackage{amssymb,amsmath}
+
+\usepackage{placeins}
+\usepackage{float}
+\restylefloat{table}
+\restylefloat{figure}
+
+\usepackage{tikz}
+\usepackage{color,colortbl}
+
+\usepackage{hyperref}
+
+% Literaturverzeichnis
+\usepackage{natbib}
+
+% Absätze
+\setlength{\parindent}{0pt}
+
+\usepackage{graphicx}
+
+\begin{document}
+
+\section{Modelle}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $ f(x)=3-x$  & $L(2,1)$   & & $f(x)=4-x$    & $L(3,2,1)$\\ \hline 
+	Hexagonal &  $6.41699$	 & $5$        & & $16.6243$     & $9$   \\ 
+			  &  $1.74$ sec  & $0.08$ sec & & $2089.44$ sec & $0.3$ sec \\ \hline
+	Triangular&  $9.78029$	 & $8$        & & $21.0968$     & $18$   \\ 
+			  &  $11.07$ sec & $0.35$ sec & & $106155$ sec  & $168.39$ sec\\ \hline
+	Square    &  $8.63494$	 & $6$        & & $19.9067$     & $11$   \\ 
+			  &  $5.01$ sec  & $0.21$ sec & & $28186.3$ sec & $0.73$ sec \\ \hline
+	\end{tabular}
+	\caption{ Ergebnisse für L(2,1), L(3,2,1) im klassischen Fall und Funktion $f(x)=3-x$, $f(x)=4-x$ im Fall der
+	reelwertigen Labeling.} 
+	\label{Table:T1}
+	\end{table}
+	
+\FloatBarrier	
+\section{Treppenfunktion}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $ f(x)=3-x$  & $L(2,1)$   & & $f(x)=4-x$    & $L(3,2,1)$\\ \hline 
+	Hexagonal &  $5$	     & $5$        & & $9$           & $9$   \\ 
+			  &  $0.65$ sec  & $0.08$ sec & & $1.62$ sec    & $0.3$ sec \\ \hline
+	Triangular&  $8$	     & $8$        & & $18$          & $18$   \\ 
+			  &  $8.01$ sec  & $0.35$ sec & & $1790.31$ sec & $168.39$ sec\\ \hline
+	Square    &  $6$	     & $6$        & & $11$          & $11$   \\ 
+			  &  $6.56$ sec  & $0.21$ sec & & $68.88$ sec   & $0.73$ sec \\ \hline
+	\end{tabular}
+	\caption{ Ergebnisse für L(2,1), L(3,2,1) im klassischen Fall und Treppenfunktion im Fall der
+	reelwertigen Labeling.} 
+	\label{Table:T2}
+	\end{table}
+\FloatBarrier	
+
+\section{Verbessern der Laufzeit}
+
+\subsection{Bescränkung der Konstanten $M$}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $f(x)=3-x$(new) & $f(x)=3-x$(old) & & $f(x)=4-x$ (new) & $f(x)=4-x$(old)\\ \hline 
+	Hexagonal &  $6.41699$	    & $6.41699$       & & $16.6243$        & $16.6243$   \\ 
+			  &  $1.88 $ sec    & $1.74$ sec      & & $1599.84$ sec    & $2089.44$ \\ \hline
+	Triangular&  $9.78029$      & $9.78029$       & & $21.0968$        & $21.0968$\\ 
+			  &  $9.08$ sec     & $11.07$ sec     & & $61499.6$ sec    & $106155$ sec\\ \hline
+	Square    & $8.63494$       & $8.63494$       & & $19.9067$        & $19.9067$   \\ 
+			  &  $7.35$ sec     & $5.01$ sec      & & $21571$ sec      & $28186.3$ sec \\ \hline
+	\end{tabular}
+	\caption{ Der Vergleich der Laufzeit des vorherigen Modells und des Modells mit den zusatzlichen Beschränkungen auf die Konstanten M} 
+	\label{Table:T31}
+	\end{table}
+\FloatBarrier	
+	
+\subsection{Bescränkung von $\alpha$}
+
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	Lattice   & $f(x)=3-x$(new)   & $f(x)=3-x$(old) & & $f(x)=4-x$ (new) & $f(x)=4-x$(old)\\ \hline 
+	Hexagonal &  $6.41699$	      & $6.41699$       & & $16.6243$        & $16.6243$   \\ 
+			  &  $5.26 + 21.79=$  & $1.74$ sec      & & $88014+109604=$  & $2089.44$ sec\\
+			  &  $27.05$ sec       &                 & & $197618$ sec     &  \\ \hline			  
+	Triangular&  $9.78029$        & $9.78029$       & & $21.0968$        & $21.0968$\\ 
+			  &  $117.21+281.43=$ & $11.07$ sec     & & $ $              & $106155$ sec\\ 
+			  &  $398.64$ sec     &                 & & $ $              & \\ \hline			  
+	Square    & $8.63494$         & $8.63494$       & & $19.9067$        & $19.9067$   \\ 
+			  &  $34.2+55.65=$    & $5.01$ sec      & & $ $              & $28186.3$ sec \\ 
+			  &  $89.85$ sec      &                 & & $ $              &  \\ \hline			  
+	\end{tabular}
+	\caption{ Ansatz der binären Suche für die Bestimmung oberer und unterer Schranken für $\alpha$ } 
+	\label{Table:T31}
+	\end{table}
+\FloatBarrier	
+
+
+\subsection{Teilgrephen}	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+	\hline Hexagonal Lattice& $d(x)=3-x$  & $d(x)=4-x$ & nConstraints\\ \hline 
+		Der ganze Graph	&  6.41699	& 16.6243 & \\ 
+			& $1.74$ sec	& $2089.44$ sec & $601$\\ \hline
+		Teilgraphen & & &\\\hline
+		Sechsecke mit der Seitenlänge $1$ & $1.7$ sec	&  $4337.39$ sec & $608$\\ \hline
+		Sechsecke mit der Seitenlänge $1$, $2$	&  $1.86$sec	& $2460.81$  sec & $609$\\ \hline
+		Trapez& $2.66$ sec  & $1538.48$  sec & $614$ \\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Sechsecken.} 
+	\label{Table:TG1}
+	\end{table}
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline Triangular Lattice& $d(x)=3-x$  & $d(x)=4-x$ & nConstraints\\ \hline 
+		Der ganze Graph&  $9.78029$	& $21.9068$ &\\ 
+			& $11.07$ sec	&  $106155$ sec & $553$\\ \hline
+		Teilgraphen & & &\\\hline
+		Dreiecke mit der Seitenlänge $1$& $6.59$ sec	& $74723.1$ sec & $581$\\ \hline
+		Dreiecke mit der Seitenlänge $1$,$2$,$3$&  $10.58$ sec	& $137848$ sec & $589$\\ \hline
+		Sechsecke mit der Seitenlänge $1$ & $10.93$  sec & $43701.4$ sec & $560$ \\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Dreiecken.}
+	\label{Table:TG2}
+	\end{table}
+	
+	
+	\begin{table}[htbp]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+	\hline Square Lattice& $d(x)=3-x$  & $d(x)=4-x$ & nConstraints\\ \hline 
+		Der ganze Graph	&  8.63494	& 19.9067 & \\ 
+			& $5.01$ sec	& $28186.3$ sec & $651$\\ \hline
+		Teilgraphen & & &\\ \hline
+		Vierecke mit der Seitenlänge $1$&  $7.23$sec	&  $58860.2$ sec & $667$\\ \hline
+		Vierecke mit der Seitenlänge $1$,$2$,$3$ ohne Überlappen&  $7.4$ sec & $72471.5$ sec & $672$\\ \hline
+		Vierecke $1\times 2$ & $9.46$ sec& $27057.9$ sec & $659$\\ \hline
+	\end{tabular}
+	\caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Vierecken.} 
+	\label{Table:TG3}
+	\end{table}
+	
+
+
+
+\end{document}
