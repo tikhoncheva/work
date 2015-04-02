@@ -1,7 +1,0 @@
-File Name:	./data/hexagonal_lattice_d3.dat
-Optimal value	9
-Number of constraints: 319
-Number of variables: 160
-Used time: 0.3sec
-Labeling
-c[1]=7 c[2]=9 c[3]=2 c[4]=4 c[5]=0 c[6]=9 c[7]=1 c[8]=3 c[9]=4 c[10]=6 c[11]=8 c[12]=6 c[13]=1 c[14]=3 c[15]=5 c[16]=9 c[17]=8 c[18]=0 c[19]=2 c[20]=5 c[21]=9 c[22]=7 c[23]=2 c[24]=4 

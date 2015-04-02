@@ -1,2 +1,0 @@
-g++ -I/import/vol/cplex-12.4_x86_64/cplex/include -I/import/vol/cplex-12.4_x86_64/concert/include -O0 -g3 -Wall -c -fmessage-length=0 -DIL_STD -MMD -MP -MF"CAP_IP.d" -MT"CAP_IP.d" -o "CAP_IP.o" "CAP_IP.cpp"
-g++ -L/import/vol/cplex-12.4_x86_64/cplex/lib/x86-64_sles10_4.1/static_pic -L/import/vol/cplex-12.4_x86_64/concert/lib/x86-64_sles10_4.1/static_pic -o "Llabeling"  ./CAP_IP.o   -lilocplex -lcplex -lconcert -lm -lpthread 

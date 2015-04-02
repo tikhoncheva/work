@@ -1,7 +1,0 @@
-Name of file:	dummy.txt
-Optimal value:	2
-Number of constraints: 20
-Number of variables: 11
-Used time: 0sec
-Labeling:
-c[1]=1 c[2]=0 c[3]=0 c[4]=1 

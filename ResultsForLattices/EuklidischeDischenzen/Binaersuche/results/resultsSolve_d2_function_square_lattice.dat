@@ -1,9 +1,0 @@
-Name of file:	dummy.txt
-Optimal value:	8.63494
-Number of constraints: 3052
-Number of variables: 326
-Used time: find Bounds for Lambda33.99sec
-           solve Problem55.26sec
-           Summe89.25sec
-Labeling:
-c[1]=5.46337 c[2]=0 c[3]=7.04916 c[4]=3.11365 c[5]=8.63494 c[6]=3.11365 c[7]=8.63494 c[8]=4.69944 c[9]=0.763932 c[10]=6.28522 c[11]=0.763932 c[12]=6.28522 c[13]=2.34972 c[14]=7.87101 c[15]=3.87758 c[16]=7.87101 c[17]=3.9355 c[18]=0 c[19]=5.46337 c[20]=1.52786 c[21]=5.52129 c[22]=1.58579 c[23]=7.10708 c[24]=3.11365 c[25]=8.63494 

@@ -1,7 +1,0 @@
-Name of file:	../data/square_lattice.dat
-Optimal value:	50
-Number of constraints: 651
-Number of variables: 326
-Used time: 34.09sec
-Labeling:
-c[1]=14 c[2]=50 c[3]=7 c[4]=36 c[5]=14 c[6]=29 c[7]=21 c[8]=43 c[9]=0 c[10]=50 c[11]=0 c[12]=36 c[13]=14 c[14]=29 c[15]=7 c[16]=43 c[17]=7 c[18]=50 c[19]=21 c[20]=36 c[21]=21 c[22]=29 c[23]=0 c[24]=43 c[25]=14 

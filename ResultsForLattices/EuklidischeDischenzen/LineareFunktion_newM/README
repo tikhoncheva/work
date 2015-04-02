@@ -1,6 +1,0 @@
-Beschraenkungen  fuer "gross M" aus der LP-Formulierung.
-
-M<=2L(2,1) fuer f(x)=3-x
-M<=3L(3,2,1) fuer f(x)=4-x
-
-wobei L(d1,..) steht fuer die Loesung der entsprechenden MIP (Fall der Graphdistanzen)
