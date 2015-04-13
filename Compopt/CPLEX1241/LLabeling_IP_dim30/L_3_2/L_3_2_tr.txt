@@ -1,0 +1,100 @@
+Start with the file ../data/triangular_lattice_d2.dat
+
+Graph (V,E) with |V|= 30
+Distance matrix: 
+0  1  2  3  4  1  2  3  4  5  2  2  3  4  5  3  3  4  5  6  4  4  4  5  6  5  5  5  6  7  
+1  0  1  2  3  1  1  2  3  4  2  2  2  3  4  3  3  3  4  5  4  4  4  4  5  5  5  5  5  6  
+2  1  0  1  2  2  1  1  2  3  3  2  2  2  3  3  3  3  3  4  4  4  4  4  4  5  5  5  5  5  
+3  2  1  0  1  3  2  1  1  2  4  3  2  2  2  4  3  3  3  3  5  4  4  4  4  5  5  5  5  5  
+4  3  2  1  0  4  3  2  1  1  5  4  3  2  2  5  4  3  3  3  6  5  4  4  4  6  5  5  5  5  
+1  1  2  3  4  0  1  2  3  4  1  1  2  3  4  2  2  3  4  5  3  3  3  4  5  4  4  4  5  6  
+2  1  1  2  3  1  0  1  2  3  2  1  1  2  3  2  2  2  3  4  3  3  3  3  4  4  4  4  4  5  
+3  2  1  1  2  2  1  0  1  2  3  2  1  1  2  3  2  2  2  3  4  3  3  3  3  4  4  4  4  4  
+4  3  2  1  1  3  2  1  0  1  4  3  2  1  1  4  3  2  2  2  5  4  3  3  3  5  4  4  4  4  
+5  4  3  2  1  4  3  2  1  0  5  4  3  2  1  5  4  3  2  2  6  5  4  3  3  6  5  4  4  4  
+2  2  3  4  5  1  2  3  4  5  0  1  2  3  4  1  2  3  4  5  2  2  3  4  5  3  3  4  5  6  
+2  2  2  3  4  1  1  2  3  4  1  0  1  2  3  1  1  2  3  4  2  2  2  3  4  3  3  3  4  5  
+3  2  2  2  3  2  1  1  2  3  2  1  0  1  2  2  1  1  2  3  3  2  2  2  3  3  3  3  3  4  
+4  3  2  2  2  3  2  1  1  2  3  2  1  0  1  3  2  1  1  2  4  3  2  2  2  4  3  3  3  3  
+5  4  3  2  2  4  3  2  1  1  4  3  2  1  0  4  3  2  1  1  5  4  3  2  2  5  4  3  3  3  
+3  3  3  4  5  2  2  3  4  5  1  1  2  3  4  0  1  2  3  4  1  1  2  3  4  2  2  3  4  5  
+3  3  3  3  4  2  2  2  3  4  2  1  1  2  3  1  0  1  2  3  2  1  1  2  3  2  2  2  3  4  
+4  3  3  3  3  3  2  2  2  3  3  2  1  1  2  2  1  0  1  2  3  2  1  1  2  3  2  2  2  3  
+5  4  3  3  3  4  3  2  2  2  4  3  2  1  1  3  2  1  0  1  4  3  2  1  1  4  3  2  2  2  
+6  5  4  3  3  5  4  3  2  2  5  4  3  2  1  4  3  2  1  0  5  4  3  2  1  5  4  3  2  2  
+4  4  4  5  6  3  3  4  5  6  2  2  3  4  5  1  2  3  4  5  0  1  2  3  4  1  2  3  4  5  
+4  4  4  4  5  3  3  3  4  5  2  2  2  3  4  1  1  2  3  4  1  0  1  2  3  1  1  2  3  4  
+4  4  4  4  4  3  3  3  3  4  3  2  2  2  3  2  1  1  2  3  2  1  0  1  2  2  1  1  2  3  
+5  4  4  4  4  4  3  3  3  3  4  3  2  2  2  3  2  1  1  2  3  2  1  0  1  3  2  1  1  2  
+6  5  4  4  4  5  4  3  3  3  5  4  3  2  2  4  3  2  1  1  4  3  2  1  0  4  3  2  1  1  
+5  5  5  5  6  4  4  4  5  6  3  3  3  4  5  2  2  3  4  5  1  1  2  3  4  0  1  2  3  4  
+5  5  5  5  5  4  4  4  4  5  3  3  3  3  4  2  2  2  3  4  2  1  1  2  3  1  0  1  2  3  
+5  5  5  5  5  4  4  4  4  4  4  3  3  3  3  3  2  2  2  3  3  2  1  1  2  2  1  0  1  2  
+6  5  5  5  5  5  4  4  4  4  5  4  3  3  3  4  3  2  2  2  4  3  2  1  1  3  2  1  0  1  
+7  6  5  5  5  6  5  4  4  4  6  5  4  3  3  5  4  3  2  2  5  4  3  2  1  4  3  2  1  0  
+Labeling L(d_1, d_2, ..., d_s) max_d=3
+3  2  
+ Set Model d: 3 2 
+ Set Model constraints:  Set Model finished: Tried aggregator 1 time.
+MIP Presolve eliminated 31 rows and 1 columns.
+Reduced MIP has 378 rows, 205 columns, and 1104 nonzeros.
+Reduced MIP has 174 binaries, 31 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Probing time =    0.01 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        3.0000   174                      3.0000      174         
+      0     0        3.0000   189                   Cuts: 169      302         
+      0     0        3.0000   153                    Cuts: 86      371         
+      0     0        3.0000   191                   Cuts: 107      466         
+      0     2        3.0000   157                      3.0000      466         
+Elapsed time =   0.09 sec. (tree size =  0.01 MB, solutions = 0)
+*   415+  400                           28.0000        3.1000     3604   88.93%
+*   423   404      integral     0       25.0000        3.1000     3640   87.60%
+*   847   792      integral     0       24.0000        3.1000     6214   87.08%
+*   893   823      integral     0       23.0000        3.1000     6530   86.52%
+*   911   832      integral     0       22.0000        3.1000     6632   85.91%
+*  1059   920      integral     0       21.0000        4.0000     7562   80.95%
+*  1069+  923                           20.0000        4.0000     7674   80.00%
+*  1447  1124      integral     0       19.0000        5.0000    10625   73.68%
+*  2108  1565      integral     0       18.0000        6.0000    15048   66.67%
+   2505  1775        4.0000   116       18.0000        6.0000    19856   66.67%
+   2511  1778        6.0000    63       18.0000        6.0000    19985   66.67%
+*  2818  1236      integral     0       17.0000        6.0000    22400   64.71%
+Elapsed time =   2.03 sec. (tree size =  0.37 MB, solutions = 14)
+*  8391  3696      integral     0       16.0000       10.0000    78155   37.50%
+  24216  2997       14.0000    21       16.0000       14.0000   217073   12.50%
+  41479   427       15.0000    33       16.0000       15.0000   314762    6.25%
+  55556   236       15.0000    35       16.0000       15.0000   401478    6.25%
+  69697   104       15.0000    34       16.0000       15.0000   488611    6.25%
+  84071    42       15.0000    45       16.0000       15.0000   578733    6.25%
+
+Implied bound cuts applied:  256
+Flow cuts applied:  14
+Mixed integer rounding cuts applied:  62
+Zero-half cuts applied:  21
+Gomory fractional cuts applied:  45
+
+Root node processing (before b&c):
+  Real time             =    0.09
+Parallel b&c, 4 threads:
+  Real time             =   19.14
+  Sync time (average)   =    0.02
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =   19.23 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 19.23
+Solution value  = 16
+c(0)=10 c(1)=6 c(2)=2 c(3)=16 c(4)=12 c(5)=16 c(6)=12 c(7)=8 c(8)=4 c(9)=0 c(10)=8 c(11)=4 c(12)=0 c(13)=14 c(14)=10 c(15)=14 c(16)=10 c(17)=6 c(18)=2 c(19)=16 c(20)=6 c(21)=2 c(22)=16 c(23)=12 c(24)=8 c(25)=12 c(26)=8 c(27)=0 c(28)=4 c(29)=14 
+19.23user 0.15system 0:06.34elapsed 305%CPU (0avgtext+0avgdata 63620maxresident)k
+0inputs+11024outputs (0major+16326minor)pagefaults 0swaps

@@ -1,0 +1,80 @@
+Start with the file ../data/hexagonal_lattice_d2.dat
+
+Graph (V,E) with |V|= 24
+Distance matrix: 
+0  2  1  1  3  2  2  4  3  3  3  5  4  4  4  6  5  5  5  6  6  6  7  7  
+2  0  3  1  1  4  2  2  5  3  3  3  6  4  4  4  5  5  5  6  6  6  7  7  
+1  3  0  2  4  1  3  5  2  2  4  6  3  3  5  7  4  4  6  5  5  7  6  6  
+1  1  2  0  2  3  1  3  4  2  2  4  5  3  3  5  4  4  4  5  5  5  6  6  
+3  1  4  2  0  5  3  1  6  4  2  2  7  5  3  3  6  4  4  7  5  5  6  6  
+2  4  1  3  5  0  2  4  1  1  3  5  2  2  4  6  3  3  5  4  4  6  5  5  
+2  2  3  1  3  2  0  2  3  1  1  3  4  2  2  4  3  3  3  4  4  4  5  5  
+4  2  5  3  1  4  2  0  5  3  1  1  6  4  2  2  5  3  3  6  4  4  5  5  
+3  5  2  4  6  1  3  5  0  2  4  6  1  3  5  7  2  4  6  3  5  7  4  6  
+3  3  2  2  4  1  1  3  2  0  2  4  3  1  3  5  2  2  4  3  3  5  4  4  
+3  3  4  2  2  3  1  1  4  2  0  2  5  3  1  3  4  2  2  5  3  3  4  4  
+5  3  6  4  2  5  3  1  6  4  2  0  7  5  3  1  6  4  2  7  5  3  6  4  
+4  6  3  5  7  2  4  6  1  3  5  7  0  2  4  6  1  3  5  2  4  6  3  5  
+4  4  3  3  5  2  2  4  3  1  3  5  2  0  2  4  1  1  3  2  2  4  3  3  
+4  4  5  3  3  4  2  2  5  3  1  3  4  2  0  2  3  1  1  4  2  2  3  3  
+6  4  7  5  3  6  4  2  7  5  3  1  6  4  2  0  5  3  1  6  4  2  5  3  
+5  5  4  4  6  3  3  5  2  2  4  6  1  1  3  5  0  2  4  1  3  5  2  4  
+5  5  4  4  4  3  3  3  4  2  2  4  3  1  1  3  2  0  2  3  1  3  2  2  
+5  5  6  4  4  5  3  3  6  4  2  2  5  3  1  1  4  2  0  5  3  1  4  2  
+6  6  5  5  7  4  4  6  3  3  5  7  2  2  4  6  1  3  5  0  2  4  1  3  
+6  6  5  5  5  4  4  4  5  3  3  5  4  2  2  4  3  1  3  2  0  2  1  1  
+6  6  7  5  5  6  4  4  7  5  3  3  6  4  2  2  5  3  1  4  2  0  3  1  
+7  7  6  6  6  5  5  5  4  4  4  6  3  3  3  5  2  2  4  1  1  3  0  2  
+7  7  6  6  6  5  5  5  6  4  4  4  5  3  3  3  4  2  2  3  1  1  2  0  
+Labeling L(d_1, d_2, ..., d_s) max_d=3
+3  2  
+ Set Model d: 3 2 
+ Set Model constraints:  Set Model finished: Tried aggregator 1 time.
+MIP Presolve eliminated 25 rows and 1 columns.
+Reduced MIP has 180 rows, 103 columns, and 516 nonzeros.
+Reduced MIP has 78 binaries, 25 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 2 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        3.0000    78                      3.0000       78         
+      0     0        3.0000    84                    Cuts: 79      142         
+      0     0        3.0000    43                     Cuts: 9      151         
+      0     0        3.0000    69                    Cuts: 46      210         
+*     0+    0                           16.0000        3.0000      210   81.25%
+*     0+    0                           13.0000        3.0000      210   76.92%
+      0     2        3.0000    69       13.0000        3.0000      210   76.92%
+Elapsed time =   0.08 sec. (tree size =  0.01 MB, solutions = 2)
+*    56    53      integral     0       11.0000        3.0000      843   72.73%
+*   157+  133                           10.0000        3.0000     1525   70.00%
+*   239   171      integral     0        9.0000        3.0000     2155   66.67%
+
+Implied bound cuts applied:  70
+Flow cuts applied:  13
+Mixed integer rounding cuts applied:  41
+Zero-half cuts applied:  13
+Gomory fractional cuts applied:  3
+
+Root node processing (before b&c):
+  Real time             =    0.07
+Parallel b&c, 4 threads:
+  Real time             =    0.35
+  Sync time (average)   =    0.00
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =    0.42 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 0.42
+Solution value  = 9
+c(0)=2 c(1)=0 c(2)=6 c(3)=9 c(4)=7 c(5)=9 c(6)=6 c(7)=4 c(8)=1 c(9)=3 c(10)=1 c(11)=9 c(12)=6 c(13)=0 c(14)=9 c(15)=6 c(16)=9 c(17)=5 c(18)=3 c(19)=4 c(20)=2 c(21)=0 c(22)=7 c(23)=9 
+0.42user 0.03system 0:00.74elapsed 61%CPU (0avgtext+0avgdata 36056maxresident)k
+0inputs+10976outputs (0major+9246minor)pagefaults 0swaps

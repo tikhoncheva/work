@@ -1,0 +1,91 @@
+Start with the file ../data/triangular_lattice_d2.dat
+
+Graph (V,E) with |V|= 23
+Distance matrix: 
+0  1  2  3  4  1  2  3  4  2  2  3  4  5  3  3  4  5  4  4  4  5  6  
+1  0  1  2  3  1  1  2  3  2  2  2  3  4  3  3  3  4  4  4  4  4  5  
+2  1  0  1  2  2  1  1  2  3  2  2  2  3  3  3  3  3  4  4  4  4  4  
+3  2  1  0  1  3  2  1  1  4  3  2  2  2  4  3  3  3  5  4  4  4  4  
+4  3  2  1  0  4  3  2  1  5  4  3  2  2  5  4  3  3  6  5  4  4  4  
+1  1  2  3  4  0  1  2  3  1  1  2  3  4  2  2  3  4  3  3  3  4  5  
+2  1  1  2  3  1  0  1  2  2  1  1  2  3  2  2  2  3  3  3  3  3  4  
+3  2  1  1  2  2  1  0  1  3  2  1  1  2  3  2  2  2  4  3  3  3  3  
+4  3  2  1  1  3  2  1  0  4  3  2  1  1  4  3  2  2  5  4  3  3  3  
+2  2  3  4  5  1  2  3  4  0  1  2  3  4  1  2  3  4  2  2  3  4  5  
+2  2  2  3  4  1  1  2  3  1  0  1  2  3  1  1  2  3  2  2  2  3  4  
+3  2  2  2  3  2  1  1  2  2  1  0  1  2  2  1  1  2  3  2  2  2  3  
+4  3  2  2  2  3  2  1  1  3  2  1  0  1  3  2  1  1  4  3  2  2  2  
+5  4  3  2  2  4  3  2  1  4  3  2  1  0  4  3  2  1  5  4  3  2  2  
+3  3  3  4  5  2  2  3  4  1  1  2  3  4  0  1  2  3  1  1  2  3  4  
+3  3  3  3  4  2  2  2  3  2  1  1  2  3  1  0  1  2  2  1  1  2  3  
+4  3  3  3  3  3  2  2  2  3  2  1  1  2  2  1  0  1  3  2  1  1  2  
+5  4  3  3  3  4  3  2  2  4  3  2  1  1  3  2  1  0  4  3  2  1  1  
+4  4  4  5  6  3  3  4  5  2  2  3  4  5  1  2  3  4  0  1  2  3  4  
+4  4  4  4  5  3  3  3  4  2  2  2  3  4  1  1  2  3  1  0  1  2  3  
+4  4  4  4  4  3  3  3  3  3  2  2  2  3  2  1  1  2  2  1  0  1  2  
+5  4  4  4  4  4  3  3  3  4  3  2  2  2  3  2  1  1  3  2  1  0  1  
+6  5  4  4  4  5  4  3  3  5  4  3  2  2  4  3  2  1  4  3  2  1  0  
+Labeling L(d_1, d_2, ..., d_s) max_d=3
+3  2  
+ Set Model d: 3 2 
+ Set Model constraints:  Set Model finished: Tried aggregator 1 time.
+MIP Presolve eliminated 24 rows and 1 columns.
+Reduced MIP has 269 rows, 147 columns, and 784 nonzeros.
+Reduced MIP has 123 binaries, 24 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        3.0000   123                      3.0000      123         
+      0     0        3.0000   128                   Cuts: 115      204         
+      0     0        3.0000   108                    Cuts: 50      254         
+      0     0        3.0000   130                   Cuts: 103      332         
+*     0+    0                           26.0000        3.0000      332   88.46%
+      0     2        3.0000   114       26.0000        3.0000      332   88.46%
+Elapsed time =   0.08 sec. (tree size =  0.01 MB, solutions = 1)
+*   293   284      integral     0       23.0000        3.0000     3231   86.96%
+*   297   285      integral     0       22.0000        3.0000     3242   86.36%
+*   371   355      integral     0       21.0000        3.0000     3699   85.71%
+*   375   355      integral     0       20.0000        3.0000     3730   85.00%
+*   568   519      integral     0       19.0000        3.0000     5168   84.21%
+*   613   522      integral     0       18.0000        3.0000     5373   83.33%
+*   989+  792                           17.0000        3.0870     8238   81.84%
+   2371  1667       12.0000    25       17.0000        5.0000    17817   70.59%
+   2507  1756        5.0000    64       17.0000        5.0000    19714   70.59%
+*  3911  1307      integral     0       16.0000        7.0000    27912   56.25%
+  20076  6450       13.0000    23       16.0000       11.0000   127197   31.25%
+Elapsed time =   4.51 sec. (tree size =  1.63 MB, solutions = 11)
+  41424  8760       14.1053    24       16.0000       12.0000   250677   25.00%
+  66963  5696       14.0000    17       16.0000       13.0000   379164   18.75%
+  91112  1201       15.0000    14       16.0000       15.0000   492366    6.25%
+ 110787   248       15.0000    14       16.0000       15.0000   595818    6.25%
+
+Implied bound cuts applied:  234
+Flow cuts applied:  9
+Mixed integer rounding cuts applied:  77
+Zero-half cuts applied:  27
+Gomory fractional cuts applied:  37
+
+Root node processing (before b&c):
+  Real time             =    0.07
+Parallel b&c, 4 threads:
+  Real time             =   17.85
+  Sync time (average)   =    0.01
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =   17.92 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 17.92
+Solution value  = 16
+c(0)=0 c(1)=6 c(2)=2 c(3)=8 c(4)=0 c(5)=9 c(6)=14 c(7)=11 c(8)=16 c(9)=12 c(10)=4 c(11)=0 c(12)=6 c(13)=2 c(14)=7 c(15)=16 c(16)=9 c(17)=14 c(18)=14 c(19)=2 c(20)=12 c(21)=4 c(22)=0 
+17.92user 0.14system 0:05.77elapsed 313%CPU (0avgtext+0avgdata 55464maxresident)k
+0inputs+11024outputs (0major+14253minor)pagefaults 0swaps

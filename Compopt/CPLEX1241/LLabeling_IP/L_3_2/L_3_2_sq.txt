@@ -1,0 +1,85 @@
+Start with the file ../data/square_lattice_d2.dat
+
+Graph (V,E) with |V|= 25
+Distance matrix: 
+0  1  2  3  4  1  2  3  4  5  2  3  4  5  6  3  4  5  6  7  4  5  6  7  8  
+1  0  1  2  3  2  1  2  3  4  3  2  3  4  5  4  3  4  5  6  5  4  5  6  7  
+2  1  0  1  2  3  2  1  2  3  4  3  2  3  4  5  4  3  4  5  6  5  4  5  6  
+3  2  1  0  1  4  3  2  1  2  5  4  3  2  3  6  5  4  3  4  7  6  5  4  5  
+4  3  2  1  0  5  4  3  2  1  6  5  4  3  2  7  6  5  4  3  8  7  6  5  4  
+1  2  3  4  5  0  1  2  3  4  1  2  3  2  5  2  3  4  5  6  3  4  5  6  5  
+2  1  2  3  4  1  0  1  2  3  2  1  2  3  4  3  2  3  4  5  4  3  4  5  6  
+3  2  1  2  3  2  1  0  1  2  3  2  1  2  3  4  3  2  3  4  5  4  3  4  5  
+4  3  2  1  2  3  2  1  0  1  4  3  2  1  2  5  4  3  2  3  6  5  4  3  4  
+5  4  3  2  1  4  3  2  1  0  5  4  3  2  1  6  5  4  3  2  7  6  5  4  3  
+2  3  4  5  6  1  2  3  4  5  0  1  2  3  4  1  2  3  4  5  2  3  4  5  4  
+3  2  3  4  5  2  1  2  3  4  1  0  1  2  3  2  1  2  3  4  3  2  3  4  5  
+4  3  2  3  4  3  2  1  2  3  2  1  0  1  2  3  2  1  2  3  4  3  2  3  4  
+5  4  3  2  3  2  3  2  1  2  3  2  1  0  1  4  3  2  1  2  5  4  3  2  3  
+6  5  4  3  2  5  4  3  2  1  4  3  2  1  0  5  4  3  2  1  6  5  4  3  2  
+3  4  5  6  7  2  3  4  5  6  1  2  3  4  5  0  1  2  3  4  1  2  3  4  3  
+4  3  4  5  6  3  2  3  4  5  2  1  2  3  4  1  0  1  2  3  2  1  2  3  4  
+5  4  3  4  5  4  3  2  3  4  3  2  1  2  3  2  1  0  1  2  3  2  1  2  3  
+6  5  4  3  4  5  4  3  2  3  4  3  2  1  2  3  2  1  0  1  4  3  2  1  2  
+7  6  5  4  3  6  5  4  3  2  5  4  3  2  1  4  3  2  1  0  5  4  3  2  1  
+4  5  6  7  8  3  4  5  6  7  2  3  4  5  6  1  2  3  4  5  0  1  2  3  2  
+5  4  5  6  7  4  3  4  5  6  3  2  3  4  5  2  1  2  3  4  1  0  1  2  3  
+6  5  4  5  6  5  4  3  4  5  4  3  2  3  4  3  2  1  2  3  2  1  0  1  2  
+7  6  5  4  5  6  5  4  3  4  5  4  3  2  3  4  3  2  1  2  3  2  1  0  1  
+8  7  6  5  4  5  6  5  4  3  4  5  4  3  2  3  4  3  2  1  2  3  2  1  0  
+Labeling L(d_1, d_2, ..., d_s) max_d=3
+3  2  
+ Set Model d: 3 2 
+ Set Model constraints:  Set Model finished: Tried aggregator 1 time.
+MIP Presolve eliminated 26 rows and 1 columns.
+Reduced MIP has 233 rows, 130 columns, and 674 nonzeros.
+Reduced MIP has 104 binaries, 26 generals, 0 SOSs, and 0 indicators.
+Probing fixed 0 vars, tightened 1 bounds.
+Probing time =    0.00 sec.
+Tried aggregator 1 time.
+Presolve time =    0.00 sec.
+Probing time =    0.00 sec.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 4 threads.
+Root relaxation solution time =    0.00 sec.
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0        3.0000   104                      3.0000      104         
+      0     0        3.0000   120                   Cuts: 113      219         
+      0     0        3.0000    72                    Cuts: 20      245         
+      0     0        3.0000   115                    Cuts: 52      325         
+*     0+    0                           21.0000        3.0000      325   85.71%
+      0     2        3.0000    76       21.0000        3.0000      325   85.71%
+Elapsed time =   0.05 sec. (tree size =  0.01 MB, solutions = 1)
+*   187   185      integral     0       17.0000        3.0000     1756   82.35%
+*   191   186      integral     0       16.0000        3.0000     1780   81.25%
+*   355   324      integral     0       15.0000        3.0000     2974   80.00%
+*   623   524      integral     0       14.0000        3.0000     4350   78.57%
+*   663   533      integral     0       13.0000        3.0000     4638   76.92%
+*   914   641      integral     0       12.0000        5.0000     5876   58.33%
+*  2908   687      integral     0       11.0000        5.0533    18254   54.06%
+   7554   878        8.0000    23       11.0000        8.0000    51606   27.27%
+
+Implied bound cuts applied:  193
+Flow cuts applied:  9
+Mixed integer rounding cuts applied:  48
+Zero-half cuts applied:  11
+Gomory fractional cuts applied:  47
+
+Root node processing (before b&c):
+  Real time             =    0.05
+Parallel b&c, 4 threads:
+  Real time             =    2.19
+  Sync time (average)   =    0.00
+  Wait time (average)   =    0.00
+                          -------
+Total (root+branch&cut) =    2.24 sec.
+Solution status = Optimal
+Solution time with cplex.getCplexTime()  = 2.24
+Solution value  = 11
+c(0)=11 c(1)=2 c(2)=8 c(3)=0 c(4)=5 c(5)=0 c(6)=5 c(7)=11 c(8)=3 c(9)=8 c(10)=3 c(11)=8 c(12)=0 c(13)=6 c(14)=11 c(15)=6 c(16)=11 c(17)=4 c(18)=9 c(19)=2 c(20)=9 c(21)=2 c(22)=7 c(23)=0 c(24)=5 
+2.24user 0.08system 0:03.16elapsed 73%CPU (0avgtext+0avgdata 41876maxresident)k
+41560inputs+10984outputs (2major+10740minor)pagefaults 0swaps
