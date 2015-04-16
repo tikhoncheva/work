@@ -13,6 +13,8 @@ int unsigned constant::longITime = 25;  // 25 min
 int unsigned constant::P = 3;           // 3 periods
 int unsigned constant::nweeks = 16;     // each period contains 16 weeks
 
+unsigned int constant::nInterviewers = 10;
+
 int main(int argc, char *argv[])
 {
     srand(time(0));

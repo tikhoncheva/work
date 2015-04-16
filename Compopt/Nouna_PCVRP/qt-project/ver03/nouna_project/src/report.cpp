@@ -2,9 +2,8 @@
 
 
 //-----------------------------------------------------------------------------------------------
-/*
- * for each hh print on which day it will be visited and what interview time is required
- */
+// for each hh print into file on which day it will be visited and what interview time is required
+//-----------------------------------------------------------------------------------------------
 void saveHH_ITPlan_d(const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan,
                      const std::string fileName)
 {
@@ -58,6 +57,10 @@ void saveHH_ITPlan_d(const std::vector<std::vector<std::pair<unsigned int, doubl
 
 }
 
+//-----------------------------------------------------------------------------------------------
+// for each hh print into file on which week it will be visited and what interview time is required
+//-----------------------------------------------------------------------------------------------
+
 void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, double> > > _hhITimePlan,
                       const std::string fileName)
 {
@@ -110,13 +113,10 @@ void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, doub
 }
 
 //-----------------------------------------------------------------------------------------------
-
-/*
- * for each HH print visiting times in each period,
- *                   days and weeks of visits
- *                   and ID of the interviewers
- */
+// for each HH print visiting times in each period, days and weeks of visits and ID of the interviewers
+//
 // _ITimePlan has a day view
+//-----------------------------------------------------------------------------------------------
 std::set<writeFormat2>  saveHHSchedule_dayview_d(const std::vector<stInterviewer> _interviewer,
                                                  std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan)
 //                    const std::string fileName)
@@ -186,13 +186,17 @@ std::set<writeFormat2>  saveHHSchedule_dayview_d(const std::vector<stInterviewer
     return dataset;
 }
 
+//-----------------------------------------------------------------------------------------------
+// for each HH print visiting times in each period, days and weeks of visits and ID of the interviewers
+//
 // _ITimePlan has a week view
+//-----------------------------------------------------------------------------------------------
 std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer> _interviewer,
                                                  std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan) //                    const std::string fileName)
 {
     std::set<writeFormat2> dataset;
     std::set<writeFormat2> ::iterator it;
-    std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
+//    std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
 
     int itime;
 
@@ -200,7 +204,16 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
     copyITimePlan.resize(_ITimePlan.size());
     for (unsigned int w=0; w<_ITimePlan.size(); ++w)
         for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
+        {
+//            if (_ITimePlan[w][p].first == 19476 - 10001)
+//                std::cout << _ITimePlan[w][p].second << std::endl;
+
             copyITimePlan[w].push_back(std::make_pair(_ITimePlan[w][p].first,_ITimePlan[w][p].second));
+
+            if (_ITimePlan[w][p].first == 19476 - 10001)
+                std::cout << w << std::endl;
+
+        }
 
 
     //    std::ofstream file(fileName.c_str());	// file to open
@@ -212,14 +225,19 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
             for (unsigned int h=0; h<_interviewer[i].routes_days[d].households.size(); ++h)
             {
                 const unsigned hhID = _interviewer[i].routes_days[d].households[h];
+
                 // find planed interview time for current hh on the day d
-
-
+                std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
                 timeplan_it = std::find_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
                                            [hhID] (std::pair<unsigned int, double> weekday)
                                                 {return weekday.first == hhID;});
+
+                if (hhID == 19476 - 10001)
+                    std::cout << (*timeplan_it).first << " " << (*timeplan_it).second << " " << d/5 << std::endl;
+
                 itime = round( (*timeplan_it).second);
-                copyITimePlan[d/5].erase(timeplan_it);
+
+//                copyITimePlan[d/5].erase(timeplan_it);
 
                 writeFormat2 searchEntry;
                 searchEntry.hhID = hhID + 10001;

@@ -12,6 +12,8 @@ public:
 
     static double maxDistDry;
     static double maxDistRain;
+
+    static unsigned int nInterviewers;
 };
 
 #endif // CONST_H

@@ -38,9 +38,8 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> ,
 //------------------------------------------------------------------------------------------------
 
 // Plan interview times of hhs in the year: day |->   hhIDs to visit
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekly(
-                                                        std::vector<stHousehold> , //  sorted households
-                                                        unsigned int ,             // number of interviewers
+std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekly(std::vector<stHousehold> ,
+                                                                                   // number of interviewers
                                                         timeStatistic );           // information about mean values
 
 // Given a year plan of household, assign interviewer to each hh

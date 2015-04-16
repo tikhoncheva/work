@@ -1,6 +1,10 @@
 #include "reportwindow.h"
 #include "ui_reportwindow.h"
 
+/* ------------------------------------------------------------------------------------------------
+ * Initialization
+ * ------------------------------------------------------------------------------------------------
+ */
 reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer> _Interviewer,
                            std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan, bool _planType,
                            std::vector<std::vector<double> >  _distDry,
@@ -12,15 +16,16 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
 
     rw->setupUi(this);
 
-    /*
+    /* -------------------------------------
      * HH Schedule
+     * ------------------------------------
      */
 
     // get report structure
     if (planType == 0) // save
         report_HH_yearplan = saveHHSchedule_dayview_d(Interviewer, ITimePlan); // day time plan is given
     else // save
-        report_HH_yearplan = saveHHSchedule_weekview_d(Interviewer, ITimePlan); // day time plan is given
+        report_HH_yearplan = saveHHSchedule_weekview_d(Interviewer, ITimePlan); // week time plan is given
 
     // fill report table
     rw->twSchedule_hh_itime->setRowCount(report_HH_yearplan.size());
@@ -51,8 +56,9 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
         ++count;
     }
 
-    /*
+    /* -------------------------------
      * Distance matrices
+     * -------------------------------
      */
 
     Header.clear();
@@ -78,8 +84,9 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
     rw->twDistances_Rain->setHorizontalHeaderLabels(Header);
     rw->twDistances_Rain->setVerticalHeaderLabels(Header);
 
-    /*
+    /* ----------------------------
      * Interviewer Schedule
+     * ----------------------------
      */
 
     for (unsigned int i =1; i<Interviewer.size(); ++i)
@@ -124,8 +131,9 @@ reportWindow::~reportWindow()
     delete rw;
 }
 
-/*
+/* ------------------------------------------------------------------------------------------------
  * Save hh schedule
+ * ------------------------------------------------------------------------------------------------
  */
 void reportWindow::on_pbHHSchedule_clicked()
 {
@@ -153,8 +161,9 @@ void reportWindow::on_pbHHSchedule_clicked()
     file.close();
 
 }
-/*
+/* ------------------------------------------------------------------------------------------------
  * Show interviewer s schedules
+ * ------------------------------------------------------------------------------------------------
  */
 
 void reportWindow::on_comboBoxInterviewer_currentIndexChanged(int )
@@ -193,8 +202,9 @@ void reportWindow::show_interviewerSchedule()
     rw->tableWidget_dayplans->clearContents();
 }
 
-/*
+/* ------------------------------------------------------------------------------------------------
  * Show week schedule by selecting the week
+ * ------------------------------------------------------------------------------------------------
  */
 void reportWindow::interviewerSchedule_weekSelected(int i, int)
 {

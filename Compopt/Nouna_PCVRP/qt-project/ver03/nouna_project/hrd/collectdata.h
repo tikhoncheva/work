@@ -78,7 +78,7 @@ void collectdata_routine(std::vector<stVillage> _villages,
     /*
      *  set number of available interviewers
      */
-    nK = 20;
+    nK = constant::nInterviewers;
     std::cout << "  set number of available interviewers to " << nK << " ...";
     Interviewer.resize(nK);
     std::cout << "finished" << std::endl;
