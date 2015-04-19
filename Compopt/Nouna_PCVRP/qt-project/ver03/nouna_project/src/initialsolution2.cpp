@@ -479,6 +479,10 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
                 if (tmove + 10 <= remaining_time &&
                     remaining_time <= tmove + (ti-10))
                 {
+
+//                    std::cout << "Household " << hhID+10001 << " ti="<< ti << " = " << remaining_time - tmove
+//                              << " + " << ti - (remaining_time - tmove) << std::endl;
+
                     ti_new = remaining_time - tmove;
                     ti -= ti_new;
 
@@ -487,8 +491,14 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
                                                    _hhITimePlan_weekly[w].end(),
                                                    [hhID] (std::pair<unsigned int, double> const& element)
                                                     { return element.first == hhID;});
+                    if (_hhITimePlan_it == _hhITimePlan_weekly[w].end())
+                        std::cout << "Error in createDailyPlansFromWeeklyPlans" << std::endl;
+
                     (*_hhITimePlan_it).second = ti_new;
                     _hhITimePlan_weekly[w].push_back(std::make_pair(hhID, ti));
+
+//                    std::cout << _hhITimePlan_weekly[w].back().first + 10001 << " "
+//                              << _hhITimePlan_weekly[w].back().second << std::endl;
 
                     remaining_time = 0;
                     thome_pred = thome;
@@ -551,21 +561,27 @@ void assignDailyPlansToInterviewers(std::vector<stInterviewer>& _interviewer,
     unsigned int nWeeks = _hhITimePlan_daily.size();
     unsigned int nDPlans;
 
+    for (unsigned int i=0; i<nI; ++i)
+        _interviewer[i].routes_days.resize(nWeeks*5);
+
     for (unsigned int w=0; w<nWeeks; ++w)
     {
         nDPlans = _hhITimePlan_daily[w].size();
 
         // ASSERT: number of groups in each week can not exceed number (#working_days_in_week x # Interviewers)
-        assert(_hhITimePlan_daily[w].size()<=5*nI);  // we have already done this, but anyway
+        assert(nDPlans<=5*nI);  // we have already done this, but anyway
 
         for (unsigned int i=0; i<nDPlans; ++i)
         {
-            _interviewer[i/5].routes_days.push_back(_hhITimePlan_daily[w][i]);
+//            _interviewer[i/5].routes_days.push_back(_hhITimePlan_daily[w][i]);
+
+            _interviewer[i/5].routes_days[5*w + i%5] = _hhITimePlan_daily[w][i];
+
         }
     }
 
-    for (unsigned int i=0; i<nI; ++i)
-        _interviewer[i].routes_days.resize(nWeeks*5);
+//    for (unsigned int i=0; i<nI; ++i)
+//        _interviewer[i].routes_days.resize(nWeeks*5);
 }
 
 /* ------------------------------------------------------------------------------------------------
@@ -749,9 +765,9 @@ void initialsolution2(std::vector<stVillage> _villages,           // villages
 //    std::cout << " ...finished" << std::endl;
 
 
-    std::cout << "Allow to stay over the night in some villages";
-    stay_over_night(_interviewer, _distmatrixDry, _distmatrixRain);
-    std::cout << " ...finished\n" << std::endl;
+//    std::cout << "Allow to stay over the night in some villages";
+//    stay_over_night(_interviewer, _distmatrixDry, _distmatrixRain);
+//    std::cout << " ...finished\n" << std::endl;
 
 
     std::cout << "\n--------------------------Test1-----------------------------------------------\n";

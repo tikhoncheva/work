@@ -201,17 +201,22 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
     int itime;
 
     std::vector<std::vector<std::pair<unsigned int, double> > > copyITimePlan; // copy of _ITimePlan
+
     copyITimePlan.resize(_ITimePlan.size());
     for (unsigned int w=0; w<_ITimePlan.size(); ++w)
         for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
         {
-//            if (_ITimePlan[w][p].first == 19476 - 10001)
-//                std::cout << _ITimePlan[w][p].second << std::endl;
-
             copyITimePlan[w].push_back(std::make_pair(_ITimePlan[w][p].first,_ITimePlan[w][p].second));
+        }
 
-            if (_ITimePlan[w][p].first == 19476 - 10001)
-                std::cout << w << std::endl;
+
+    for (unsigned int w=0; w<_ITimePlan.size(); ++w)
+        for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
+        {
+
+            if (copyITimePlan[w][p].first == 10003 - 10001)
+                std::cout << "week " << w << " " << copyITimePlan[w][p].first + 10001
+                                          << " " << copyITimePlan[w][p].second << std::endl;
 
         }
 
@@ -228,16 +233,33 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
 
                 // find planed interview time for current hh on the day d
                 std::vector<std::pair<unsigned int, double> >::iterator timeplan_it;
+
                 timeplan_it = std::find_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
                                            [hhID] (std::pair<unsigned int, double> weekday)
                                                 {return weekday.first == hhID;});
-
-                if (hhID == 19476 - 10001)
-                    std::cout << (*timeplan_it).first << " " << (*timeplan_it).second << " " << d/5 << std::endl;
-
                 itime = round( (*timeplan_it).second);
+                (*timeplan_it).first = 99999;
 
-//                copyITimePlan[d/5].erase(timeplan_it);
+//                if (hhID == 10003 - 10001)
+//                {
+//                    std::cout << d/5 << " " << hhID+10001 << " vs " << (*timeplan_it).first+10001
+//                                         << " " << (*timeplan_it).second << std::endl;
+//                }
+
+//                timeplan_it = copyITimePlan[d/5].erase(timeplan_it);
+//                std::remove_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
+//                                           [hhID] (std::pair<unsigned int, double> weekday)
+//                                                {return weekday.first == hhID;});
+
+//                timeplan_it = std::find_if(timeplan_it,copyITimePlan[d/5].end(),
+//                                           [hhID] (std::pair<unsigned int, double> weekday)
+//                                                {return weekday.first == hhID;});
+//                if (hhID == 10003 - 10001)
+//                {
+//                    std::cout << d/5 << " " << hhID+10001 << " vs " << (*timeplan_it).first+10001
+//                                         << " " << (*timeplan_it).second << std::endl;
+
+//                }
 
                 writeFormat2 searchEntry;
                 searchEntry.hhID = hhID + 10001;
