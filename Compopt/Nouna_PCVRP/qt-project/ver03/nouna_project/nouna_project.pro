@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     src/initialsolution.cpp \
     src/initialsolution2.cpp \
     src/report.cpp \
-    reportwindow.cpp
+    reportwindow.cpp \
+    src/test.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     hrd/statistic.h \
     hrd/const.h \
     hrd/report.h \
-    reportwindow.h
+    reportwindow.h \
+    hrd/test.h
 
 FORMS    += mainwindow.ui \
     reportwindow.ui

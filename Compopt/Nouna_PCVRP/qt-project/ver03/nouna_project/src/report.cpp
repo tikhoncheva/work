@@ -210,15 +210,15 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
         }
 
 
-    for (unsigned int w=0; w<_ITimePlan.size(); ++w)
-        for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
-        {
+//    for (unsigned int w=0; w<_ITimePlan.size(); ++w)
+//        for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
+//        {
 
-            if (copyITimePlan[w][p].first == 10003 - 10001)
-                std::cout << "week " << w << " " << copyITimePlan[w][p].first + 10001
-                                          << " " << copyITimePlan[w][p].second << std::endl;
+//            if (copyITimePlan[w][p].first == 10003 - 10001)
+//                std::cout << "week " << w << " " << copyITimePlan[w][p].first + 10001
+//                                          << " " << copyITimePlan[w][p].second << std::endl;
 
-        }
+//        }
 
 
     //    std::ofstream file(fileName.c_str());	// file to open

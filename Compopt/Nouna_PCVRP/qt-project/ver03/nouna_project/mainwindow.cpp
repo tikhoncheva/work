@@ -13,6 +13,8 @@
 #include "hrd/initialsolution2.h"
 #include "hrd/report.h"
 
+#include "hrd/test.h"
+
 //----------------
 
 std::string returnFilename (const std::string& str)
@@ -490,7 +492,9 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 //                    TimeInfo,
 //                    hhITimePlan_day);
 
-    initialsolution2(Village,  // villages
+    int success;
+
+    success = initialsolution2(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
@@ -504,9 +508,16 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 //        saveHH_ITPlan (hhITimePlan_day, "../results/hh_itime_plan.txt");
     //saveHHSchedule(Interviewer, hhITimePlan, "../results/hh_schedule_init.txt");
 
-    ui->pushButtonShowRoute->setEnabled(true);
-    ui->comboBoxInterviewer->setEnabled(true);
-    ui->pbShow_report->setEnabled(true);    // show report
+    if (success)
+    {
+        // run tests on the found solution
+        clTest test(Interviewer, hhITimePlan_week);
+        test.run();
+
+        ui->pushButtonShowRoute->setEnabled(true);
+        ui->comboBoxInterviewer->setEnabled(true);
+        ui->pbShow_report->setEnabled(true);    // show report
+     }
 
     std::cout << "Find initial solution ... finished" << std::endl;
 }

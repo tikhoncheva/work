@@ -25,36 +25,56 @@ ForwardIterator find_posmin( ForwardIterator, ForwardIterator);
 std::vector<unsigned int> sort_villages_dist(std::vector<unsigned int> ,    // villages
                                              const std::vector<std::vector<double> > ); // distance
 
+//sort villages according to the angle they do have relative to the capital
+std::vector<unsigned int> sort_villages_angles(std::vector<unsigned int> villageIDs,
+                                               const std::vector<stVillage> villages);
+
 // group households according to villages they belong to
 std::vector<std::vector<unsigned int> > groupHH(std::vector<unsigned int> , //villagesID
                                                 std::vector<unsigned int> ,  //householdsID
                                                 const std::vector<stHousehold>);
+
+// group households according to villages they belong to
+std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> , //villagesID
+                                                std::vector<unsigned int> ,  //householdsID
+                                                const std::vector<stHousehold>,
+                                                std::vector <std::pair<unsigned int, double> >);   // TimePlan_week
 
 // sort Villages (and households) in increasing order of the angle they make with the capital
 std::vector<stHousehold> households_presorting(const std::vector<stVillage> ,
                                                const std::vector<stHousehold> ,
                                                std::vector<std::vector<unsigned int> > );
 
-//------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------//
 
-// Plan interview times of hhs in the year: day |->   hhIDs to visit
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekly(std::vector<stHousehold> ,
-                                                                                   // number of interviewers
-                                                        timeStatistic );           // information about mean values
+// To each household assign a week of visiting and interview time
+// Result : table week vs <hhIDs, itime> (TimePlan_week)
+std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekly
+                                                            (std::vector<stHousehold> , // households
+                                                             timeStatistic );           // information about mean values
 
-// Given a year plan of household, assign interviewer to each hh
-void assignInterviewersToHH(const std::vector<std::vector<std::pair<unsigned int, double> > > , // year plan of itimes
-                            std::vector<stHousehold> ,         // _households
-                            std::vector<stInterviewer>& ,      // interviewer
-                            const std::vector<std::vector<double> >  , // distmatrix
-                            const std::vector<std::vector<double> >  );// distmatrix
+// Create day plans from week plans
+// Result : for each week daily routes (ITimePlan_daily)
+std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int nI, // number of interviews
+                                   std::vector<stHousehold> ,  // _households
+                                   std::vector<std::vector<std::pair<unsigned int, double> > >&, // TimePlan_week
+                                   const std::vector<std::vector<double> > ,  // distmatrix
+                                   const std::vector<std::vector<double> > ); // distmatrix
 
+// Assign created daily plant to available interviewers
+void assignDailyPlansToInterviewers(std::vector<stInterviewer>& ,  // interviewers
+                                    const std::vector<std::vector<stRoute> > ); // ITimePlan_daily
 
-// Make week plans from the given day plans
-void make_week_plans(std::vector<stInterviewer>&);      // interviewer
+// Make week routes for each interviewer by collecting information from daily routes
+void makeWeekRoutes(std::vector<stInterviewer>& );      // interviewers
+
+// allow to stay over a night
+void stay_over_night(std::vector<stInterviewer>& _interviewer,           // interviewers
+                     std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
+                     std::vector<std::vector<double> >  _distmatrixRain); // distmatrix
 
 // Initial Solution
-void initialsolution2(std::vector<stVillage> ,           // villages
+int initialsolution2(std::vector<stVillage> ,           // villages
                      std::vector<stHousehold> ,         // _households
                      std::vector<stInterviewer>& ,      // _interviewer
                      std::vector<std::vector<double> > , // distmatrix
@@ -63,9 +83,4 @@ void initialsolution2(std::vector<stVillage> ,           // villages
                      timeStatistic,
                      std::vector<std::vector<std::pair<unsigned int, double> > > &); // weekly interview plan for hh
 
-void planForADay (unsigned int,                      // day
-                  std::vector<std::pair<int, bool> >& ToVis,
-                  std::vector<std::vector<double> >,       // distmatrix
-                  std::vector<stInterviewer>             // Interviewer
-                  );
 #endif // INITIALSOLUTION2_H

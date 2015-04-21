@@ -91,7 +91,7 @@ std::vector<unsigned int> sort_villages_angles(std::vector<unsigned int> village
  *
  * the hh in the same village are sorted in the descending order of their interview times
  */
-
+/*
 std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villagesID,
                                                  std::vector<unsigned int> householdsID,
                                                  const std::vector<stHousehold> _households,
@@ -141,7 +141,7 @@ std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villa
 
     return _village_household;
 }
-
+*/
 
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
@@ -537,12 +537,11 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
             predV = nextV;
         }   // end build groups
 
+//        std::cout << "Week " << w+1 << " number of groups " << hhITimePlan_daily[w].size()
+//                  << " agains " << nI * 5 << " possible." << std::endl;
+
         // ASSERT: number of groups in each week can not exceed number (#working_days_in_week x # Interviewers)
-        std::cout << "Week " << w+1 << " number of groups " << hhITimePlan_daily[w].size()
-                  << " agains " << nI * 5 << " possible." << std::endl;
-        if (hhITimePlan_daily[w].size()>5*nI)
-            std::cout << "Error in week " << w+1 << " plans: " << hhITimePlan_daily[w].size() << " groups vs 5x"
-                      << nI << " interviewers=" << nI * 5 << std::endl;
+        assert(hhITimePlan_daily[w].size() <= 5*nI);
 
     } // end week w
 
@@ -704,7 +703,7 @@ void stay_over_night(std::vector<stInterviewer>& _interviewer,
  * -------------------------------------------------------------------------------------------------
  * -------------------------------------------------------------------------------------------------
  */
-void initialsolution2(std::vector<stVillage> _villages,           // villages
+int initialsolution2(std::vector<stVillage> _villages,           // villages
                       std::vector<stHousehold> _households,         // _households
                       std::vector<stInterviewer>& _interviewer,      // _interviewer
                       std::vector<std::vector<double> >  _distmatrixDry,  // distmatrix
@@ -765,51 +764,9 @@ void initialsolution2(std::vector<stVillage> _villages,           // villages
 //    std::cout << " ...finished" << std::endl;
 
 
-//    std::cout << "Allow to stay over the night in some villages";
-//    stay_over_night(_interviewer, _distmatrixDry, _distmatrixRain);
-//    std::cout << " ...finished\n" << std::endl;
+    std::cout << "Allow to stay over the night in some villages";
+    stay_over_night(_interviewer, _distmatrixDry, _distmatrixRain);
+    std::cout << " ...finished\n" << std::endl;
 
-
-    std::cout << "\n--------------------------Test1-----------------------------------------------\n";
-    // small test, how much interviewer have extra working hours in a week
-    unsigned int count1 = 0;
-    for (unsigned int k=0; k< _interviewer.size(); ++k)
-    {
-        unsigned int week = 0;
-        while(week<48)
-        {
-            double week_wtime = 0.;
-            for (unsigned int d=week*5; d<(week+1)*5; ++d)
-                week_wtime += _interviewer[k].routes_days[d].time;
-
-            if (week_wtime > 5*8*60)
-            {
-                ++count1;
-//                std::cout << "interviewer " << k + 1 << " has extra hours on the week " << week + 1
-//                          << ": " << 5*8*60 - week_wtime << " min"<< std::endl;
-            }
-            ++week;
-        }
-    }
-    std::cout << "Summary: " << count1 << " interviewers have extra hours in some weeks" << std::endl;
-    std::cout << "------------------------------------------------------------------------------\n";
-
-
-        std::cout << "\n--------------------------Test2-----------------------------------------------\n";
-        // small test, how much interviewer have extra working hours in a day
-        unsigned int count2 = 0;
-        for (unsigned int k=0; k< _interviewer.size(); ++k)
-        {
-            for (unsigned int d=0; d<_interviewer[k].routes_days.size(); ++d )
-                if (_interviewer[k].routes_days[d].time - 8*60. > 0.001)
-                {
-                    ++count2;
-//                    std::cout << "interviewer " << k + 1 << " has extra hours on the day " << d % 5 + 1
-//                              << "(week " << d/5 + 1 << "): "
-//                              << 8*60 - _interviewer[k].routes_days[d].time << " min"<< std::endl;
-
-                }
-        }
-        std::cout << "Summary: " << count2 << " interviewers have extra hours in some days" << std::endl;
-        std::cout << "------------------------------------------------------------------------------\n";
+    return 1;
 }
