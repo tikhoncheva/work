@@ -5,7 +5,7 @@
  * returns position on the minimum positive value in the container
  */
 template <class ForwardIterator>
-ForwardIterator find_posmin( ForwardIterator first, ForwardIterator last )
+ForwardIterator find_positivemin( ForwardIterator first, ForwardIterator last )
 {
     if (first==last)
         return last;
@@ -53,7 +53,7 @@ std::vector<unsigned int> sort_villages_dist(std::vector<unsigned int> villages,
 */
 
 /*
- * sort households in increasing order of the angle they make with the capital
+ * sort villages in increasing order of the angle they make with the capital
  */
 std::vector<unsigned int> sort_villages_angles(std::vector<unsigned int> villageIDs,
                                                const std::vector<stVillage> villages)
@@ -144,20 +144,63 @@ std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villa
 */
 
 // ------------------------------------------------------------------------------------------------
+/*
+ * sort Villages (and households) in increasing order of the angle they make with the capital
+ */
+
+std::vector<stHousehold> households_presorting(const std::vector<stVillage> villages,
+                                                const std::vector<stHousehold> households,
+                                                std::vector<std::vector<unsigned int> > _village_household)
+{
+    unsigned int V = villages.size();
+    const unsigned int Nouna = 142-100-1; // Capital (Nouna)
+    unsigned int vID;
+    // set Nouna to the map center
+    double x0 = villages[Nouna].coord.first;
+    double y0 = villages[Nouna].coord.second;
+
+    std::vector<std::pair<double,int> > angles(V, std::make_pair(0.,0));
+    std::vector<stHousehold> households_sorted;
+    unsigned int hhID;
+
+
+    for (unsigned int i=0; i<V; ++i)
+    {
+        double x = villages[i].coord.first - x0;
+        double y = villages[i].coord.second - y0;
+        angles[i] = std::make_pair(atan2(y,x),i);
+    }
+    std::sort(angles.begin(), angles.end(), []( const std::pair<double, int>& a, const std::pair<double, int>& b)
+                                                { return a.first < b.first;});
+
+    // sort housesholds in the order of villages
+    for (unsigned int i=0; i<V; ++i)    // for each village
+    {
+        vID = angles[i].second;
+        for (unsigned int j=0; j < _village_household[vID].size(); ++j)
+        {
+            hhID = _village_household[vID][j];
+            households_sorted.insert(households_sorted.begin(), households[hhID]);
+        }
+    }
+
+    return households_sorted;
+}
+
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 
 
 /* -------------------------------------------------------------------------------------------------
- * Assign a week of visiting to each hh
- * -------------------------------------------------------------------------------------------------
  * For each week in an year (48 weeks) plan households, that should be visited on that week.
- * As result return table week/hhIDs
+ * -------------------------------------------------------------------------------------------------
+ * Output: table week/hhIDs: row i corresponds to week number i, each entry in the row i constains
+ * a pair : hhID and interview time of this hh on the week i. i=0...47
  *
  * Each week should contain roughly same amount (in min) of long interviews
  * The short interviews should be spread uniformly in the whole year
  */
-std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekly(
+std::vector<std::vector<std::pair<unsigned int, double> > > assign_hh_to_weeks(
         std::vector<stHousehold> _households_sorted, // _households
         timeStatistic _TimeInfo)                     // information about mean values
 {
@@ -245,7 +288,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
                 remainingTime_new[week] = remainingTime[week] - itime;
 
             // find min remaining time over all positive values
-            w = find_posmin(remainingTime_new.begin(), remainingTime_new.end())
+            w = find_positivemin(remainingTime_new.begin(), remainingTime_new.end())
                     - remainingTime_new.begin();
 
             w = std::min(w, constant::nweeks-1); // it can happend that last week in period
@@ -271,7 +314,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
                 remainingTime_new[week] = remainingTime[week] - itime;
 
             // find min remaining time over all positive values
-            w = find_posmin(remainingTime_new.begin(), remainingTime_new.end())
+            w = find_positivemin(remainingTime_new.begin(), remainingTime_new.end())
                     - remainingTime_new.begin();
 
             w = std::min(w, constant::nweeks-1); // it can happend that last week in period
@@ -298,7 +341,7 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
                 remainingTime_new[week] = remainingTime[week] - itime;
 
             // find min remaining time over all positive values
-            w = find_posmin(remainingTime_new.begin(), remainingTime_new.end())
+            w = find_positivemin(remainingTime_new.begin(), remainingTime_new.end())
                     - remainingTime_new.begin();
 
             w = std::min(w, constant::nweeks-1); // it can happend that last week in period
@@ -392,14 +435,15 @@ std::vector<std::vector<std::pair<unsigned int, double> > > planInterviews_weekl
  * -------------------------------------------------------------------------------------------------
  * Create day plans from week plans
  * -------------------------------------------------------------------------------------------------
+ * Output: week vs daily routes on the week
  *
- * Use result from planInterviews_weekly (_hhITimePlan_weekly) and split each week plan into groups,
+ * Use result from assign_hh_to_weeks (_hhITimePlan_weekly) and split each week plan into groups,
  * that represent time plans for one working day. Check, that number of such groups in each week can
  * not exceed number (#working_days_in_week x # Interviewers). Otherwise it is imposible to visit
  * all planed households.
  */
 
-std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int nI, // number of interviews
+std::vector<std::vector<stRoute> > create_daily_routes(unsigned int nI, // number of interviews
                                    std::vector<stHousehold> _households,         // _households
                                    std::vector<std::vector<std::pair<unsigned int, double> > >& _hhITimePlan_weekly,
                                    const std::vector<std::vector<double> >  _distmatrixDry,// distmatrix
@@ -416,14 +460,12 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
     std::vector<unsigned int> route_V; // visited villages
     std::vector<unsigned int> route_Hh;// visited households
 
-    std::vector<std::pair<unsigned int, double> >::iterator _hhITimePlan_it;
-
     std::vector<std::vector<stRoute> > hhITimePlan_daily;
 
     stRoute tmpRoute;
 
     double tmax = 8*60.;            // maximal worktime pro day (in min)
-    double ti, ti_new;              // interview time and first part of interview time, if interview
+    double ti, ti1, ti2;            // interview time and first part of interview time, if interview
                                     // was splitted into two or more day
 
     double thome, thome_pred;       // time to return to Nouna
@@ -432,8 +474,22 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
     double remaining_time;          // remaining day plan
     bool rainingSeason = 0;         // raining Season
 
+    bool it_is_split = false;             // if an interview need to be split in several days
+
 
     hhITimePlan_daily.resize(nWeeks);  // daily plans are grouped accoreding to week they will be visited at
+
+    std::vector<std::vector<std::pair<unsigned int, double> > > copyITimePlan; // copy of _hhITimePlan_weekly
+    std::vector<std::pair<unsigned int, double> >::iterator it;
+
+    copyITimePlan.resize(_hhITimePlan_weekly.size());
+    for (unsigned int w=0; w<_hhITimePlan_weekly.size(); ++w)
+        for (unsigned int p=0; p<_hhITimePlan_weekly[w].size(); ++p )
+        {
+            copyITimePlan[w].push_back(std::make_pair(_hhITimePlan_weekly[w][p].first,
+                                                      _hhITimePlan_weekly[w][p].second));
+        }
+
 
     for (unsigned int w = 0; w<nWeeks; ++w)
 //    unsigned int w=0;
@@ -447,7 +503,12 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
         else rainingSeason = 0;
 
         // hh to visit on the current week
-        hhToVisit = _hhITimePlan_weekly[w];
+        hhToVisit = copyITimePlan[w];
+
+        // sort hh, that should be visited on the week w, in descending order by the interview time
+        std::sort(hhToVisit.begin(), hhToVisit.end(), []( const std::pair<unsigned int, double>& a,
+                                                          const std::pair<unsigned int, double>& b)
+                                                        { return b.second < a.second;});
 
         // build groups
         predV = home;
@@ -458,12 +519,13 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
 
         for (unsigned int i=0; i<hhToVisit.size(); ++i)
         {
+            it_is_split = false;
 
             hhID = hhToVisit[i].first;    // next household to visite
             ti = hhToVisit[i].second;     // Interview time
 
-//            if (hhID == 19476 - 10001)
-//                std::cout << ti << std::endl;
+            if (hhID == 10715 - 10001)
+                std::cout << ti << std::endl;
 
             nextV = _households[hhID].villageID - 101;   // village of the next household
 
@@ -472,7 +534,82 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
             tmove =    rainingSeason *_distmatrixRain[predV][nextV] // time to change village
                   + (1-rainingSeason)*_distmatrixDry[predV][nextV];
 
+//*
+            if (remaining_time < tmove + ti + thome)
+            {
+                // split interview
+                if (tmove + 10 <= remaining_time &&
+                    remaining_time <= tmove + (ti-10))
+                {
+                    it_is_split = true;
+                    ti1 = remaining_time - tmove;
+                    ti2 = ti - ti1;
 
+                    // replace split interview with two new entries in the table with weekly plans
+                    it = std::find_if(copyITimePlan[w].begin(), copyITimePlan[w].end(),
+                                      [hhID] (std::pair<unsigned int, double> const& element)
+                                            { return element.first == hhID;});
+                    if (it == copyITimePlan[w].end())
+                        std::cout << "Error in createDailyPlansFromWeeklyPlans" << std::endl;
+
+                    (*it).first = 999999;
+                    (*it).second = ti1;
+                    copyITimePlan[w].push_back(std::make_pair(hhID, ti2));
+//                    (*it).second = ti2;     // replace entry with new interview time
+
+
+                    hhToVisit.insert(hhToVisit.begin() + i+1, std::make_pair(hhID, ti2));
+
+                    _hhITimePlan_weekly[w][it - copyITimePlan[w].begin()].second = ti1;
+
+//                    if (ti2 <= tmax)    // otherwise we will split interview one more time
+                    _hhITimePlan_weekly[w].push_back(std::make_pair(hhID, ti2));
+
+                    ti = ti1;
+
+                    remaining_time = 0;
+                    thome_pred = thome;
+
+                    route_Hh.push_back(hhID);
+                    if (std::find(route_V.begin(), route_V.end(), nextV) == route_V.end())
+                        route_V.push_back(nextV);
+                }
+
+                    // close current day and start a new one
+                    route_V.push_back(home);
+
+                    tmpRoute.villages = route_V;
+                    tmpRoute.households = route_Hh;
+                    tmpRoute.time = tmax - (remaining_time - thome_pred);
+
+                    // save day route into _hhITimePlan_daily[w]
+                    hhITimePlan_daily[w].push_back(tmpRoute);
+                    tmpRoute.villages.clear();
+                    tmpRoute.households.clear();
+
+                    route_V.erase(route_V.begin(), route_V.end());
+                    route_Hh.erase(route_Hh.begin(), route_Hh.end());
+
+                    remaining_time = tmax;
+                    tmove = thome;
+                    predV = home;
+                    route_V.push_back(home);
+            }
+
+            if (it_is_split) continue;
+
+            // add interview to the current day
+            remaining_time -= (tmove + ti);
+            route_Hh.push_back(hhID);
+            if (std::find(route_V.begin(), route_V.end(), nextV) == route_V.end())
+                route_V.push_back(nextV);
+
+            thome_pred = thome;
+            predV = nextV;
+        }   // end build groups
+
+//*
+/*
             if (remaining_time < tmove + ti + thome)
             {
                 // split interview
@@ -480,8 +617,6 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
                     remaining_time <= tmove + (ti-10))
                 {
 
-//                    std::cout << "Household " << hhID+10001 << " ti="<< ti << " = " << remaining_time - tmove
-//                              << " + " << ti - (remaining_time - tmove) << std::endl;
 
                     ti_new = remaining_time - tmove;
                     ti -= ti_new;
@@ -497,9 +632,6 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
                     (*_hhITimePlan_it).second = ti_new;
                     _hhITimePlan_weekly[w].push_back(std::make_pair(hhID, ti));
 
-//                    std::cout << _hhITimePlan_weekly[w].back().first + 10001 << " "
-//                              << _hhITimePlan_weekly[w].back().second << std::endl;
-
                     remaining_time = 0;
                     thome_pred = thome;
 
@@ -508,7 +640,7 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
                         route_V.push_back(nextV);
                 }
 
-                // and current day and start a new one
+                // close current day and start a new one
                 route_V.push_back(home);
 
                 tmpRoute.villages = route_V;
@@ -536,6 +668,19 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
             thome_pred = thome;
             predV = nextV;
         }   // end build groups
+*/
+        //close current route if opened
+        route_V.push_back(home);
+
+        tmpRoute.villages = route_V;
+        tmpRoute.households = route_Hh;
+        tmpRoute.time = tmax - (remaining_time - thome_pred);
+
+        // save day root into _hhITimePlan_daily[w]
+        hhITimePlan_daily[w].push_back(tmpRoute);
+
+        route_V.erase(route_V.begin(), route_V.end());
+        route_Hh.erase(route_Hh.begin(), route_Hh.end());
 
 //        std::cout << "Week " << w+1 << " number of groups " << hhITimePlan_daily[w].size()
 //                  << " agains " << nI * 5 << " possible." << std::endl;
@@ -553,7 +698,7 @@ std::vector<std::vector<stRoute> > createDailyPlansFromWeeklyPlans(unsigned int 
  * -------------------------------------------------------------------------------------------------
  */
 
-void assignDailyPlansToInterviewers(std::vector<stInterviewer>& _interviewer,
+void assign_dailyRoutes_to_interviewer(std::vector<stInterviewer>& _interviewer,
                                     const std::vector<std::vector<stRoute> > _hhITimePlan_daily)
 {
     unsigned int nI = _interviewer.size();
@@ -573,7 +718,6 @@ void assignDailyPlansToInterviewers(std::vector<stInterviewer>& _interviewer,
         for (unsigned int i=0; i<nDPlans; ++i)
         {
 //            _interviewer[i/5].routes_days.push_back(_hhITimePlan_daily[w][i]);
-
             _interviewer[i/5].routes_days[5*w + i%5] = _hhITimePlan_daily[w][i];
 
         }
@@ -587,7 +731,7 @@ void assignDailyPlansToInterviewers(std::vector<stInterviewer>& _interviewer,
  * Make week routes for each interviewer by collecting information from daily routes
  * ------------------------------------------------------------------------------------------------
  */
-void makeWeekRoutes(std::vector<stInterviewer>& _interviewer)
+void make_weekRoutes(std::vector<stInterviewer>& _interviewer)
 {
     unsigned int nI = _interviewer.size();
     unsigned int nWeeks = constant::P * constant::nweeks;
@@ -738,30 +882,25 @@ int initialsolution2(std::vector<stVillage> _villages,           // villages
 
 
     std::cout << "Define interview times of each hh in each of the three visits and assign weeks of the visits\n";
-    _hhITimePlan_weekly = planInterviews_weekly(_households_sorted, _TimeInfo);
+    _hhITimePlan_weekly = assign_hh_to_weeks(_households_sorted, _TimeInfo);
     std::cout << " ... finished\n" << std::endl;
 
 
     std::cout << "Divide weekly plans from previous step into daily plans";
     std::vector<std::vector<stRoute> > _hhITimePlan_daily;
-   _hhITimePlan_daily = createDailyPlansFromWeeklyPlans(nI, _households,_hhITimePlan_weekly,
+   _hhITimePlan_daily = create_daily_routes(nI, _households,_hhITimePlan_weekly,
                                    _distmatrixDry, _distmatrixRain);
     std::cout << " ... finished\n" << std::endl;
 
 
     std::cout << "Assign daily plans to interviewer";
-    assignDailyPlansToInterviewers(_interviewer, _hhITimePlan_daily);
+    assign_dailyRoutes_to_interviewer(_interviewer, _hhITimePlan_daily);
     std::cout << " ... finished\n" << std::endl;
 
 
     std::cout << "Combine daily routes of each interviewer into week routes";
-    makeWeekRoutes(_interviewer);
+    make_weekRoutes(_interviewer);
     std::cout << " ... finished\n" << std::endl;
-
-
-//    std::cout << "Split too long interviews into several days";
-//    split_longinterviews(_interviewer, _households, _distmatrixDry, _distmatrixRain, _hhITimePlan_weekly);
-//    std::cout << " ...finished" << std::endl;
 
 
     std::cout << "Allow to stay over the night in some villages";

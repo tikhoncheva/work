@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     src/distmatrix.cpp \
     src/plot.cpp \
     src/readdata.cpp \
-    src/initialsolution.cpp \
     src/initialsolution2.cpp \
     src/report.cpp \
     reportwindow.cpp \
@@ -32,7 +31,6 @@ HEADERS  += mainwindow.h \
     hrd/plot.h \
     hrd/readdata.h \
     hrd/village.h \
-    hrd/initialsolution.h \
     hrd/initialsolution2.h \
     hrd/interviewer.h \
     hrd/road.h \

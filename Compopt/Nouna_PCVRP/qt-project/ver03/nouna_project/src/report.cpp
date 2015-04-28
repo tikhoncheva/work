@@ -213,16 +213,15 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
 //    for (unsigned int w=0; w<_ITimePlan.size(); ++w)
 //        for (unsigned int p=0; p<_ITimePlan[w].size(); ++p )
 //        {
-
-//            if (copyITimePlan[w][p].first == 10003 - 10001)
+//            if (copyITimePlan[w][p].first == 11590 - 10001)
 //                std::cout << "week " << w << " " << copyITimePlan[w][p].first + 10001
 //                                          << " " << copyITimePlan[w][p].second << std::endl;
 
 //        }
 
-
-    //    std::ofstream file(fileName.c_str());	// file to open
-    //    assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
+        const std::string fileName = "../results/report_hhSchedule.txt";
+        std::ofstream file(fileName.c_str());	// file to open
+        assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
 
 
     for (unsigned int i=0; i<_interviewer.size(); ++i)
@@ -238,27 +237,12 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
                                            [hhID] (std::pair<unsigned int, double> weekday)
                                                 {return weekday.first == hhID;});
                 itime = round( (*timeplan_it).second);
-                (*timeplan_it).first = 99999;
 
-//                if (hhID == 10003 - 10001)
+//                if (hhID == 11590 - 10001)
 //                {
-//                    std::cout << d/5 << " " << hhID+10001 << " vs " << (*timeplan_it).first+10001
-//                                         << " " << (*timeplan_it).second << std::endl;
-//                }
-
-//                timeplan_it = copyITimePlan[d/5].erase(timeplan_it);
-//                std::remove_if(copyITimePlan[d/5].begin(),copyITimePlan[d/5].end(),
-//                                           [hhID] (std::pair<unsigned int, double> weekday)
-//                                                {return weekday.first == hhID;});
-
-//                timeplan_it = std::find_if(timeplan_it,copyITimePlan[d/5].end(),
-//                                           [hhID] (std::pair<unsigned int, double> weekday)
-//                                                {return weekday.first == hhID;});
-//                if (hhID == 10003 - 10001)
-//                {
-//                    std::cout << d/5 << " " << hhID+10001 << " vs " << (*timeplan_it).first+10001
-//                                         << " " << (*timeplan_it).second << std::endl;
-
+//                    std::cout << hhID+10001 << " vs " << (*timeplan_it).first+10001
+//                                         << " " << (*timeplan_it).second
+//                                         << " day " << d << " week " << d/5 << std::endl;
 //                }
 
                 writeFormat2 searchEntry;
@@ -292,17 +276,19 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
                     dataset.insert( writeEntry);
                 }
 
+                (*timeplan_it).first = 99999;
+
             }
 
-    //    // write set in to the file
-    //    file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
-    //         << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
+        // write set in to the file
+        file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
+             << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
 
-    //    for (it=dataset.begin(); it!=dataset.end(); ++it)
-    //        file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
-    //             << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
+        for (it=dataset.begin(); it!=dataset.end(); ++it)
+            file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
+                 << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
 
-    //    file.close();
+        file.close();
     return dataset;
 }
 

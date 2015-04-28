@@ -4,8 +4,6 @@
 #include "hrd/const.h"
 #include <QApplication>
 
-double constant::maxDistDry = 0.;
-double constant::maxDistRain = 0.;
 
 int unsigned constant::shortITime = 10; // 10 min
 int unsigned constant::longITime = 25;  // 25 min
@@ -24,7 +22,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    w.show();
+    w.showMinimized();
 
 
 

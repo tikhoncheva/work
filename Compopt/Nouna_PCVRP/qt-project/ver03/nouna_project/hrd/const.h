@@ -10,9 +10,6 @@ public:
     static unsigned int P;           // 3 periods
     static unsigned int nweeks;     // each period contains 16 weeks
 
-    static double maxDistDry;
-    static double maxDistRain;
-
     static unsigned int nInterviewers;
 };
 

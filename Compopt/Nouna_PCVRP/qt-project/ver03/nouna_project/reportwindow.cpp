@@ -27,6 +27,8 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
     else // save
         report_HH_yearplan = saveHHSchedule_weekview_d(Interviewer, ITimePlan); // week time plan is given
 
+
+
     // fill report table
     rw->twSchedule_hh_itime->setRowCount(report_HH_yearplan.size());
     rw->twSchedule_hh_itime->setColumnCount(7);

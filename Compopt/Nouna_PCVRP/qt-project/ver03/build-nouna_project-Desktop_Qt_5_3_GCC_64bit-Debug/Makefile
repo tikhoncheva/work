@@ -51,7 +51,6 @@ SOURCES       = ../nouna_project/main.cpp \
 		../nouna_project/src/distmatrix.cpp \
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
-		../nouna_project/src/initialsolution.cpp \
 		../nouna_project/src/initialsolution2.cpp \
 		../nouna_project/src/report.cpp \
 		../nouna_project/reportwindow.cpp \
@@ -64,7 +63,6 @@ OBJECTS       = main.o \
 		distmatrix.o \
 		plot.o \
 		readdata.o \
-		initialsolution.o \
 		initialsolution2.o \
 		report.o \
 		reportwindow.o \
@@ -186,7 +184,6 @@ DIST          = /home/kitty/Software/Qt/5.3/gcc_64/mkspecs/features/spec_pre.prf
 		../nouna_project/src/distmatrix.cpp \
 		../nouna_project/src/plot.cpp \
 		../nouna_project/src/readdata.cpp \
-		../nouna_project/src/initialsolution.cpp \
 		../nouna_project/src/initialsolution2.cpp \
 		../nouna_project/src/report.cpp \
 		../nouna_project/reportwindow.cpp \
@@ -457,7 +454,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/nouna_project1.0.0 || mkdir -p .tmp/nouna_project1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h ../nouna_project/qcustomplot/qcustomplot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution.h ../nouna_project/hrd/initialsolution2.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/collectdata.h ../nouna_project/hrd/statistic.h ../nouna_project/hrd/const.h ../nouna_project/hrd/report.h ../nouna_project/reportwindow.h ../nouna_project/hrd/test.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution.cpp ../nouna_project/src/initialsolution2.cpp ../nouna_project/src/report.cpp ../nouna_project/reportwindow.cpp ../nouna_project/src/test.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui ../nouna_project/reportwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.h ../nouna_project/qcustomplot/qcustomplot.h ../nouna_project/hrd/datadef.h ../nouna_project/hrd/distmatrix.h ../nouna_project/hrd/household.h ../nouna_project/hrd/plot.h ../nouna_project/hrd/readdata.h ../nouna_project/hrd/village.h ../nouna_project/hrd/initialsolution2.h ../nouna_project/hrd/interviewer.h ../nouna_project/hrd/road.h ../nouna_project/hrd/dijkstra.h ../nouna_project/hrd/collectdata.h ../nouna_project/hrd/statistic.h ../nouna_project/hrd/const.h ../nouna_project/hrd/report.h ../nouna_project/reportwindow.h ../nouna_project/hrd/test.h .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/main.cpp ../nouna_project/mainwindow.cpp ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/src/distmatrix.cpp ../nouna_project/src/plot.cpp ../nouna_project/src/readdata.cpp ../nouna_project/src/initialsolution2.cpp ../nouna_project/src/report.cpp ../nouna_project/reportwindow.cpp ../nouna_project/src/test.cpp .tmp/nouna_project1.0.0/ && $(COPY_FILE) --parents ../nouna_project/mainwindow.ui ../nouna_project/reportwindow.ui .tmp/nouna_project1.0.0/ && (cd `dirname .tmp/nouna_project1.0.0` && $(TAR) nouna_project1.0.0.tar nouna_project1.0.0 && $(COMPRESS) nouna_project1.0.0.tar) && $(MOVE) `dirname .tmp/nouna_project1.0.0`/nouna_project1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/nouna_project1.0.0
 
 
 clean:compiler_clean 
@@ -2527,8 +2524,8 @@ mainwindow.o: ../nouna_project/mainwindow.cpp ../nouna_project/mainwindow.h \
 		../nouna_project/hrd/distmatrix.h \
 		../nouna_project/hrd/dijkstra.h \
 		../nouna_project/hrd/plot.h \
-		../nouna_project/hrd/initialsolution.h \
-		../nouna_project/hrd/initialsolution2.h
+		../nouna_project/hrd/initialsolution2.h \
+		../nouna_project/hrd/test.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../nouna_project/mainwindow.cpp
 
 qcustomplot.o: ../nouna_project/qcustomplot/qcustomplot.cpp ../nouna_project/qcustomplot/qcustomplot.h \
@@ -3473,15 +3470,6 @@ readdata.o: ../nouna_project/src/readdata.cpp ../nouna_project/hrd/readdata.h \
 		../nouna_project/hrd/household.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o readdata.o ../nouna_project/src/readdata.cpp
 
-initialsolution.o: ../nouna_project/src/initialsolution.cpp ../nouna_project/hrd/initialsolution.h \
-		../nouna_project/hrd/village.h \
-		../nouna_project/hrd/interviewer.h \
-		../nouna_project/hrd/road.h \
-		../nouna_project/hrd/household.h \
-		../nouna_project/hrd/statistic.h \
-		../nouna_project/hrd/const.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o initialsolution.o ../nouna_project/src/initialsolution.cpp
-
 initialsolution2.o: ../nouna_project/src/initialsolution2.cpp ../nouna_project/hrd/initialsolution2.h \
 		../nouna_project/hrd/village.h \
 		../nouna_project/hrd/interviewer.h \
@@ -3662,7 +3650,8 @@ reportwindow.o: ../nouna_project/reportwindow.cpp ../nouna_project/reportwindow.
 		/home/kitty/Software/Qt/5.3/gcc_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o reportwindow.o ../nouna_project/reportwindow.cpp
 
-test.o: ../nouna_project/src/test.cpp 
+test.o: ../nouna_project/src/test.cpp ../nouna_project/hrd/test.h \
+		../nouna_project/hrd/interviewer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o test.o ../nouna_project/src/test.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

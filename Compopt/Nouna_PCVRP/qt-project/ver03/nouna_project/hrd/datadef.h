@@ -25,7 +25,6 @@ std::vector<stVillage> Village;
 std::vector<stRoad> Road;
 std::vector<stHousehold> Household;
 std::vector<stInterviewer> Interviewer;
-std::vector<stInterviewer> Cleaner;
 
 std::vector<std::vector<uDist> > distmatrix;    // weighted adjacent matrix
 

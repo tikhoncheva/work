@@ -107,24 +107,13 @@ void collectdata_routine(std::vector<stVillage> _villages,
     predecessorsDry.resize(V);    // shortest ways
     predecessorsRain.resize(V);   // between all villages
 
-    constant::maxDistDry = 0.;
-    constant::maxDistRain = 0.;
-    double maxDry = 0., maxRain = 0.;
+
     for (unsigned int i=0; i< V; ++i)
     {
         timematrixDry[i]  = dijkstraAlg(i, distmatrix, 0, predecessorsDry[i]);// rainingseason = 0
         timematrixRain[i] = dijkstraAlg(i, distmatrix, 1, predecessorsRain[i]);// rainingseason = 1
-
-        maxDry = *std::max_element(timematrixDry[i].begin(), timematrixDry[i].end());
-        maxRain = *std::max_element(timematrixRain[i].begin(), timematrixRain[i].end());
-
-        if (maxDry > constant::maxDistDry)
-            constant::maxDistDry = maxDry;
-        if (maxRain > constant::maxDistRain)
-            constant::maxDistRain = maxRain;
     }
-    std::cout << "finished. Maximal travel time " << constant::maxDistDry << " ("
-                                                  << constant::maxDistRain << " raining season)" << std::endl;
+
 
 //    std::cout << "Distances from the Nouna in not raining season" << std::endl;
 //    for (unsigned int i=0; i<timematrixDry[41].size(); ++i)

@@ -9,7 +9,6 @@
 //#include "hrd/distmatrix.h"
 //#include "hrd/dijkstra.h"
 
-#include "hrd/initialsolution.h"
 #include "hrd/initialsolution2.h"
 #include "hrd/report.h"
 
@@ -88,9 +87,42 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    // clear Villages
+    Village.clear();
+    std::vector<stVillage> Village2;
+    Village.swap(Village2);
+
+    // clear Roads
+    Road.clear();
+    std::vector<stVillage> Road2;
+    Village.swap(Road2);
+
+
+    // clear Household
+    Household.clear();
+    std::vector<stVillage> Household2;
+    Village.swap(Household2);
+
+
+    // clear Interviewer
+    Interviewer.clear();
+    std::vector<stVillage> Interviewer2;
+    Village.swap(Interviewer2);
+
+    for (unsigned int i=0; i< distmatrix.size(); ++i)
+    {
+        std::vector<uDist> dist_tmp;
+        distmatrix[i].clear();
+        distmatrix[i].swap(dist_tmp);
+    }
+
+
+
     delete ui;
 }
+
 //---------------------------------------------------------------------------------------------------
+
 
 /*
  * Read data from files
@@ -511,7 +543,7 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     if (success)
     {
         // run tests on the found solution
-        clTest test(Interviewer, hhITimePlan_week);
+        clTest test(Interviewer, Household, hhITimePlan_week);
         test.run();
 
         ui->pushButtonShowRoute->setEnabled(true);
@@ -535,5 +567,5 @@ void MainWindow::showReportWindow()
     // 0  hhITimePlan_day  day view
     // 1  hhITimePlan week week view
     reportWindow *rw = new reportWindow(this, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
-    rw->show();
+    rw->showMinimized();
 }

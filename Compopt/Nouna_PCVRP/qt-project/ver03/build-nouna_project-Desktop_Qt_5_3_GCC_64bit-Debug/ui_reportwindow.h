@@ -59,6 +59,7 @@ public:
         if (reportWindow->objectName().isEmpty())
             reportWindow->setObjectName(QStringLiteral("reportWindow"));
         reportWindow->resize(732, 550);
+        reportWindow->setFocusPolicy(Qt::ClickFocus);
         centralwidget = new QWidget(reportWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_4 = new QGridLayout(centralwidget);

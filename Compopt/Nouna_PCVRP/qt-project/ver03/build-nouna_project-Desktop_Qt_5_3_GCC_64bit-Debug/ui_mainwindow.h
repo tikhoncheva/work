@@ -91,6 +91,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
+        MainWindow->setFocusPolicy(Qt::ClickFocus);
         actionVillages = new QAction(MainWindow);
         actionVillages->setObjectName(QStringLiteral("actionVillages"));
         centralWidget = new QWidget(MainWindow);
