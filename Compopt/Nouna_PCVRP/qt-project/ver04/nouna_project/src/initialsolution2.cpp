@@ -1,5 +1,6 @@
 #include "hrd/initialsolution2.h"
 
+namespace approach2 {
 
 /*
  * returns position on the minimum positive value in the container
@@ -179,7 +180,7 @@ std::vector<std::vector<unsigned int> > groupHH2(std::vector<unsigned int> villa
 /*
  * sort Villages (and households) in increasing order of the angle they make with the capital
  */
-/*
+
 std::vector<stHousehold> households_presorting(const std::vector<stVillage> villages,
                                                 const std::vector<stHousehold> households,
                                                 std::vector<std::vector<unsigned int> > _village_household)
@@ -218,7 +219,7 @@ std::vector<stHousehold> households_presorting(const std::vector<stVillage> vill
 
     return households_sorted;
 }
-*/
+
 //------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
@@ -1072,7 +1073,7 @@ void make_day_plans2 (stInterviewer& interviewer,
 
 }
 
-/*
+
 // allow interviewer to stay over the night, if the next day begins in the same village
 // at the end of the week all interviewer should come at Nouna
 void stay_over_night(std::vector<stInterviewer>& _interviewer,
@@ -1126,7 +1127,7 @@ void stay_over_night(std::vector<stInterviewer>& _interviewer,
         }   // end week
     } // end _interviewer[k]
 }
-*/
+
 
 /*
  *  split too long interviews
@@ -1743,3 +1744,5 @@ int initialsolution2(std::vector<stVillage> _villages,           // villages
 
     return 1;
 }
+
+} //end namespace approach2

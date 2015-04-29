@@ -1,5 +1,6 @@
 #include "hrd/initialsolution1.h"
 
+namespace approach1 {
 
 /*
  * returns position on the minimum positive value in the container
@@ -910,3 +911,5 @@ int initialsolution1(std::vector<stVillage> _villages,           // villages
 
     return 1;
 }
+
+} // end namespace1

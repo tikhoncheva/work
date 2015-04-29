@@ -519,9 +519,19 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 
 
     int success;
-/*
+
     // first approach
-    success = initialsolution1(Village,  // villages
+    success = approach1::initialsolution1(Village,  // villages
+                                          Household,               // households
+                                          Interviewer,             // Interviewer
+                                          timematrixDry,           // time matrix dry
+                                          timematrixRain,           // time matrix rain
+                                          village_households,
+                                          hhITimePlan_week);
+
+/*
+    // second approach
+    success = approach2::initialsolution2(Village,  // villages
                     Household,               // households
                     Interviewer,             // Interviewer
                     timematrixDry,           // time matrix dry
@@ -529,16 +539,6 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
                     village_households,
                     hhITimePlan_week);
 */
-///*
-    // second approach
-    success = initialsolution2(Village,  // villages
-                    Household,               // households
-                    Interviewer,             // Interviewer
-                    timematrixDry,           // time matrix dry
-                    timematrixRain,           // time matrix rain
-                    village_households,
-                    hhITimePlan_week);
-//*/
 
     if (success)
     {
