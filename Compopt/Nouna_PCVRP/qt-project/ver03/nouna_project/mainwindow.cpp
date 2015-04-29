@@ -544,7 +544,11 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
     {
         // run tests on the found solution
         clTest test(Interviewer, Household, hhITimePlan_week);
-        test.run();
+        std::string test_report = test.run();
+
+        testWindow *tw = new testWindow(this, test_report);
+        tw->showMinimized();
+
 
         ui->pushButtonShowRoute->setEnabled(true);
         ui->comboBoxInterviewer->setEnabled(true);

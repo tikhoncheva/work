@@ -10,6 +10,7 @@
 #include <sstream>
 
 #include "reportwindow.h"
+#include "testwindow.h"
 #include "qcustomplot/qcustomplot.h"
 //---------------------
 

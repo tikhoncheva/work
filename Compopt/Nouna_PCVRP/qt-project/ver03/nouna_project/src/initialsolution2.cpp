@@ -524,8 +524,8 @@ std::vector<std::vector<stRoute> > create_daily_routes(unsigned int nI, // numbe
             hhID = hhToVisit[i].first;    // next household to visite
             ti = hhToVisit[i].second;     // Interview time
 
-            if (hhID == 10715 - 10001)
-                std::cout << ti << std::endl;
+//            if (hhID == 10715 - 10001)
+//                std::cout << ti << std::endl;
 
             nextV = _households[hhID].villageID - 101;   // village of the next household
 

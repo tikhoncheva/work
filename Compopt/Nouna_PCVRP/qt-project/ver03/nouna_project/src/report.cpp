@@ -219,9 +219,9 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
 
 //        }
 
-        const std::string fileName = "../results/report_hhSchedule.txt";
-        std::ofstream file(fileName.c_str());	// file to open
-        assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
+//        const std::string fileName = "../results/report_hhSchedule.txt";
+//        std::ofstream file(fileName.c_str());	// file to open
+//        assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
 
 
     for (unsigned int i=0; i<_interviewer.size(); ++i)
@@ -280,15 +280,15 @@ std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer
 
             }
 
-        // write set in to the file
-        file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
-             << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
+//        // write set in to the file
+//        file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
+//             << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
 
-        for (it=dataset.begin(); it!=dataset.end(); ++it)
-            file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
-                 << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
+//        for (it=dataset.begin(); it!=dataset.end(); ++it)
+//            file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
+//                 << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
 
-        file.close();
+//        file.close();
     return dataset;
 }
 

@@ -1,6 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -19,15 +20,16 @@ private:
 //    const std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan_daily;
 
 
-    int test1();
-    int test2();
-    int test3();
+    int test1(std::stringstream& ss);
+    int test2(std::stringstream& ss);
+    int test3(std::stringstream& ss);
+    int test4(std::stringstream& ss);
 
 public:
     clTest(const std::vector<stInterviewer>&, const std::vector<stHousehold>& ,
            const std::vector<std::vector<std::pair<unsigned int, double> > >& );
 
-    void run();
+    std::string run();
 
 };
 

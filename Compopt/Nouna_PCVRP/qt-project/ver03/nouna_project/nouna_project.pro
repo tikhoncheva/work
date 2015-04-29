@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     src/initialsolution2.cpp \
     src/report.cpp \
     reportwindow.cpp \
-    src/test.cpp
+    src/test.cpp \
+    testwindow.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -40,9 +41,11 @@ HEADERS  += mainwindow.h \
     hrd/const.h \
     hrd/report.h \
     reportwindow.h \
-    hrd/test.h
+    hrd/test.h \
+    testwindow.h
 
 FORMS    += mainwindow.ui \
-    reportwindow.ui
+    reportwindow.ui \
+    testwindow.ui
 
 CONFIG += c++11

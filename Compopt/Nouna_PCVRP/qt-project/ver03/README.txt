@@ -92,3 +92,14 @@ Ver02.01
     + round entries of the dist matrices to integer numbers. That means, that we consider minutes as a smallest time entity
     + test-class to test, if the different constrains on the model are satisfied or not.
     
+ --------------------------------------------------------------------------------------------------------------------
+       
+ Ver04
+ 
+     see README for version 4.
+     
+     !!!!!!!!!
+     Important
+	initialsolution2.h/cpp (ver3)    ----> initialsolution.h/cpp (ver4) 
+	initialsolution2.h/cpp (ver2.02) ----> initialsolution2.h/cpp (ver4) 
+    
