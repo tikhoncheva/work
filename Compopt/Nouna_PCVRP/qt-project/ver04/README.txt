@@ -53,11 +53,16 @@ road.h
 readdate.h
   Implementation of three functions for reading input data (list of villages,
   list of households, list of roads) for the problem from corresponding csv-files. 
- 
+
+datadef.h
+  declaration of the global data structures of the input/output data
+  
 dijkstra.h
   Implementation of the Dijkstra algorithm to compute distances between one
   village and all other villages
- 
+
+distmatrix.h
+  
   
 collectdata.h	
   A routine, that calculate distance matrices between villages in km and
@@ -65,6 +70,21 @@ collectdata.h
   It also sets the constants for the problem, such that maximal number of available
   interviewers, time for short and long interviewers.
   
+const.h
+  declaration of the class constant with the static member variables for
+    short and long interview time
+    number of periods in year and number of weeks in each period
+    maximal number of available interviewers
+    number of short interviews and long interviews (depends on input data)
+    summary time of all long Interviews (depends on input data)
+    maximal traveling time between villages in dry and raining season (depends on input data)
+    
+plot.h
+  declaration of the plotting functions for map and routes
+  
+report.h
+
+test.h
   
 
 
