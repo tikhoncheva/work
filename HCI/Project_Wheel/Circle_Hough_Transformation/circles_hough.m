@@ -1,61 +1,69 @@
-function [ circles ] = circles_hough( img, Rrange )
+function [ circles ] = circles_hough( img, cyRange, cxRange, rRange )
+
+tic
+
 % size of the image:
 [m,n] = size(img);
-
-Rmin = Rrange(1);
-Rmax = Rrange(2);
-
-% % quantization of theta = [-90, 90]:
-% dtheta = 1;
-
-[imgGrad, imgDir] = imgradient(img, 'prewitt');
-
 [I, J] = find(img); % find x,y of edge pixels
 
-% initialise voting matrix H with zeros
-% cy_width = (m+Rmax) - m;
-% cx_width = n;    % [-n/2; n/2)
-% H = zeros (cy_width, cx_width, Rmax - Rmin);
+r_min = rRange(1);
+r_max = rRange(2);
 
-H = zeros (m, n, Rmax - Rmin + 1);
+cx_min = cxRange(1);
+cx_max = cxRange(2);
+
+cy_min = cyRange(1);
+cy_max = cyRange(2);
+
+H = zeros (cy_max-cy_min+1, cx_max-cx_min+1, r_max - r_min + 1);
 
 % for edge point of the image img
 
+    
 for k=1:numel(I)
    i = I(k);        % y-axis
    j = J(k);        % x-axis
    
-   theta = imgDir(i,j);
-   
-   for r=Rmin:Rmax
-%        for theta = -90:90
-           cx = round(j - r*cos(theta*pi/180));
-           cy = round(i + r*sin(theta*pi/180));
+   for r=r_min:r_max
+       r2 = r^2;
+       xl = max(cx_min,j-r);
+       xr = min(cx_max,j+r);
        
-    %        if (cy>=m && cy<=m+Rmax) && (cx>= -n/2 && cy<n/2)
-    %           H(cy,cx,r-Rmin) = H(cx,cy,r-Rmin) + 1;
-    %        end
-           if (cy>0 && cy<=m) && (cx> 0 && cx<=n)
-              H(cy,cx,r-Rmin + 1) = H(cy,cx,r-Rmin+1) + 1;
-           end        
-%        end
+       for xi=xl:xr
+          
+           tmp = round(sqrt(r2-(xi-j)^2)); 
+           yl =-tmp + i;
+           yu = tmp + i;
+           
+           if (yl>=cy_min && yl<=cy_max)
+               H(yl-cy_min+1, xi-cx_min+1, r-r_min + 1) = H(yl-cy_min+1, xi-cx_min+1, r-r_min+1) + 1;
+           end
+           if (yu>=cy_min && yu<=cy_max)
+               H(yu-cy_min+1, xi-cx_min+1, r-r_min + 1) = H(yu-cy_min+1, xi-cx_min+1, r-r_min+1) + 1;
+           end
+           
+       end
        
    end
 end
 
-threshold = 0.8 * max(H(:));
+threshold = 0.80 * max(H(:));
 
 circles = [];
 % search for picks in the voting matrix
-[mH, nH] = size(H(:, :, 1));
-for r = Rmin:Rmax
-   tmp =  H(:, :, r) - repmat(threshold, [mH, nH]) ;
+for r = r_min:r_max
+   tmp =  H(:, :, r-r_min+1) - threshold;
    [cy,cx] = find(tmp>0);
    
-   circles_local = [[cx,cy], repmat(r, size(cy)) ];
+   cy = cy + repmat(cy_min - 1, size(cy));
+   cx = cx + repmat(cx_min - 1, size(cx));
+   
+   circles_local = [[cy, cx], repmat(r, size(cy)) ];
    circles = [circles; circles_local ];
    
 end
+
+display(sprintf('spent time: %f', toc));
 
 end
 
