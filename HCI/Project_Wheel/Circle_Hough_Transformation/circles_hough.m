@@ -1,10 +1,12 @@
-function [ circles ] = circles_hough( img, cyRange, cxRange, rRange )
+function [ circles ] = circles_hough( img, cyRange, cxRange, rRange, varargin )
 
 tic
 
-% size of the image:
-[m,n] = size(img);
 [I, J] = find(img); % find x,y of edge pixels
+
+% [~, Gdir] = imgradient(img);
+% Gdir = (Gdir + 180) *pi/180;
+
 
 r_min = rRange(1);
 r_max = rRange(2);
@@ -45,23 +47,36 @@ for k=1:numel(I)
        end
        
    end
+   
 end
 
-threshold = 0.80 * max(H(:));
-
-circles = [];
 % search for picks in the voting matrix
+circles = [];
+threshold = 0.7 * max(H(:));
+
 for r = r_min:r_max
-   tmp =  H(:, :, r-r_min+1) - threshold;
+   H_r = H(:, :, r-r_min+1);
+   tmp =  H_r - threshold;
    [cy,cx] = find(tmp>0);
    
    cy = cy + repmat(cy_min - 1, size(cy));
    cx = cx + repmat(cx_min - 1, size(cx));
    
-   circles_local = [[cy, cx], repmat(r, size(cy)) ];
+   ind = sub2ind(size(tmp), cy, cx);
+   
+   circles_local = [[cy, cx], repmat(r, size(cy)) tmp(ind)];
+   
    circles = [circles; circles_local ];
    
 end
+
+if length(varargin)==1
+    ncircles = varargin{1};
+    [~, ind] = sort(circles(:,4));
+    ind = ind(1:min(ncircles, length(ind)) );
+    circles = circles(ind,:);
+end
+
 
 display(sprintf('spent time: %f', toc));
 
