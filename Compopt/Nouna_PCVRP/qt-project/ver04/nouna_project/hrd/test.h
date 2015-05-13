@@ -17,7 +17,6 @@ private:
     const std::vector<stInterviewer> interviewer;
     const std::vector<stHousehold> household;
     const std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan_weekly;
-//    const std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan_daily;
 
 
     int test1(std::stringstream& ss);

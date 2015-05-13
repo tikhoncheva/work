@@ -22,7 +22,7 @@ class reportWindow : public QMainWindow
 public:
     explicit reportWindow(QMainWindow *parent = 0);
     reportWindow(QMainWindow *parent, const std::vector<stInterviewer> ,
-                 std::vector<std::vector<std::pair<unsigned int, double> > > , bool ,
+                 std::vector<std::vector<std::pair<unsigned int, double> > > ,
                  std::vector<std::vector<double> >,
                  std::vector<std::vector<double> > );
     ~reportWindow();
@@ -30,18 +30,16 @@ public:
 private slots:
     void on_pbHHSchedule_clicked();
     void interviewerSchedule_weekSelected(int i, int);
-
     void on_comboBoxInterviewer_currentIndexChanged(int);
 
 private:
     Ui::reportWindow *rw;
     const std::vector<stInterviewer> Interviewer;
     std::vector<std::vector<std::pair<unsigned int, double> > > ITimePlan;
-    bool planType;
     std::vector<std::vector<double> > distDry;
     std::vector<std::vector<double> > distRain;
 
-    std::set<writeFormat2> report_HH_yearplan;
+    std::set<rowEntries> report_HH_yearplan;
 
     void show_interviewerSchedule();
 };

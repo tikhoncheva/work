@@ -15,61 +15,28 @@
 #include <hrd/interviewer.h>
 #include <hrd/household.h>
 
-struct writeFormat1
+
+struct rowEntries
 {
     unsigned int hhID;
-    std::string itime;
-    std::string day;
-
-    writeFormat1(unsigned int _hhID, std::string _itime = "", std::string _day = ""):
-        hhID(_hhID), itime(_itime), day(_day)
-    {  }
-
-    bool operator<(const writeFormat1& a) const
-    {  return hhID < a.hhID; }
-
-    bool operator==(const writeFormat1& a) const
-    {
-        return hhID == a.hhID;
-    }
-};
-
-//
-struct writeFormat2
-{
-    unsigned int hhID;
-//    std::string period1;
-//    std::string period2;
-//    std::string period3;
 
     std::string itime;
     std::string day;
     std::string Interviewer;
 
-    bool operator<(const writeFormat2& a) const
+    bool operator<(const rowEntries& a) const
     {  return hhID < a.hhID; }
 
-    bool operator==(const writeFormat2& a) const
+    bool operator==(const rowEntries& a) const
     {
         return hhID == a.hhID;
     }
 };
 
-// save itime schedule
-void saveHH_ITPlan_d (const std::vector<std::vector<std::pair<unsigned int, double> > >,
-                    const std::string);
-void saveHH_ITPlan_w (const std::vector<std::vector<std::pair<unsigned int, double> > >,
-                    const std::string);
-// save initial scheduling of households
-std::set<writeFormat2> saveHHSchedule_dayview_d(const std::vector<stInterviewer>,
-                                      std::vector<std::vector<std::pair<unsigned int, double> > >);
-                                      //const std::string);
 
-std::set<writeFormat2> saveHHSchedule_weekview_d(const std::vector<stInterviewer>,
+std::set<rowEntries> HHSchedule_weekview_forTable(const std::vector<stInterviewer>,
                                       std::vector<std::vector<std::pair<unsigned int, double> > >);
-                                      //const std::string);
 
-std::set<writeFormat2> saveHHSchedule2_w(const std::vector<stInterviewer>,
-                                      std::vector<std::vector<std::pair<unsigned int, double> > >,
-                                      const std::string);
+void  saveHHSchedule_weekview(const std::set<rowEntries> HHSchedule,
+                              const std::string fileName);
 #endif // REPORT_H

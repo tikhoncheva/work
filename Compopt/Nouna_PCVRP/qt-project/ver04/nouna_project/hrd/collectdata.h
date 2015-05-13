@@ -2,8 +2,7 @@
 #define COLLECTDATA_H
 
 #include <hrd/datadef.h>
-#include <hrd/distmatrix.h> // adjazent matrix with distances
-#include <hrd/dijkstra.h>  // shortes ways between villages
+#include <hrd/distmatrix.h>
 #include <hrd/const.h>
 
 #include <utility>      // std::pair
@@ -89,21 +88,15 @@ void collectdata_routine(std::vector<stVillage> _villages,
     /*
      *  compute adjazent matrix with distances
      */
-    std::cout << "  compute adjazent matrix with distances ...";
-    distmatrix = compute_distmatrix(_villages, _roads);
+    std::cout << "  compute weighted adjacency matrix ...";
+    distmatrix = w_adj_matrix(_villages, _roads);
     std::cout << "finished" << std::endl;
 
     /*
      *  shortes ways between villages
      */
     std::cout << "  compute shortes ways between villages ...";
-    /*
-     * // using dijkstra.h
-    timematrixDry = dijkstraAlg(distmatrix, Road,0);// rainingseason = 0
-    timematrixRain = dijkstraAlg(distmatrix, Road,1);// rainingseason = 1
-    */
 
-    // using dijkstra2.h
     timematrixDry.resize(V);
     timematrixRain.resize(V);
 

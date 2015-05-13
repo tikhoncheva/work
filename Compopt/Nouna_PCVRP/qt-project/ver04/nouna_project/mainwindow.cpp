@@ -113,7 +113,7 @@ MainWindow::~MainWindow()
 
     for (unsigned int i=0; i< distmatrix.size(); ++i)
     {
-        std::vector<uDist> dist_tmp;
+        std::vector<adjmatrix_entry> dist_tmp;
         distmatrix[i].clear();
         distmatrix[i].swap(dist_tmp);
     }
@@ -377,15 +377,6 @@ void MainWindow::weekSelected(int i, int)
 
     ui->widget->clearItems();
 
-//    std::cout << "Week route: " << std::endl;
-//    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].villages.size(); ++i)
-//         std::cout << Interviewer[k-1].routes_weeks[week-1].villages[i] + 101  << " " ;
-//    std::cout << std::endl << std::endl;
-
-//    std::cout << "Households: " << std::endl;
-//    for (unsigned int i = 0; i< Interviewer[k-1].routes_weeks[week-1].households.size(); ++i)
-//         std::cout << Interviewer[k-1].routes_weeks[week-1].households[i] + 10001  << " " ;
-//    std::cout << std::endl << std::endl;
 
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
@@ -409,9 +400,6 @@ void MainWindow::weekSelected(int i, int)
     for (unsigned int d=0; d<5; ++d)
     {
         unsigned int ind = (week-1)*5+d;
-
-//        if (Interviewer[k-1].routes_days[ind].villages.empty())
-//            continue;
 
         // Day
         ui->tableWidget_dayplans->setItem(d, 0, new QTableWidgetItem(QString::number(ind + 1)));
@@ -452,11 +440,6 @@ void MainWindow::daySelected(int i, int)
 
     plot_route_day(ui->widget, Village, Interviewer[k-1], 5*week + day, predecessorsDry);
     plot_villages(ui->widget, Village);
-
-//    std::cout << "Households to visit on the day " << day << ": " << std::endl;
-//    for (unsigned int i=0; i<Interviewer[k-1].routes_days[5*week + day-1].households.size(); ++i)
-//        std::cout << Interviewer[k-1].routes_days[5*week + day-1].households[i] + 10001 << "  ";
-//    std::cout << std::endl;
 
     ui->widget->replot();
 }
@@ -562,14 +545,11 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 
 
 /*
- * Show window with report forms
+ * Show window with report tables
  */
 
 void MainWindow::showReportWindow()
 {
-//    reportWindow *rw = new reportWindow(0, Interviewer, hhITimePlan_day,  0);
-    // 0  hhITimePlan_day  day view
-    // 1  hhITimePlan week week view
-    reportWindow *rw = new reportWindow(this, Interviewer, hhITimePlan_week, 1, timematrixDry, timematrixRain);
+    reportWindow *rw = new reportWindow(this, Interviewer, hhITimePlan_week, timematrixDry, timematrixRain);
     rw->showMinimized();
 }

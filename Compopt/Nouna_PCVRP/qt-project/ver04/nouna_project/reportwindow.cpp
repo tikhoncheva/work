@@ -6,10 +6,10 @@
  * ------------------------------------------------------------------------------------------------
  */
 reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer> _Interviewer,
-                           std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan, bool _planType,
+                           std::vector<std::vector<std::pair<unsigned int, double> > > _ITimePlan,
                            std::vector<std::vector<double> >  _distDry,
                            std::vector<std::vector<double> >  _distRain):
-    QMainWindow(parent), rw(new Ui::reportWindow), Interviewer(_Interviewer), ITimePlan(_ITimePlan), planType(_planType),
+    QMainWindow(parent), rw(new Ui::reportWindow), Interviewer(_Interviewer), ITimePlan(_ITimePlan),
     distDry(_distDry),distRain(_distRain)
 {
     QStringList Header;
@@ -22,10 +22,7 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
      */
 
     // get report structure
-    if (planType == 0) // save
-        report_HH_yearplan = saveHHSchedule_dayview_d(Interviewer, ITimePlan); // day time plan is given
-    else // save
-        report_HH_yearplan = saveHHSchedule_weekview_d(Interviewer, ITimePlan); // week time plan is given
+    report_HH_yearplan = HHSchedule_weekview_forTable(Interviewer, ITimePlan); // week time plan is given
 
 
 
@@ -34,7 +31,7 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
     rw->twSchedule_hh_itime->setColumnCount(7);
 
     Header.clear();
-    Header << "HH ID"<<" "<<"itime" << " " << "day" << " " << "interviewer ID";
+    Header << "HH ID"<<" "<<"itime" << " " << "day(week)" << " " << "interviewer ID";
     rw->twSchedule_hh_itime->setHorizontalHeaderLabels(Header);
 
 
@@ -44,7 +41,7 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
     rw->twSchedule_hh_itime->setColumnWidth(5,10);
 
     unsigned int count = 0;
-    for (std::set<writeFormat2> ::iterator
+    for (std::set<rowEntries> ::iterator
          it=report_HH_yearplan.begin(); it!=report_HH_yearplan.end(); ++it)
     {
         rw->twSchedule_hh_itime->setItem(count, 0,
@@ -72,7 +69,7 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
         Header << QString::number(j + 101);
         rw->twDistances_Dry->setColumnWidth(j,40);
         rw->twDistances_Rain->setColumnWidth(j,40);
-//        rw->twDistances_Dry->setItem(0,j, new QTableWidgetItem(QString::number(j)));
+
         for (unsigned int i=0; i<distDry.size(); ++i)
         {
             rw->twDistances_Dry->setItem (i, j, new QTableWidgetItem(QString::number(distDry[i][j])) );
@@ -107,8 +104,6 @@ reportWindow::reportWindow(QMainWindow *parent, const std::vector<stInterviewer>
 
     rw->tableWidget_weekplans->setColumnWidth(0,50);
     rw->tableWidget_weekplans->setColumnWidth(1,130);
-//    rw->tableWidget_weekplans->setColumnWidth(1,80);
-//    rw->tableWidget_weekplans->setColumnWidth(2,100);
 
     // table of day plans
     rw->tableWidget_dayplans->setRowCount(5);
@@ -147,22 +142,10 @@ void reportWindow::on_pbHHSchedule_clicked()
     if (!fileName.endsWith(".csv"))
         fileName += ".csv";
 
-    std::ofstream file(fileName.toStdString().c_str());	// file to open
-    assert(file.is_open() && "ERROR saveHHSchedule: File cannot be opened to write");
-
-    file << "hh_id" << std::setw(20) << "itime" << std::setw(40)
-         << "day"  << std::setw(20)  << "Interviewer ID" << std::endl;
-
-    for (std::set<writeFormat2> ::iterator
-         it=report_HH_yearplan.begin(); it!=report_HH_yearplan.end(); ++it)
-    {
-        file << (*it).hhID << std::setw(20) << (*it).itime << std::setw(40)
-             << (*it).day  << std::setw(20) << (*it).Interviewer << std::endl;
-    }
-
-    file.close();
+    saveHHSchedule_weekview(report_HH_yearplan,fileName.toStdString());
 
 }
+
 /* ------------------------------------------------------------------------------------------------
  * Show interviewer s schedules
  * ------------------------------------------------------------------------------------------------
@@ -221,9 +204,6 @@ void reportWindow::interviewerSchedule_weekSelected(int i, int)
     k = atoi(strK.c_str());    // Interviewer number
 
 
-
-//    std::cout << "Week route: " << std::endl;
-
     rw->tableWidget_dayplans->clearContents();
 
     if (Interviewer[k-1].routes_days.empty())
@@ -233,9 +213,6 @@ void reportWindow::interviewerSchedule_weekSelected(int i, int)
     for (unsigned int d=0; d<5; ++d)
     {
         unsigned int ind = (week-1)*5+d;
-
-//        if (Interviewer[k-1].routes_days[ind].villages.empty())
-//            continue;
 
         // Day
         rw->tableWidget_dayplans->setItem(d, 0, new QTableWidgetItem(QString::number(ind + 1)));

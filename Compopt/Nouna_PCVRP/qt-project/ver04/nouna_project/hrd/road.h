@@ -19,15 +19,15 @@ struct stRoad
     void print()
     {
         std::cout << "ID=" << ID << " name=" << name << "  from " << start
-                << "  to " << end << "  dist=" << dist
-                << "  category=" << category << "  rain=" << rainDepending
-                << std::endl;
+                  << "  to " << end << "  dist=" << dist
+                  << "  category=" << category << "  rain=" << rainDepending
+                  << std::endl;
     }
 
 };
 
-// additional structure for distance matrix in km
-struct uDist
+// additional structure for entries of an adjacency matrix in km
+struct adjmatrix_entry
 {
     unsigned int roadID;
     double dist;
@@ -35,16 +35,16 @@ struct uDist
     unsigned int speedrain;
     bool rainDepending;
 
-    uDist() : roadID(0), dist(0), speeddry(0), speedrain(0), rainDepending(0)
+    adjmatrix_entry() : roadID(0), dist(0), speeddry(0), speedrain(0), rainDepending(0)
     {}
 
-    uDist(unsigned int _roadID, double _dist,
-          unsigned int _speeddry, unsigned int _speedrain,
-          bool _rainDepending) : roadID(_roadID),
-                                 dist(_dist),
-                                 speeddry(_speeddry),
-                                 speedrain(_speedrain),
-                                 rainDepending(_rainDepending)
+    adjmatrix_entry(unsigned int _roadID, double _dist,
+                    unsigned int _speeddry, unsigned int _speedrain,
+                    bool _rainDepending) : roadID(_roadID),
+        dist(_dist),
+        speeddry(_speeddry),
+        speedrain(_speedrain),
+        rainDepending(_rainDepending)
     {}
 
 

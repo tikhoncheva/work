@@ -15,20 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot/qcustomplot.cpp \
-    src/distmatrix.cpp \
     src/plot.cpp \
     src/readdata.cpp \
     src/initialsolution1.cpp \
     src/initialsolution2.cpp \
     src/report.cpp \
-    reportwindow.cpp \
     src/test.cpp \
+    src/distmatrix.cpp \
+    reportwindow.cpp \
     testwindow.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
     hrd/datadef.h \
-    hrd/distmatrix.h \
     hrd/household.h \
     hrd/plot.h \
     hrd/readdata.h \
@@ -37,13 +36,13 @@ HEADERS  += mainwindow.h \
     hrd/initialsolution2.h \
     hrd/interviewer.h \
     hrd/road.h \
-    hrd/dijkstra.h \
     hrd/collectdata.h \
     hrd/const.h \
     hrd/report.h \
-    reportwindow.h \
     hrd/test.h \
-    testwindow.h
+    hrd/distmatrix.h \
+    testwindow.h \
+    reportwindow.h
 
 FORMS    += mainwindow.ui \
     reportwindow.ui \

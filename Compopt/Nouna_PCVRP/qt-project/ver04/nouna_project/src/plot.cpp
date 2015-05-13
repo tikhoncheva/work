@@ -146,7 +146,7 @@ void plot_IDsVillages(QCustomPlot *plot,
 void plot_roads(QCustomPlot* plot,
                 std::vector<stVillage> V,
                 std::vector<stRoad> R,
-                std::vector<std::vector<uDist> > dist)
+                std::vector<std::vector<adjmatrix_entry> > dist)
 {
     QPointF p1, p2;
     unsigned int nV = V.size();

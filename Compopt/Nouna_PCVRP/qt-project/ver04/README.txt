@@ -9,7 +9,7 @@ Ekaterina Tikhoncheva, ekaterina.tikhoncheva@gmail.com
 
 My work on this project was consisted in the implementation of a simple GUI for
 the project and implementation of an algorithm, that find a feasible solution of
-the problem, that will be used further for optimization.
+the problem for further optimization.
 
 In this version of the project there are two different versions of an algorithm
 for finding a feasible solution (see initialsolution1.h/cpp and 
@@ -30,12 +30,12 @@ Overview of the header files
 ================================================================================
 
 village.h 
-  declaration of a structure stVillage that describes one village;
+  declaration of a structure stVillage that describes one village:
   ID, name, geographical coordinates
 
 household.h
-  declaration of a structure stVillage that describes one household;
-  ID, name, type (0 or 1),number of Persons, village it belongs to
+  declaration of a structure stVillage that describes one household:
+  ID, name, type (0 or 1), number of Persons, village it belongs to
   and required interview time
 
 interviewer.h
@@ -46,12 +46,11 @@ road.h
   ID, name, start and end, distance in km, category of speed limit and if it
   is dependent on rain season
   
-  additional structure for an entry of distance matrix before computing travel
-  time between villages
-  
+  additional structure uDist for an entry of distance matrix (in km), that
+  will be used lately for computing traveling time between villages
 
 readdate.h
-  Implementation of three functions for reading input data (list of villages,
+  implementation of three functions for reading input data (list of villages,
   list of households, list of roads) for the problem from corresponding csv-files. 
 
 datadef.h

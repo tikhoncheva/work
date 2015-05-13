@@ -26,7 +26,7 @@ std::vector<stRoad> Road;
 std::vector<stHousehold> Household;
 std::vector<stInterviewer> Interviewer;
 
-std::vector<std::vector<uDist> > distmatrix;    // weighted adjacent matrix
+std::vector<std::vector<adjmatrix_entry> > distmatrix;    // weighted adjacent matrix
 
 std::vector<std::vector<double> > timematrixDry;    // length of the shortest ways
 std::vector<std::vector<double> > timematrixRain;   // between all villages
