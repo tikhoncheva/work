@@ -19,12 +19,16 @@
 \usepackage{placeins}
 \usepackage{float}
 \restylefloat{table}
+
 \restylefloat{figure}
+\usepackage{subfigure} 
 
 \usepackage{tikz}
 \usepackage{color,colortbl}
 
 \usepackage{hyperref}
+
+\usepackage{placeins}
 
 % Literaturverzeichnis
 \usepackage{natbib}
@@ -67,8 +71,8 @@
 	Hexagonal  & $5$        & $9$        & $20$          & $30$           \\ 
     ($30$ Knoten)  & $0.26$sec  & $1.86$sec  & $491.37$sec   & $23509.7$sec   \\ \hline
 			   
-	Triangular & $8$	 & $18$         &             &    \\ 
-    ($30$ Knoten)  & $1.71$sec  & $9830.71$sec &             &    \\ \hline
+	Triangular & $8$	 & $18$         & $18$        &    \\ 
+    ($30$ Knoten)  & $1.71$sec  & $9830.71$sec & $9807.55$sec&    \\ \hline
 			  
 	Square    & $6$	         & $11$         & $25$             &    \\ 
     ($30$ Knoten) & $1.08$sec   & $2.36$sec    & $20124.8$sec     & \\ \hline
@@ -77,11 +81,51 @@
 \caption{ Ergebnisse des klassischen Modells angewendet aud drei Type der Gridgraphen} 
 \label{Table:T0}
 \end{table}
+
+
+\newpage
+%----------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------
+\section{$L(3,2)$ vs $L(2,1)$}
+%----------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|c|c|c|}
+	\hline
+	 
+	 Lattice                & $L(2,1)$  & $L(3,2)$     \\ \hline 
+	 Hexagonal (24 nodes)   & 5	 & 9  \\ 
+			        & $0.16$sec	 & $0.42$sec  \\ \hline
+	 Triangular (23 nodes)  & 8	 & 16  \\ 
+			        & $0.90$sec	 & $17.92$sec  \\ \hline
+	 Square (25 nodes)      & 6	 & 11  \\ 
+			        & $0.63$sec	 & $2.24$sec  \\ \hline
+	 Hexagonal (30 nodes)   & 5	 & 9  \\ 
+			        & $0.25$sec	 & $1.04$sec  \\ \hline
+	 Triangular (30 nodes)  & 8	 & 16  \\ 
+			        & $2.59$sec	 & $19.23$sec  \\ \hline
+	 Square (30 nodes)      & 6	 & 11  \\ 
+			        & $1.07$sec	 & $1.30$sec  \\ \hline			       
+
+\end{tabular}
+\caption{$L(3,2)$ vs $L(2,1)$} 
+\label{Table:TG3}
+\end{table}
+
+\FloatBarrier 
+
+%----------------------------------------------------------------------------------------------------
+\newpage
 %----------------------------------------------------------------------------------------------------	
 %----------------------------------------------------------------------------------------------------
 \section{Modelle}
 %----------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------------------------------
+
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -101,9 +145,21 @@
 	reelwertigen Labeling.} 
 \label{Table:T1}
 \end{table}
-	
 
 \FloatBarrier	
+
+\begin{figure}[hb]
+    \subfigure[$L(2,1)$ Labeling, optimal value $8.78029$]{\includegraphics[width=0.49\textwidth]{L21.png}}
+    \subfigure[$L(3,2,1)$ Labeling, optimal value $21.9068$]{\includegraphics[width=0.49\textwidth]{L321.png}}
+\caption{Evolution of the LB in case of triangular lattice graph and real number labeling}
+\end{figure} 
+
+
+
+
+\FloatBarrier	
+
+\newpage
 %----------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------------------------------
 \section{Treppenfunktion}
@@ -131,6 +187,8 @@
 
 
 \FloatBarrier	
+
+\newpage
 %----------------------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------------------------------
 \section{Verbessern der Laufzeit}
@@ -246,7 +304,9 @@
 \caption{Untersuchung der Teilgraphen, Fall der Gridgraphen aus der Vierecken.} 
 \label{Table:TG3}
 \end{table}
-	
+%----------------------------------------------------------------------------------------------------
+
+
 
 
 
