@@ -18,6 +18,9 @@ istop = min(nFrames, range(3));
 frames = cell(round((istop-istart)/step)+1,1);
 
 for i = 1:round((istop-istart)/step)+1
+    if mod(i,100)==0
+        display (i);
+    end
     img = read(mov,(i-1)*step + 1);
     frames{i} = double(img);
 %     % Write out to a JPEG file (img1.jpg, img2.jpg, etc.)

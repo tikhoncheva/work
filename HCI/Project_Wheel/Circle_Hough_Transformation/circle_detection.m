@@ -18,6 +18,22 @@ imgName = 'img3.jpg';
 % figure, imshow(edge(img));
 
 img = imread('coins.png');
+% img = imread('coins2.jpg');
+
+N = ndims(img);
+if (N == 3) % RGB Image
+    img = rgb2gray(img);
+    if (isinteger(img))
+        img = im2single(img); % If A is an integer, cast it to floating-point
+    end
+end    
+if (N == 1)
+    img = im2single(img); % If A is an integer, cast it to floating-point
+end
+
+% img = im2single(rgb2gray(img));
+
+
 [m,n] = size(img);
 
 
@@ -51,7 +67,7 @@ img1 = imcrop(img, crop_rect);
 img1 = img;
 [m1, n1] = size(img1);
 
-Rmin = 25;
+Rmin = 15;
 Rmax = 30;
 
 cy_range = [1 m1];
@@ -62,8 +78,8 @@ imgEdges = edge(img1);                  % extract edges
 % figure, imshow(imgEdges);
 
 
-% list_of_circles = circles_hough(imgEdges, cy_range, cx_range, [Rmin Rmax],10);
-list_of_circles = circles_hough_polar(imgEdges, cy_range, cx_range, [Rmin Rmax],10);
+% list_of_circles = circles_hough(imgEdges, cy_range, cx_range, [Rmin Rmax],5);
+list_of_circles = circles_hough_polar(single(imgEdges), cy_range, cx_range, [Rmin Rmax],20);
 % 
 % list_of_circles(:,1) = list_of_circles(:,1) + crop_rect(2);
 % list_of_circles(:,2) = list_of_circles(:,2) + crop_rect(1);
@@ -89,6 +105,8 @@ figure
       plot(x(i,:), y(i,:), 'r--'), hold on;
   end
 hold off  
+
+
 
 end
 
