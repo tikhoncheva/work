@@ -2,8 +2,8 @@
 addpath(genpath('./Circle_Hough_Transformation'));
 addpath(genpath('./opticalflow'));
 
-path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 4 Cal/4 weeks 0p.o/Naehe Network 1 old/';
-fileName = 'Trial_201411122034231.avi';
+path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 4 Cal/4 weeks 0p.o/Network 3 ganz neu/';
+fileName = 'Trial_201411122114071.avi';
 
 
 t1 = tic;
@@ -27,17 +27,7 @@ for t = 2:round(nFrames/2)
     [Ix_t,Iy_t] = imgradientxy(inframe(:,:,:,t) -  inframe(:,:,:,t-1));  
 
     dIx = dIx +  Ix_t;
-    dIy = dIy + Iy_t;
-    
-%     img1eges = edge(inframe(:,:,:,t-1), 'canny');
-%     [I,J] = find(img1eges);
-%     
-%     [lU,lV] = Lucas_Kanade(inframe(:,:,:,t-1), inframe(:,:,:,t), [21,21], [I,J]);
-%     
-%     U = U + lU;
-%     V = V + lV;
-    
-   
+    dIy = dIy + Iy_t; 
 
 end
 
@@ -50,34 +40,17 @@ M = sqrt(dIx.^2 + dIy.^2);
 tM = M;
 tM(tM<300) = 0;
 
-tM2 = tM;
-% tM2 = medfilt2(tM, [5, 5]);
+tM2 = medfilt2(tM, [5, 5]);
 % tM2 = medfilt2(tM, [10,10]);
 
 img2 = tM2;
 
 figure, imshow(img2);
-
 %%
-% img2 = bwmorph(img2,'remove');
-img2 = bwmorph(img2,'close',Inf);
-img2 = bwmorph(img2,'fill',Inf);
+img2 = bwmorph(img2,'remove');
+% img2 = bwmorph(img2,'skel',Inf);
 
 figure, imshow(img2);
-
-%%
-labels = bwlabel(img2, 4);
-
-labels_unique = unique(labels);
-
-% for l=1:numel(labels_unique)
-%    component_l = (labels== l);
-%    figure, imshow(component_l);
-%     
-% end
-
-
-
 %% search for the small circles (rods)
 % [m,n] = size(img2);
 % Rmin = 10;
@@ -108,7 +81,7 @@ labels_unique = unique(labels);
 % Rmin = round(3*n/4);
 % Rmax = round(3*n/4);
 
-Rmin = round(3*n/4)-25;
+Rmin = round(3*n/4)-10;
 Rmax = round(3*n/4);
 
 cy_range = [round(6*m/4), round(7*m/4)];  % [1 m]
@@ -122,8 +95,9 @@ figure
   for i=1:size(x,1)
       plot(x(i,:), y(i,:), 'r--'), hold on;
   end
+hold off;
 
-%%
+%% 
 list = mean(list_of_circles2);
 figure
   imshow(img), hold on;

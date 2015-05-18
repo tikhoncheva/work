@@ -55,21 +55,44 @@ end
 circles = [];
 threshold = 0.55 * max(H(:));
 % Gaussian filter [5 5] and sigma = 1
-G = fspecial('gaussian',[3 3], 0.5);
+% G = fspecial('gaussian',[3 3], 0.5);
+
+% select 5 most prominent picks for each radius
+npicks_per_r = 5;
 
 for r = r_min:r_max
    H_r = H(:, :, r-r_min+1);
-   H_r = imfilter(H_r,G,'same');
-   
    tmp =  H_r - threshold;
-   [cy,cx] = find(tmp>0);
+   tmp(tmp<0) = 0;
    
-   ind = sub2ind(size(tmp), cy, cx);
+   [picks, pos] = findpeaks(tmp(:));
    
+   [I,J] = ind2sub(size(H_r), pos);
+   
+   [picks_sort, pos_sort] = sort(picks, 'descend');
+   
+   cy = I(pos_sort(1:npicks_per_r));
+   cx = J(pos_sort(1:npicks_per_r));
+   
+   tmp = picks_sort(1:npicks_per_r);
+
    cy = cy + repmat(cy_min - 1, size(cy));
    cx = cx + repmat(cx_min - 1, size(cx));
    
-   circles_local = [[cy, cx], repmat(r, size(cy)), tmp(ind)];
+   circles_local = [[cy, cx], repmat(r, size(cy)), tmp];
+   
+%    H_r = imfilter(H_r,G,'same');
+   
+
+%    tmp =  H_r - threshold;
+%    [cy,cx] = find(tmp>0);
+%    
+%    ind = sub2ind(size(tmp), cy, cx);
+%    
+%    cy = cy + repmat(cy_min - 1, size(cy));
+%    cx = cx + repmat(cx_min - 1, size(cx));
+   
+%    circles_local = [[cy, cx], repmat(r, size(cy)), tmp(ind)];
    
    circles = [circles; circles_local ];
    

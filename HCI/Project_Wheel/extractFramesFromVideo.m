@@ -1,30 +1,36 @@
 function [frames] = extractFramesFromVideo( path, videoName, range)
 
-assert(numel(range)==3);
+assert(numel(range)==2 || numel(range)==3);
 
 [~, videoNameWithoutExt, ~] = fileparts(videoName);
 
 mkdir(sprintf(['frames' filesep videoNameWithoutExt]))
 
 mov = VideoReader([path filesep videoName]);
-nFrames=mov.NumberOfFrames;
+display(mov);
 
-istart = range(1);
-step = range(2);
-istop = min(nFrames, range(3));
+nFrames=mov.NumberOfFrames
 
-% assert(istop<=nFrames, sprintf('Extract Frames From Video: cannot extract more than %d frames', nFrames));
 
-frames = cell(round((istop-istart)/step)+1,1);
+if numel(range)==2
+    range(2) = min(nFrames, range(2));
+    frames = readFrame(mov, range);
+else
+    istart = range(1);
+    step = range(2);
+    istop = min(nFrames, range(3));
 
-for i = 1:round((istop-istart)/step)+1
-    if mod(i,100)==0
-        display (i);
+    assert(istop<=nFrames, sprintf('Extract Frames From Video: cannot extract more than %d frames', nFrames));
+
+    frames = [];
+
+    for i = 1:floor((istop-istart)/step)+1
+        img = read(mov,(i-1)*step + 1);
+        frames = cat(4, frames, img);
     end
-    img = read(mov,(i-1)*step + 1);
-    frames{i} = double(img);
-%     % Write out to a JPEG file (img1.jpg, img2.jpg, etc.)
-%     imwrite(img,fullfile(output_path,sprintf('img%d.jpg',i)));
+    
+
+
 end
 
 end

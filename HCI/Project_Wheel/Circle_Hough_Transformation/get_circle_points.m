@@ -2,7 +2,7 @@
 function [x,y] = get_circle_points(img, circles)
     [m,n] = size(img);
     k = size(circles,1);    % number of detected circles
-    D = 60;
+    D = 120;
     x = zeros(k,D);
     y = zeros(k,D);
     
