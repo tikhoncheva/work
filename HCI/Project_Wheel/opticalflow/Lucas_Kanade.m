@@ -39,6 +39,14 @@ if (nargin == 4)
         i = points(k,1);
         j = points(k,2);
 
+        if (i<1 || i>m)
+            continue
+        end
+        
+        if (j<1 || j>n)
+            continue
+        end
+
         wi = [max(1, i-(wy-1)/2): min(m, i+(wy-1)/2)];
         wj = [max(1, j-(wx-1)/2): min(n, j+(wx-1)/2)];
 
