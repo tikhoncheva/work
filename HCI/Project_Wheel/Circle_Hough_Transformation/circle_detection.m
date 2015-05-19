@@ -11,12 +11,8 @@ imgName = 'img3.jpg';
 
 % img = imread ([datapath filesep imgName]);      % should be already be in gray scale  
 
-% % apply filter
-% h = fspecial('average');
-% img = imfilter(img,h,'symmetric');
 
-% figure, imshow(edge(img));
-
+%%
 img = imread('coins.png');
 % img = imread('coins2.jpg');
 
@@ -38,35 +34,45 @@ end
 
 
 % crop_rect3 = [0, 100, 170, 120];
-crop_rect3 = [80, 170, 100, 200];
+% crop_rect3 = [80, 170, 100, 200];
 
 
 
-crop_rect = crop_rect3;
-img1 = imcrop(img, crop_rect);
+% crop_rect = crop_rect3;
+% img1 = imcrop(img, crop_rect);
 
 % crop_rect = [175, 0, 125, 120];
 % img1 = imcrop(img, crop_rect);
 
-
-% img1 = img;
+%%
+img1 = img;
 [m1, n1] = size(img1);
 
-Rmin = 30;
-Rmax = 35;
+Rmin = 18;
+Rmax = 30;
 
 cy_range = [1 m1];
 cx_range = [1 n1];
 
 % Edge Detection
 imgEdges = edge(img1);               
+
+imgEdges1= bwmorph(imgEdges,'bridge',Inf);
+% imgEdges1= bwmorph(imgEdges,'clean',Inf);
+imgEdges12= bwmorph(imgEdges1,'dilate');
+% imgEdges2 = bwmorph(imgEdges,'fill',Inf);
+
+
+imgEdges = imgEdges12;
+% imgEdges = bwmorph(imgEdges12,'thin');
 % figure, imshow(imgEdges);
 
-
-list_of_circles = circles_hough_polar(single(imgEdges), cy_range, cx_range, [Rmin Rmax],1);
+%%
+list_of_circles = circles_hough_polar(single(imgEdges), cy_range, cx_range, [Rmin Rmax],10);
 
 fprintf('Number of detected circles: %d \n', size(list_of_circles,1));
 
+%%
 
 figure 
   imshow(img1), hold on;

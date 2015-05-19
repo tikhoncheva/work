@@ -3,7 +3,7 @@ tic
 % size of the image:
 [m,n] = size(img);
 
-img = single(im2bw(img, 0.8));
+% img = single(im2bw(img, 0.8));
 
 [I, J] = find(img); % find x,y of edge pixels
 
@@ -71,10 +71,10 @@ for r = r_min:r_max
    
    [picks_sort, pos_sort] = sort(picks, 'descend');
    
-   cy = I(pos_sort(1:npicks_per_r));
-   cx = J(pos_sort(1:npicks_per_r));
+   cy = I(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
+   cx = J(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
    
-   tmp = picks_sort(1:npicks_per_r);
+   tmp = picks_sort(1:min(npicks_per_r, numel(picks_sort)) );
 
    cy = cy + repmat(cy_min - 1, size(cy));
    cx = cx + repmat(cx_min - 1, size(cx));
