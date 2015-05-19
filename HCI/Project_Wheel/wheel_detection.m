@@ -5,14 +5,14 @@ addpath(genpath('./opticalflow'));
 % path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 4 Cal/4 weeks 0p.o/Naehe Network 1 old/';
 % fileName = 'Trial_201411122034231.avi';
 
-path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 5d p.o/20.10.2014 Maus 1 Cal 5d p.o. Network 1 old/';
-fileName = 'Trial_20141020191115117.avi';
+% path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 5d p.o/20.10.2014 Maus 1 Cal 5d p.o. Network 1 old/';
+% fileName = 'Trial_20141020191115117.avi';
 
 % path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 4 weeks p.o. Network 1 imaging 11.11.2014/Network 3';
 % fileName = 'Trial_201411111614571.avi';
 
-% path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 5 Cal/4 weeks p.o/Network 3 21.10.2014/';
-% fileName = 'Trial_2014102103300061.avi';
+path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 5 Cal/4 weeks p.o/Network 3 21.10.2014/';
+fileName = 'Trial_2014102103300061.avi';
 
 
 %% Section 1; read frames from video
@@ -58,7 +58,7 @@ img = inframe(:,:,:,1);
 M = sqrt(dIx.^2 + dIy.^2);
 
 tM = M;
-tM(tM<300) = 0;
+tM(tM<400) = 0;
 
 tM2 = tM;
 % tM2 = medfilt2(tM, [5, 5]);
@@ -69,26 +69,39 @@ img2 = tM2;
 figure, imshow(img2);
 
 %%
+img2 = tM2;
 
 img2 = bwmorph(img2,'clean',Inf);
-
 img2 = bwmorph(img2,'open',Inf);
 img2 = bwmorph(img2,'close',Inf);
+
+F5 = ones(5);
+% F5(2:4,2:4) = 1;
+img2 = imdilate(img2, F5);
 
 figure, imshow(img2);
 
 %%
-% labels = bwlabel(img2, 4);
-% 
-% labels_unique = unique(labels);
-% 
-% % for l=1:numel(labels_unique)
-% %    component_l = (labels== l);
-% %    figure, imshow(component_l);
-% %     
-% % end
+labels = bwlabel(img2, 4);
 
+labels_unique = unique(labels);
+nlabels = numel(labels_unique);
 
+component_numel = zeros(nlabels,1);
+for l=1:nlabels
+   component_l = (labels== l);
+   
+   component_numel(l) = sum(component_l(:));    
+end
+
+[~, label_max_cc] = max (component_numel);
+
+max_cc = (labels== label_max_cc);
+
+img3 = max_cc;
+figure, imshow(img3);
+
+img2 = img3;
 
 %% search for the small circles (rods)
 % [m,n] = size(img2);
@@ -120,13 +133,13 @@ figure, imshow(img2);
 % Rmin = round(3*n/4);
 % Rmax = round(3*n/4);
 
-Rmin = round(3*n/4)-25;
-Rmax = round(3*n/4);
+Rmin = round(3*n/4)-10;
+Rmax = round(3*n/4)+10;
 
-cy_range = [round(6*m/4), round(7*m/4)];  % [1 m]
-cx_range = [-round(n/3) 0]; % [1 n]
+cy_range = [round(5*m/4), round(8*m/4)];  % [1 m]
+cx_range = [-round(n/3), round(3*n/4)]; % [1 n]
 
-list_of_circles2 = circles_hough_polar(img2, cy_range, cx_range, [Rmin Rmax],10);
+list_of_circles2 = circles_hough_polar(img2, cy_range, cx_range, [Rmin Rmax],5);
 [x,y] = get_circle_points(img2, list_of_circles2);
 
 figure 

@@ -2,11 +2,11 @@
 addpath(genpath('./Circle_Hough_Transformation'));
 addpath(genpath('./opticalflow'));
 
-% path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 4 Cal/4 weeks 0p.o/Naehe Network 1 old/';
-% fileName = 'Trial_201411122034231.avi';
+path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 4 Cal/4 weeks 0p.o/Naehe Network 1 old/';
+fileName = 'Trial_201411122034231.avi';
 
-path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 5d p.o/20.10.2014 Maus 1 Cal 5d p.o. Network 1 old/';
-fileName = 'Trial_20141020191115117.avi';
+% path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 5d p.o/20.10.2014 Maus 1 Cal 5d p.o. Network 1 old/';
+% fileName = 'Trial_20141020191115117.avi';
 
 % path = '/export/home/etikhonc/Documents/Work/Videos/Wheel/Maus 1 Cal/Maus 1 Cal 4 weeks p.o. Network 1 imaging 11.11.2014/Network 3';
 % fileName = 'Trial_201411111614571.avi';
@@ -76,6 +76,7 @@ img2 = bwmorph(img2,'open',Inf);
 
 img2 = bwmorph(img2,'close',Inf);
 
+
 figure, imshow(img2);
 
 %%
@@ -124,10 +125,10 @@ figure, imshow(img2);
 Rmin = round(3*n/4)-25;
 Rmax = round(3*n/4);
 
-cy_range = [round(6*m/4), round(8*m/4)];  % [1 m]
-cx_range = [-round(n/3) round(n/4)]; % [1 n]
+cy_range = [round(6*m/4), round(7*m/4)];  % [1 m]
+cx_range = [-round(n/3) 0]; % [1 n]
 
-list_of_circles2 = circles_hough_polar(img2, cy_range, cx_range, [Rmin Rmax],5);
+list_of_circles2 = circles_hough_polar(img2, cy_range, cx_range, [Rmin Rmax],10);
 [x,y] = get_circle_points(img2, list_of_circles2);
 
 figure 
@@ -140,7 +141,7 @@ hold off;
 
 middle = mean(list_of_circles2);
 up = middle; up(3) = up(3) + 180;
-down = middle; down(3) = down(3) - 90;
+down = middle; down(3) = down(3) - 100;
 
 list = [down; middle; up];
 [x,y] = get_circle_points(img2, list);
