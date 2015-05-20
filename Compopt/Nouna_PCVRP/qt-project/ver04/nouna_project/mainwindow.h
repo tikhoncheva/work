@@ -35,8 +35,6 @@ private slots:
 
     void on_buttonOpenHouseh_clicked();
 
-    void on_buttonPlot_clicked();
-
     void on_checkBoxVillageNames_clicked();
 
     void on_checkBoxShowRoads_clicked();
@@ -60,6 +58,10 @@ private slots:
     void on_pushButtonShowRoute_clicked();
 
     void showReportWindow();
+
+    void on_pb_runTests_clicked();
+
+    void on_pbSet_nInterviewers_clicked();
 
 private:
     Ui::MainWindow *ui;

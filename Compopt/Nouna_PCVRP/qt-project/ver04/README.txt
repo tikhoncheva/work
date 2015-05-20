@@ -52,6 +52,8 @@ road.h
 readdate.h
   implementation of three functions for reading input data (list of villages,
   list of households, list of roads) for the problem from corresponding csv-files. 
+  
+  Currently, all input files are read from directory ./data automatically.
 
 datadef.h
   declaration of the global data structures of the input/output data

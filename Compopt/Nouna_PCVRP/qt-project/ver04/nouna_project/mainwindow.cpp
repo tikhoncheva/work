@@ -151,8 +151,6 @@ void MainWindow::on_buttonOpenVillages_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            //ui->groupBoxPlotSetting ->setEnabled(true);
-            //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
                 ui->comboBoxInterviewer->addItem(QString::number(i+1));
@@ -184,8 +182,6 @@ void MainWindow::on_buttonOpenRoads_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            //ui->groupBoxPlotSetting ->setEnabled(true);
-            //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
                 ui->comboBoxInterviewer->addItem(QString::number(i+1));
@@ -217,8 +213,6 @@ void MainWindow::on_buttonOpenHouseh_clicked()
         if(nV && nH && nR)
         {
             collectdata_routine(Village, Road, Household); // calculate all important values
-            //ui->groupBoxPlotSetting ->setEnabled(true);
-            //ui->tab_initsolution->setEnabled(true);
 
             for (unsigned int i =0; i<Interviewer.size(); ++i)
                 ui->comboBoxInterviewer->addItem(QString::number(i+1));
@@ -231,13 +225,37 @@ void MainWindow::on_buttonOpenHouseh_clicked()
 
 //---------------------------------------------------------------------------------------------------
 
-// plot original Graph
-void MainWindow::on_buttonPlot_clicked()
-{
-    // plot edges
-    plot_villages(ui->widget, Village);
+/*
+ * Set number of availbale interviewers
+ */
 
-    //    ui->pushButtonInitialSolution->setEnabled(true);
+void MainWindow::on_pbSet_nInterviewers_clicked()
+{
+    QString qstrK = ui->textEdit_nInterviewers->toPlainText();
+    std::string strK = qstrK.toStdString();
+
+    unsigned int k = atoi(strK.c_str());    // number of interviews
+    if (k < 1)
+        k = 1;
+
+    constant::nInterviewers = k;
+
+    if(nV && nH && nR)
+    {
+        collectdata_routine(Village, Road, Household); // calculate all important values
+
+        ui->comboBoxInterviewer->clear();
+        for (unsigned int i =0; i<Interviewer.size(); ++i)
+            ui->comboBoxInterviewer->addItem(QString::number(i+1));
+
+        // plot edges
+        plot_villages(ui->widget, Village);
+    }
+
+    ui->pushButtonShowRoute->setEnabled(false); // show routes
+    ui->pbShow_report->setEnabled(false);       // show report
+    ui->pb_runTests->setEnabled(false);         // run test
+
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -492,6 +510,7 @@ void MainWindow::yAxisChanged(QCPRange range)
 void MainWindow::on_pushButtonInitialSolution_clicked()
 {
     ui->widget->clearItems();
+
     // replot everything that already was on the plot
     if (ui->checkBoxVillageNames->isChecked())
         plot_labelsVillages(ui->widget, Village);
@@ -502,17 +521,18 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 
 
     int success;
-
+///*
     // first approach
-    success = approach1::initialsolution1(Village,  // villages
+    success = approach1::initialsolution1(Village,                 // villages
                                           Household,               // households
                                           Interviewer,             // Interviewer
                                           timematrixDry,           // time matrix dry
-                                          timematrixRain,           // time matrix rain
+                                          timematrixRain,          // time matrix rain
                                           village_households,
                                           hhITimePlan_week);
+//*/
 
-/*
+ /*
     // second approach
     success = approach2::initialsolution2(Village,  // villages
                     Household,               // households
@@ -525,24 +545,16 @@ void MainWindow::on_pushButtonInitialSolution_clicked()
 
     if (success)
     {
-        // run tests on the found solution
-        clTest test(Interviewer, Household, hhITimePlan_week);
-        std::string test_report = test.run();
-
-        testWindow *tw = new testWindow(this, test_report);
-        tw->showMinimized();
-
-
         ui->pushButtonShowRoute->setEnabled(true);
         ui->comboBoxInterviewer->setEnabled(true);
+
         ui->pbShow_report->setEnabled(true);    // show report
+        ui->pb_runTests->setEnabled(true);      // run test
      }
 
-    std::cout << "Find initial solution ... finished" << std::endl;
+    std::cout << "Find initial solution ... FINISHED" << std::endl;
 }
-
 //---------------------------------------------------------------------------------------------------
-
 
 /*
  * Show window with report tables
@@ -553,3 +565,19 @@ void MainWindow::showReportWindow()
     reportWindow *rw = new reportWindow(this, Interviewer, hhITimePlan_week, timematrixDry, timematrixRain);
     rw->showMinimized();
 }
+//---------------------------------------------------------------------------------------------------
+
+
+/*
+ * run tests to check, if initial solution satisfies all constraints
+ */
+void MainWindow::on_pb_runTests_clicked()
+{
+    clTest test(Interviewer, Household, hhITimePlan_week);
+    std::string test_report = test.run();
+
+    testWindow *tw = new testWindow(this, test_report);
+    tw->showMinimized();
+
+}
+//---------------------------------------------------------------------------------------------------

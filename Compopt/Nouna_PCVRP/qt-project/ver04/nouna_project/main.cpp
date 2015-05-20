@@ -4,14 +4,15 @@
 #include "hrd/const.h"
 #include <QApplication>
 
+// !!!!
+unsigned int constant::nInterviewers = 20;
+// !!!!
 
 int unsigned constant::shortITime = 10; // 10 min
 int unsigned constant::longITime = 25;  // 25 min
 
 int unsigned constant::P = 3;           // 3 periods
 int unsigned constant::nweeks = 16;     // each period contains 16 weeks
-
-unsigned int constant::nInterviewers = 10;
 
 unsigned int constant::nLongInterviews = 0;   // number of Households with the type 1
 unsigned int constant::nShortInterviews = 0;  // number of Households with the type 0
