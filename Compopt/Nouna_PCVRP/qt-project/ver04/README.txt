@@ -36,18 +36,24 @@ village.h
 household.h
   declaration of a structure stVillage that describes one household:
   ID, name, type (0 or 1), number of Persons, village it belongs to
-  and required interview time
+  and required interview time (computed according to the type)
 
 interviewer.h
   declaration of a structure stInterviewer that describes one interview:
+  ID and vectors of his week and daily routes
+  declaration of a structure stRoute, that describes a route:
+  time of the route (traveling time + time of interviews planned on the route)
+  villages, visited on the route
+  households, interviewed on the route
+  
 
 road.h
   declaration of a structure stRoad that describes one road:
   ID, name, start and end, distance in km, category of speed limit and if it
   is dependent on rain season
   
-  additional structure uDist for an entry of distance matrix (in km), that
-  will be used lately for computing traveling time between villages
+  additional structure adjmatrix_entry for an entry of distance matrix (in km), that
+  is used for computing traveling time between villages
 
 readdate.h
   implementation of three functions for reading input data (list of villages,
@@ -91,14 +97,14 @@ report.h
   reportwindow.h/.cpp) and save this set in a file
   
 reportwindow.h
-  declares new window form to show results of the planning problem. The report window contains
+  declaration of a new window form to show results of the planning problem. The report window contains
   now a table representation of initial solution (i.e. year schedule of visiting the households:
   when, how long and by whom), list of week and day routes of each interviewer over whole year,
   two tables with traveling time between villages in dry and rain seasons.
   
 
 test.h
-  declaration of a class test for testing, if current solution full fills all constrains.
+  declaration of a class test for testing, if current solution fulfills all constrains.
   Currently, the class includes following tests:
     test1 : for each interviewer check, if his working time in each week of an year does not
 	    exceed the norm (i.e. 5 working days with 8 working hours pro day)
@@ -146,8 +152,8 @@ initialsolution1.h/cpp
       three times in a year with the same times. We divide such households in 16
       groups (16=number of weeks in one period) and assign in this way weeks of
       visit for this households in one period. For two other periods the weeks
-      from the first period will be just accepted, and hence the relative week 
-      number of visit for each normal household is also the same in all three periods.
+      will be set the same as they are in the first period. The relative week 
+      number of visits for each normal household is hence the same in all three periods.
       
     2) Daily routes between households, that should be visited on the same week
     
@@ -165,23 +171,24 @@ initialsolution1.h/cpp
       
     3) Assign daily plans to available interviewers
     
-      For each week the daily routes will be assigned in groups by 5 routes 
-      (except perhaps last group) to interviewer. Some interviewer may be stay free
+      For each week the daily routes will be assigned in groups by 5 (5 working
+      days on a week) to interviewer. Some interviewer may be stay free
       for some weeks.
       
       
     4) Allow to stay of a night
     
       For each interviewer check if the previous work day in a week ended in the
-      same village the next day starts with. If so the interviewer can stay
+      same village the next day starts with. If so, the interviewer can stay
       in this village for a night and must not go back to Nouna and come on the next day again.
       
 -------------------------------------------------------------------------------      
-      NOTE: there is small problem here in current implementation: it can happen,
-      that second part of a long interviewer will be taken (see step 3) by
-      next interviewer. Than the condition, that an too long interview must be
-      continued on the next day will not be full filled.
-      It is also only guarantied, that household will be visited on the same
+      NOTE: 
+       - It can happen, that second part of a long interview (after splitting)
+      will be taken (see step 3) by next interviewer. Than the condition, that
+      too long interviews must be continued after interruption on the next day,
+      will not be full filled.
+       - It is also only guarantied, that household will be visited on the same
       week in each period, but not on the same day!
 --------------------------------------------------------------------------------
 
@@ -209,9 +216,9 @@ initialsolution2.h/cpp
       
       We consider further normal households (type 0). They should be visited 
       three times in a year with the same times. We assign to each short interview
-      recursively a week 1 to 16 in the first period. For two other periods the weeks
-      from the first period will be just accepted, Hence the relative week 
-      number of visit for each normal household is also the same in all three periods.
+      recursively a week 1 to 16 in the first period. For each household the week selected
+      in the first period will be accepted in the second and third period.The relative week 
+      number of visits for each normal household is hence the same in all three periods.
       
     2) Create week plans for each interviewer 
     
@@ -220,11 +227,11 @@ initialsolution2.h/cpp
       
       The working time in each route should not exceed 5(days)*8 hours.
       
-      The routes are then assigned to interviewer.
+      For each week the K constructed routes are assigned to K interviewers.
       
     3) Create day plans for each interviewer
     
-      Given result of the previous  step, we divide a week route of each interviewer
+      Given result of the previous step, we divide a week route of each interviewer
       into 5 day routes, so that the working time in each day route should not
       exceed 8 hours. That will not be always possible because of too long interviews.
       So the next two steps should improve the result of this step.
@@ -241,12 +248,12 @@ initialsolution2.h/cpp
       Same as it was described in the first approach
 
 -------------------------------------------------------------------------------      
-      NOTE: The splitting of too long interviews is not working so good, as
-      in the first approach. From the other side,here it will be guarantied, 
+      NOTE: 
+       - The splitting of too long interviews is not working so good, as
+      in the first approach. From the other side, here it will be guarantied, 
       that split interview will take place on the sequential days 
       and will be done by the same interviewer.
-      
-      It is also only guarantied, that household will be visited on the same
+       - It is again only guarantied, that household will be visited on the same
       week in each period, but not on the same day!
 
 --------------------------------------------------------------------------------
