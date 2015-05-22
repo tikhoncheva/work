@@ -114,7 +114,7 @@ H = zeros (cy_range(2)-cy_range(1)+1, cx_range(2)-cx_range(1)+1, Rmax - Rmin + 1
 
 for i=1:N;
     
-    H_i = chough_voting(mag_sum_edges, angle2(:,:,i), cy_range, cx_range, [Rmin Rmax]);
+    H_i = HoughTr_circles(mag_sum_edges, angle2(:,:,i), cy_range, cx_range, [Rmin Rmax]);
     
     H = H + H_i;
 end

@@ -1,4 +1,4 @@
-function [ H ] = chough_voting( img, img_angles, cyRange, cxRange, rRange)
+function [ H ] = HoughTr_circles( img, img_angles, cyRange, cxRange, rRange)
 
 tic
 
@@ -16,7 +16,6 @@ cy_max = cyRange(2);
 
 H = zeros (cy_max-cy_min+1, cx_max-cx_min+1, r_max - r_min + 1);
   
-
 for k=1:numel(I)
     
    i = I(k);        % y-axis
@@ -27,7 +26,9 @@ for k=1:numel(I)
    for r=r_min:r_max
               
        cx = round(j + r*cos(theta));
-       cy = round(i - r*sin(theta));   
+       cy = round(i + r*sin(theta));   
+       
+       line([j, cx], [i, cy], 'Color', 'r');
        
        if (cy>=cy_min && cy<=cy_max) && (cx>= cx_min && cx<=cx_max)
           H(cy-cy_min+1, cx-cx_min+1, r-r_min + 1) = H(cy-cy_min+1, cx-cx_min+1, r-r_min+1) + 1;
@@ -35,8 +36,10 @@ for k=1:numel(I)
 
 
        cx = round(j + r*cos(pi + theta));
-       cy = round(i - r*sin(pi + theta));   
+       cy = round(i + r*sin(pi + theta));   
       
+       line([j, cx], [i, cy], 'Color', 'r');
+       
        if (cy>=cy_min && cy<=cy_max) && (cx>= cx_min && cx<=cx_max)
           H(cy-cy_min+1, cx-cx_min+1, r-r_min + 1) = H(cy-cy_min+1, cx-cx_min+1, r-r_min+1) + 1;
        end
@@ -45,8 +48,6 @@ for k=1:numel(I)
    end
   
 end
-
-hold off;
 
 end
 

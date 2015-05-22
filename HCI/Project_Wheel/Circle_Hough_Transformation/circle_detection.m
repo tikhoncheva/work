@@ -1,89 +1,61 @@
-%% Detection of circle objects on an image using Hough Transformation
-%
-% Input: img        image
+function [ circles ] = circle_detection( img, votes_dir, cyRange, cxRange, rRange, varargin )
+tic
 
-% Output: img2      image with detected circle structures
+r_min = rRange(1);
+r_max = rRange(2);
 
-function [ img2 ] = circle_detection( datapath, imgName )
+cx_min = cxRange(1);
+cx_max = cxRange(2);
 
-datapath = './';
-imgName = 'img3.jpg';
+cy_min = cyRange(1);
+cy_max = cyRange(2);
 
-% img = imread ([datapath filesep imgName]);      % should be already be in gray scale  
+% let points vore for circle centers
+H = hough_voting_circles(img, votes_dir, cyRange, cxRange, rRange);
 
 
-%%
-img = imread('coins.png');
-% img = imread('coins2.jpg');
+% search for picks in the voting matrix
+circles = [];
+threshold = 0.55 * max(H(:));
+% select 5 most prominent picks for each radius
+npicks_per_r = 5;
 
-N = ndims(img);
-if (N == 3) % RGB Image
-    img = rgb2gray(img);
-    if (isinteger(img))
-        img = im2single(img); % If A is an integer, cast it to floating-point
-    end
-end    
-if (N == 1)
-    img = im2single(img); % If A is an integer, cast it to floating-point
+
+for r = r_min:r_max
+   H_r = H(:, :, r-r_min+1);
+   tmp =  H_r - threshold;
+   tmp(tmp<0) = 0;
+   
+   [picks, pos] = findpeaks(tmp(:));
+   
+   [I,J] = ind2sub(size(H_r), pos);
+   
+   [picks_sort, pos_sort] = sort(picks, 'descend');
+   
+   cy = I(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
+   cx = J(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
+   
+   tmp = picks_sort(1:min(npicks_per_r, numel(picks_sort)) );
+
+   cy = cy + repmat(cy_min - 1, size(cy));
+   cx = cx + repmat(cy_min - 1, size(cx));
+   
+   circles_local = [[cy, cx], repmat(r, size(cy)), tmp];
+   
+   circles = [circles; circles_local ];
 end
 
-% img = im2single(rgb2gray(img));
 
+% if user want to get only n best circles (circles with the most votes)
+if length(varargin)==1
+    nbest = varargin{1};
+    [~, ind] = sort(circles(:,4),'descend');
+    ind = ind(1:min(nbest, length(ind)) );
+    circles = circles(ind,:);
+end
 
-% [m,n] = size(img);
-
-
-% crop_rect3 = [0, 100, 170, 120];
-% crop_rect3 = [80, 170, 100, 200];
-
-
-
-% crop_rect = crop_rect3;
-% img1 = imcrop(img, crop_rect);
-
-% crop_rect = [175, 0, 125, 120];
-% img1 = imcrop(img, crop_rect);
-
-%%
-img1 = img;
-[m1, n1] = size(img1);
-
-Rmin = 18;
-Rmax = 30;
-
-cy_range = [1 m1];
-cx_range = [1 n1];
-
-% Edge Detection
-imgEdges = edge(img1);               
-
-imgEdges1= bwmorph(imgEdges,'bridge',Inf);
-% imgEdges1= bwmorph(imgEdges,'clean',Inf);
-imgEdges12= bwmorph(imgEdges1,'dilate');
-% imgEdges2 = bwmorph(imgEdges,'fill',Inf);
-
-
-imgEdges = imgEdges12;
-% imgEdges = bwmorph(imgEdges12,'thin');
-% figure, imshow(imgEdges);
-
-%%
-list_of_circles = circles_hough_polar(single(imgEdges), cy_range, cx_range, [Rmin Rmax],10);
-
-fprintf('Number of detected circles: %d \n', size(list_of_circles,1));
-
-%%
-
-figure 
-  imshow(img1), hold on;
-%   plot(list_of_circles(:,1), list_of_circles(:,2), 'r*');
-  [x,y] = get_circle_points(img, list_of_circles);
-  for i=1:size(x,1)
-      plot(x(i,:), y(i,:), 'r--'), hold on;
-  end
-hold off  
-
-
+display(sprintf('spent time: %f', toc));
 
 end
+
 
