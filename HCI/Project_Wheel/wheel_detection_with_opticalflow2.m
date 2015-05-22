@@ -2,6 +2,11 @@ addpath(genpath('./Circle_Hough_Transformation'));
 % % addpath(genpath('./opticalflow'));
 addpath(genpath('/export/home/etikhonc/Documents/Tools/OpticalFlow'));
 
+
+addpath('/export/home/etikhonc/Documents/Tools/edges-master/');
+addpath(genpath('/export/home/etikhonc/Documents/Tools/piotr_toolbox_V3.26/'));
+
+
 %% Select video
 path = 1;
 
@@ -186,11 +191,14 @@ end % i
 U1 = angle_tvotes_mag.* cos(angle_tvotes_val);
 V1 = angle_tvotes_mag.* sin(angle_tvotes_val);
 
-figure, imshow(inframe(:,:,1)), hold on;
+f1 = figure, imshow(inframe(:,:,1)), hold on;
 quiver(U1,V1), 
 hold off;
+saveas(f1, [path_to_save 'angle_tvotes_values'], 'jpg');
 
-figure, imagesc(angle_tvotes_mag);
+f2 = figure, imagesc(angle_tvotes_mag);
+saveas(f2, [path_to_save 'angle_tvotes_mag'], 'jpg');
+
 
 %%
 
@@ -208,16 +216,16 @@ angles_per = angles_per1.*mask1 + angles_per2.*mask2;
 U2 = angle_tvotes_mag.* cos(angles_per);
 V2 = angle_tvotes_mag.* sin(angles_per);
 
-figure, imshow(inframe(:,:,1)), hold on;
+f3 = figure, imshow(inframe(:,:,1)), hold on;
 quiver(U2,V2);
 title('angles perpendicular');
 hold off;
-
+% saveas(f3, [path_to_save 'voting_directions'], 'jpg');
 
 %% look for a big circles (wheel)
 
-Rmin = round(3*n/4)-20;
-Rmax = round(3*n/4)+20;
+Rmin = round(3*n/4-10);
+Rmax = round(3*n/4+10);
 
 cy_range = [round(5*m/4), round(8*m/4)];  % [1 m]
 cx_range = [-round(n/3), round(3*n/4)]; % [1 n]
@@ -229,29 +237,28 @@ circles = circle_detection(angle_tvotes_mag, angles_per, cy_range, cx_range, [Rm
 
 [x,y] = get_circle_points(inframe(:,:,1), circles);
 
-f1 = figure;
+f4 = figure;
   imshow(inframe(:,:,1)), hold on;
   for i=1:size(x,1)
       plot(x(i,:), y(i,:), 'r--'), hold on;
   end
 hold off;
+saveas(f4, [path_to_save 'detection_wheel'], 'jpg');
 
-saveas(f1, [path_to_save 'result_voting_edges'], 'jpg');
+%% best votes
 
-%% 3 best votes
-
-nbest = 3;
+nbest = 2;
 
 [~, ind] = sort(circles(:,4),'descend');
 ind = ind(1:min(nbest, length(ind)) );
-circles = circles(ind,:);
+circles_best = circles(ind,:);
 
-[x,y] = get_circle_points(inframe(:,:,1), circles);
+[x_best,y_best] = get_circle_points(inframe(:,:,1), circles_best);
 
-f2 = figure ;
+f5 = figure ;
   imshow(inframe(:,:,1)), hold on;
-  for i=1:size(x,1)
-      plot(x(i,:), y(i,:), 'r--'), hold on;
+  for i=1:size(x_best,1)
+      plot(x_best(i,:), y_best(i,:), 'r--'), hold on;
   end
 hold off;
-saveas(f2, [path_to_save 'result_voting_edges_3best'], 'jpg');
+saveas(f5, [path_to_save 'detection_wheel_best'], 'jpg');

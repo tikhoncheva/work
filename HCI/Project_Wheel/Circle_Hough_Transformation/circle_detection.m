@@ -11,46 +11,77 @@ cy_min = cyRange(1);
 cy_max = cyRange(2);
 
 % let points vore for circle centers
-H = hough_voting_circles(img, votes_dir, cyRange, cxRange, rRange);
+H = HoughTr_circles(img, votes_dir, cyRange, cxRange, rRange);
 
 
 % search for picks in the voting matrix
 circles = [];
-threshold = 0.55 * max(H(:));
+
+
+h = fspecial('gaussian', [10, 10], 2);
 % select 5 most prominent picks for each radius
-npicks_per_r = 5;
+npicks_per_r = 10;
+
+% parameters of non maximum suppression
+radius = 10;
+thr = 1.5;
 
 
 for r = r_min:r_max
+    
    H_r = H(:, :, r-r_min+1);
-   tmp =  H_r - threshold;
-   tmp(tmp<0) = 0;
+   H_r = imfilter(H_r, h);
    
-   [picks, pos] = findpeaks(tmp(:));
+   [picks_pos,picks_val] = nonMaxSupr(double(H_r), radius, thr);    
    
-   [I,J] = ind2sub(size(H_r), pos);
+   [~, ind] = sort(picks_val, 'descend');
    
-   [picks_sort, pos_sort] = sort(picks, 'descend');
-   
-   cy = I(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
-   cx = J(pos_sort(1:min(npicks_per_r, numel(picks_sort)) ));
-   
-   tmp = picks_sort(1:min(npicks_per_r, numel(picks_sort)) );
+   cy = picks_pos( ind(1:min(npicks_per_r, numel(picks_pos)) ), 1);
+   cx = picks_pos( ind(1:min(npicks_per_r, numel(picks_pos)) ), 2);
 
    cy = cy + repmat(cy_min - 1, size(cy));
-   cx = cx + repmat(cy_min - 1, size(cx));
+   cx = cx + repmat(cx_min - 1, size(cx));
    
-   circles_local = [[cy, cx], repmat(r, size(cy)), tmp];
+   circles_local = [[cy, cx], repmat(r, size(cy))];
    
    circles = [circles; circles_local ];
+   
 end
 
 
+% % kmean clustering in 3d feature space
+% nclusters = 10;
+% [ind, centers] = kmeans(circles(:,1:3), nclusters);
+% 
+% circle_cluster = [];
+% for i=1:nclusters
+%     circle_cluster = [circle_cluster; ...
+%                centers(i,1), centers(i,2), centers(i,3), numel(find(ind==i))];
+% end
+
+% kmean clustering in 2d feature space
+nclusters = 10;
+[ind, centers] = kmeans(circles(:,1:2), nclusters);
+
+circle_cluster = [];
+for i=1:nclusters
+    rad = circles(ind==i, 3);
+    ni = numel(find(ind==i));
+    minrad = min(rad);
+    maxrad = max(rad);
+    
+    circle_cluster = [circle_cluster; ...
+                      [centers(i,1), centers(i,2), minrad, ni]; ...
+                      [centers(i,1), centers(i,2), maxrad, ni] ];           
+end
+
+circles = circle_cluster;
+
 % if user want to get only n best circles (circles with the most votes)
 if length(varargin)==1
-    nbest = varargin{1};
+    nbest = min( varargin{1}, size(circles,1));
     [~, ind] = sort(circles(:,4),'descend');
-    ind = ind(1:min(nbest, length(ind)) );
+    ind = ind(1:nbest);
     circles = circles(ind,:);
 end
 
