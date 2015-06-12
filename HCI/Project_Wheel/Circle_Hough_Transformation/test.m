@@ -6,12 +6,6 @@
 
 function [ img2 ] = circle_detection( datapath, imgName )
 
-datapath = './';
-imgName = 'img3.jpg';
-
-% img = imread ([datapath filesep imgName]);      % should be already be in gray scale  
-
-
 %%
 img = imread('coins.png');
 % img = imread('coins2.jpg');
