@@ -5,6 +5,8 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     filename = [mainDir, filename_scircle_centers];
     load(filename);
 
+    filename_wheel_param = [ videoName, '_wheel_param.mat'];
+    
     I = rgb2gray(imread([framesDir,'frame-00001.jpg']));
 
 
@@ -47,7 +49,9 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     
   
     r = best(3); x = best(1); y = best(2);
-
+    
+    wheel_param = [x,y,r];
+    save( [mainDir, '/', filename_wheel_param], 'wheel_param');
 
     ang=0:0.01:2*pi; 
     xp=r*cos(ang);
@@ -71,11 +75,11 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
 %     saveas(g1, [mainDir, 'result_', maus_ID, '_', cal_time, '_', network_ID, '_2.png'])
 
 
-    g2=figure;
-    imshow(I); hold on;
-    scatter(points(:,1), points(:,2),'.k');
-    set(gca, 'YDir', 'reverse');  hold on;
-    plot(x+xp,y+yp,'LineWidth',2.0,'Color','red');
-    set(gca, 'YDir', 'reverse');  hold on;
+%     g2=figure;
+%     imshow(I); hold on;
+%     scatter(points(:,1), points(:,2),'.k');
+%     set(gca, 'YDir', 'reverse');  hold on;
+%     plot(x+xp,y+yp,'LineWidth',2.0,'Color','red');
+%     set(gca, 'YDir', 'reverse');  hold on;
 
 end

@@ -7,9 +7,10 @@ pathVideos = '/export/home/etikhonc/Documents/Work/Videos/Wheel/';
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 filename_scircle_centers = 'small_circle_centers_095.mat';
 
-maus_ID = 'Maus_4';
-cal_time = 'cal_1_day';
-network_ID = 'Network_1_new';
+maus_ID = 'Maus_1';
+cal_time = 'cal_5_days';
+network_ID = 'Network_1_old';
+
 
    
 path_d2 = [pathFrames, maus_ID, filesep];
@@ -31,6 +32,8 @@ for j = 1:nFramesets
    videoName = videoName(8:end);
 
    fprintf('---%s ...', videoName);
+   filename = [path_d4, filename_scircle_centers];
+   load(filename);
 
 %    t1 = tic;
 %    detection_small_circle_centers(path_d4, videoName, filename_scircle_centers);
