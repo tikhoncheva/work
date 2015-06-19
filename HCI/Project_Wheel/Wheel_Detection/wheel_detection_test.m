@@ -1,3 +1,4 @@
+%% Detect wheel on the given video frames
 
 clear all;
 close all;
@@ -11,8 +12,6 @@ maus_ID = 'Maus_1';
 cal_time = 'cal_5_days';
 network_ID = 'Network_1_old';
 
-
-   
 path_d2 = [pathFrames, maus_ID, filesep];
 path_d3 = [path_d2, cal_time, filesep];   
 path_d4 = [path_d3, network_ID, filesep];
@@ -26,7 +25,7 @@ nameFolds_frames(ismember(nameFolds_frames,{'.','..'})) = [];
 
 nFramesets = size(nameFolds_frames,1);
 
-% for each set of frames
+% for each set of frames in the folder
 for j = 1:nFramesets
    videoName = nameFolds_frames{j,1};
    videoName = videoName(8:end);
@@ -35,9 +34,9 @@ for j = 1:nFramesets
    filename = [path_d4, filename_scircle_centers];
    load(filename);
 
-%    t1 = tic;
-%    detection_small_circle_centers(path_d4, videoName, filename_scircle_centers);
-%    fprintf(' %0.3fsec ', toc(t1));
+   t1 = tic;
+   detection_small_circle_centers(path_d4, videoName, filename_scircle_centers);
+   fprintf(' %0.3fsec ', toc(t1));
 
    t2 = tic;
    fitting_big_circle(path_d4, maus_ID, cal_time, network_ID, videoName, filename_scircle_centers);

@@ -1,3 +1,6 @@
+%% Detection of wheel given video frames
+% same as wheel_detection_test, but runs automatically on all detected
+% video frames under given path (pathFrames)
 
 clear all;
 close all;
@@ -5,7 +8,6 @@ clc;
 
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 filename_scircle_centers = 'small_circle_centers_095.mat';
-
 
 d1 = dir(pathFrames);
 

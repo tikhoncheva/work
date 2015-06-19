@@ -44,44 +44,61 @@ for j = 1:nFramesets
 
    fprintf('---%s ... \n', videoName);
    
-   fprintf('   Wheel parameters: ');
    filename_wheel_coord = [ videoName, '_wheel_param.mat'];
    load( [path_d4, filename_wheel_coord]);
    
-   x0 = wheel_param(1);
-   y0 = wheel_param(2);
-   R = wheel_param(3);
-   
-   fprintf('center coordinates (%d,%d), radius=%d', x0, y0, R);
+   x0 = wheel_param(1); y0 = wheel_param(2); R = wheel_param(3);
+   fprintf(' wheel center (%d,%d), radius=%d \n', x0, y0, R);
   
     
-   % Get list of all jpg files in ornder 
+   % Get list of all jpg files in folder
    frameDir = [path_d4, 'frames_', videoName, filesep];
+   frames = dir([frameDir,'*.jpg']);
    
-   % read all frames 
-   load([frameDir 'inframe_501.mat']);
-   nFrames = size(inframe, 4);
+   nFrame = size(frames,1);
 
-   % then read all images from the order
-   frame_prev = inframe(:,:,:,1);
-   [m,n] = size(frame_prev);
-   mask = zeros(m,n);
+   % % run through all frames and estimate velocity of the wheel
    
+   frame_prev = rgb2gray(imread([frameDir, frames(1).name]));
+   
+   [m,n] = size(frame_prev);
+   
+   % select area around wheels
+   margin = 40; 
+   
+   points = [repmat((1:m)',n,1), kron((1:n)',ones(m,1)) ];
+   rad = sqrt((points(:,1)-y0).^2 + (points(:,2)-x0).^2);
+   
+   sel_points_ind = ( rad>=R-margin & rad<=R+margin );
+   sel_points = points(sel_points_ind,1:2);
+   
+   mask = false(m,n);
+   mask(sel_points_ind) = true;
+   
+   frame_prev = frame_prev.* uint8(mask);
+   
+   vel_wheel = [];      % vector of estimated wheel velocity between two consecutive frames
+
+   %%
    for i=2:2
        
-        frame_next = inframe(:,:,:,i);
+        frame_next = rgb2gray(imread([frameDir, frames(i).name]));
+        frame_next = frame_next.* uint8(mask);
         
         [vx, vy, ~] = Coarse2FineTwoFrames(frame_prev, frame_next, OF_para);
         
-        figure, imshow(frame_prev), hold on;
-        quiver(vx, vy);
+        Vxy = [ vx(sel_points_ind), vy(sel_points_ind)]';
         
+        theta = wheel_motion_estimation( sel_points, Vxy, wheel_param);
+        
+%         vel_wheel =  [vel_wheel; theta];
+
         frame_prev = frame_next;
         
    end
 
    
-
+    
 end
            
 
