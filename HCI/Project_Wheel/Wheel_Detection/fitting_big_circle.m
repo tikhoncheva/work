@@ -63,7 +63,7 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     network_ID1 = strrep(network_ID, '_', ' ');
     videoName1 = strrep(videoName, '_', ' ');
     
-    g1= figure;%('Visible', 'off'); 
+    g1= figure('Visible', 'off'); 
     imshow(I); hold on;
     plot(x+xp,y+yp,'LineWidth',2.5,'Color','green');
     plot(x+xp,y+yp,'Color','red');
@@ -71,7 +71,7 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     title(sprintf( '%s, %s p.o, %s, %s', maus_ID1, cal_time1, network_ID1, videoName1));
     % axis equal;
     hold off;
-%     saveas(g1, [mainDir, 'result_', videoName, '_2.png'])
+    saveas(g1, [mainDir, 'result_', videoName, '_2.png'])
 %     saveas(g1, [mainDir, 'result_', maus_ID, '_', cal_time, '_', network_ID, '_2.png'])
 
 

@@ -10,8 +10,8 @@ pathVideos = '/export/home/etikhonc/Documents/Work/Videos/Wheel/';
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 
 maus_ID = 'Maus_1';
-cal_time = 'cal_5_days';
-network_ID = 'Network_1_old';
+cal_time = 'cal_1_day';
+network_ID = 'Network_1_new';
 
 path_d2 = [pathFrames, maus_ID, filesep];
 path_d3 = [path_d2, cal_time, filesep];   
@@ -23,6 +23,15 @@ d4 = dir(path_d4);
 issub = [d4(:).isdir]; 
 nameFolds_frames = {d4(issub).name}';
 nameFolds_frames(ismember(nameFolds_frames,{'.','..'})) = [];
+
+filter = strfind(nameFolds_frames, '_Trial_');
+emptyCells = cellfun(@isempty, filter);
+nameFolds_frames(emptyCells) = [];
+
+
+% filter = strfind(nameFolds_frames, '_big_set');
+% emptyCells = cellfun(@isempty, filter);
+% nameFolds_frames(emptyCells) = [];
 
 nFramesets = size(nameFolds_frames,1);
 
@@ -40,10 +49,12 @@ OF_para = [alpha,ratio,minWidth,nOuterFPIterations,nInnerFPIterations,nSORIterat
 % for each set of frames
 for j = 1:nFramesets
    videoName = nameFolds_frames{j,1};
-   videoName = videoName(8:end);
+%    videoName = videoName(8:end-8);
+    videoName = videoName(8:end);
 
    fprintf('---%s ... \n', videoName);
    
+   % estimated parameters of the wheel
    filename_wheel_coord = [ videoName, '_wheel_param.mat'];
    load( [path_d4, filename_wheel_coord]);
    
@@ -52,14 +63,16 @@ for j = 1:nFramesets
   
     
    % Get list of all jpg files in folder
-   frameDir = [path_d4, 'frames_', videoName, filesep];
+   frameDir = [path_d4, nameFolds_frames{j,1}, filesep];
    frames = dir([frameDir,'*.jpg']);
    
-   nFrame = size(frames,1);
+   nFrames = size(frames,1);
 
    % % run through all frames and estimate velocity of the wheel
    
-   frame_prev = rgb2gray(imread([frameDir, frames(1).name]));
+   frame_prev = imread([frameDir, frames(1).name]);
+   frame_prev = rgb2gray(frame_prev);
+   ind_prev = 1;
    
    [m,n] = size(frame_prev);
    
@@ -75,29 +88,50 @@ for j = 1:nFramesets
    mask = false(m,n);
    mask(sel_points_ind) = true;
    
-   frame_prev = frame_prev.* uint8(mask);
+   mframe_prev = frame_prev.* uint8(mask);
    
-   vel_wheel = [];      % vector of estimated wheel velocity between two consecutive frames
+   vel_wheel_l1 = [];      % vector of estimated wheel velocity between two consecutive frames
+   vel_wheel_l2 = [];      % vector of estimated wheel velocity between two consecutive frames
 
    %%
-   for i=2:2
-       
-        frame_next = rgb2gray(imread([frameDir, frames(i).name]));
-        frame_next = frame_next.* uint8(mask);
+   for i=2:100 % nFrames
+        frame_next = imread([frameDir, frames(i).name]);
+        frame_next = rgb2gray(frame_next);
+        mframe_next = frame_next.* uint8(mask);
+        ind_next = i;
         
-        [vx, vy, ~] = Coarse2FineTwoFrames(frame_prev, frame_next, OF_para);
+        [vx, vy] = Coarse2FineTwoFrames(mframe_prev, mframe_next, OF_para);
         
         Vxy = [ vx(sel_points_ind), vy(sel_points_ind)]';
         
-        theta = wheel_motion_estimation( sel_points, Vxy, wheel_param);
+        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, Vxy, wheel_param, 'l1');
+        vel_wheel_l1 =  [vel_wheel_l1; [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy]];
         
-%         vel_wheel =  [vel_wheel; theta];
+        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, Vxy, wheel_param, 'l2');
+        vel_wheel_l2 =  [vel_wheel_l2; [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy]];
 
         frame_prev = frame_next;
+        mframe_prev = mframe_next;
+        ind_prev = ind_next;
         
    end
-
    
+   %%
+   % save estimaed wheel motion (rad/frame) in a file
+   fileID = fopen([path_d4, videoName, '_wheel_motion_l1.txt'],'w');
+   
+   fprintf(fileID,'  frame   \t motion (rad/frame) \t summary error in frame \n');
+   fprintf(fileID,'%05d-%05d \t     %2.3f          \t %2.3f \n', vel_wheel_l1(:,1:4)');
+   
+   fclose(fileID);
+   
+   % save estimaed wheel motion (rad/frame) in a file
+   fileID = fopen([path_d4, videoName, '_wheel_motion_l2.txt'],'w');
+   
+   fprintf(fileID,'  frame   \t motion (rad/frame) \t summary error in frame\n');
+   fprintf(fileID,'%05d-%05d \t     %2.3f          \t %2.3f \n', vel_wheel_l2(:,1:4)');
+   
+   fclose(fileID);
     
 end
            
