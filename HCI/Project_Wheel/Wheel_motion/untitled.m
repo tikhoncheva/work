@@ -37,7 +37,7 @@ nFramesets = size(nameFolds_frames,1);
 
 % set optical flow parameters (see Coarse2FineTwoFrames.m for the definition of the parameters)
 alpha = 0.012;
-ratio = 0.75;
+ratio = 0.85;
 minWidth = 20;
 nOuterFPIterations = 3;
 nInnerFPIterations = 1;
@@ -70,45 +70,47 @@ for j = 1:nFramesets
 
    % % run through all frames and estimate velocity of the wheel
    
-   frame_prev = imread([frameDir, frames(1).name]);
+   ind_prev = 47;
+   frame_prev = imread([frameDir, frames(ind_prev).name]);
    frame_prev = rgb2gray(frame_prev);
-   ind_prev = 1;
    
    [m,n] = size(frame_prev);
-   
+     
    % select area around wheels
-   margin = 40; 
+   margin = 5; 
    
    points = [repmat((1:m)',n,1), kron((1:n)',ones(m,1)) ];
    rad = sqrt((points(:,1)-y0).^2 + (points(:,2)-x0).^2);
    
    sel_points_ind = ( rad>=R-margin & rad<=R+margin );
    sel_points = points(sel_points_ind,1:2);
+   sel_points(:,[1 2]) = sel_points(:,[2 1]);
    
    mask = false(m,n);
    mask(sel_points_ind) = true;
    
    mframe_prev = frame_prev.* uint8(mask);
    
-   vel_wheel_l1 = [];      % vector of estimated wheel velocity between two consecutive frames
-   vel_wheel_l2 = [];      % vector of estimated wheel velocity between two consecutive frames
-
+   vel_wheel_l1 = zeros(1,7);      % vector of estimated wheel velocity between two consecutive frames
+   vel_wheel_l2 = zeros(1,7);      % vector of estimated wheel velocity between two consecutive frames
+   
    %%
-   for i=2:100 % nFrames
+   for i=48:48 % nFrames
+   
         frame_next = imread([frameDir, frames(i).name]);
         frame_next = rgb2gray(frame_next);
         mframe_next = frame_next.* uint8(mask);
         ind_next = i;
         
-        [vx, vy] = Coarse2FineTwoFrames(mframe_prev, mframe_next, OF_para);
+        [Vx, Vy] = Coarse2FineTwoFrames(frame_prev, frame_next, OF_para);
         
-        Vxy = [ vx(sel_points_ind), vy(sel_points_ind)]';
+        V = [ Vx(sel_points_ind), Vy(sel_points_ind)]';
         
-        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, Vxy, wheel_param, 'l1');
-        vel_wheel_l1 =  [vel_wheel_l1; [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy]];
+        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, V, wheel_param, 'l1');
+        vel_wheel_l1(1,:) = [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy];
         
-        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, Vxy, wheel_param, 'l2');
-        vel_wheel_l2 =  [vel_wheel_l2; [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy]];
+        [theta, er, nIn_x, nIn_y, nIn_xy] = wheel_motion_estimation( sel_points, V, wheel_param, 'l2');
+        vel_wheel_l2(1,:) = [ind_prev, ind_next, theta, er, nIn_x, nIn_y, nIn_xy];
 
         frame_prev = frame_next;
         mframe_prev = mframe_next;
