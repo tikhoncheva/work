@@ -31,7 +31,7 @@ nameFolds_frames(emptyCells) = [];
 
 filter = strfind(nameFolds_frames, '_big_set');
 emptyCells = cellfun(@isempty, filter);
-nameFolds_frames(~emptyCells) = [];
+nameFolds_frames(emptyCells) = [];
 
 nFramesets = size(nameFolds_frames,1);
 
@@ -50,10 +50,10 @@ OF_para = [alpha,ratio,minWidth,nOuterFPIterations,nInnerFPIterations,nSORIterat
 for j = 1:nFramesets
    videoName = nameFolds_frames{j,1};
    videoName = videoName(8:end);
-   videoName_short = videoName;
+   videoName_short = videoName(1:end-8);
+%     videoName = videoName(8:end);
 
    fprintf('---%s ... \n', videoName);
-   
    tic;
    
    pathResults = [path_d4, 'frames_', videoName, filesep, 'results', filesep];
@@ -76,7 +76,7 @@ for j = 1:nFramesets
    
    ind_prev = 1;
    frame_prev = imread([frameDir, frames(ind_prev).name]);
-   frame_prev = rgb2gray(frame_prev);
+%    frame_prev = rgb2gray(frame_prev);
    
    [m,n] = size(frame_prev);
      
@@ -100,11 +100,11 @@ for j = 1:nFramesets
    vel_wheel_l1_greedy = zeros(nFrames,4);      % vector of estimated wheel velocity between two consecutive frames
    
    %%
-   for i=2:nFrames
+   for i=2:2%nFrames
         fprintf('   iteration %d from %d \n', i, nFrames);
         
         frame_next = imread([frameDir, frames(i).name]);
-        frame_next = rgb2gray(frame_next);
+%         frame_next = rgb2gray(frame_next);
         mframe_next = frame_next.* uint8(mask);
         ind_next = i;
         

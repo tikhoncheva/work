@@ -2,7 +2,7 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
 
     framesDir = [mainDir, 'frames_', videoName, '/'];
 
-    filename = [mainDir, filename_scircle_centers];
+    filename = [framesDir, 'results', filesep, filename_scircle_centers];
     load(filename);
 
     filename_wheel_param = [ videoName, '_wheel_param.mat'];
@@ -51,7 +51,7 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     r = best(3); x = best(1); y = best(2);
     
     wheel_param = [x,y,r];
-    save( [mainDir, '/', filename_wheel_param], 'wheel_param');
+    save( [framesDir, 'results', filesep, filename_wheel_param], 'wheel_param');
 
     ang=0:0.01:2*pi; 
     xp=r*cos(ang);
@@ -71,7 +71,7 @@ function fitting_big_circle(mainDir, maus_ID, cal_time, network_ID, videoName, f
     title(sprintf( '%s, %s p.o, %s, %s', maus_ID1, cal_time1, network_ID1, videoName1));
     % axis equal;
     hold off;
-    saveas(g1, [mainDir, 'result_', videoName, '_2.png'])
+    saveas(g1, [framesDir, 'results', filesep, 'result_', videoName, '_2.png'])
 %     saveas(g1, [mainDir, 'result_', maus_ID, '_', cal_time, '_', network_ID, '_2.png'])
 
 

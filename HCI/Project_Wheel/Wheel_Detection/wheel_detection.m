@@ -65,7 +65,12 @@ for i_d1 = 1: nSub_d1
                videoName = videoName(8:end);
                
                fprintf('---%s ...', videoName);
-               
+                              
+               % Create new folder 'results' if it doesn't exist already.
+               if ~exist([path_d4, 'frames_', videoName, filesep, 'results'], 'dir')
+                   mkdir([path_d4, 'frames_', videoName, filesep, 'results']);
+               end
+              
                filename_scircle_centers = [ videoName, '_small_circle_centers_095.mat'];
                 
 %                t1 = tic;

@@ -6,7 +6,6 @@ clc;
 
 pathVideos = '/export/home/etikhonc/Documents/Work/Videos/Wheel/';
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
-filename_scircle_centers = 'small_circle_centers_095.mat';
 
 maus_ID = 'Maus_1';
 cal_time = 'cal_5_days';
@@ -31,8 +30,15 @@ for j = 1:nFramesets
    videoName = videoName(8:end);
 
    fprintf('---%s ...', videoName);
-   filename = [path_d4, filename_scircle_centers];
-   load(filename);
+   
+   filename_scircle_centers = [ videoName, '_small_circle_centers_095.mat'];
+
+   % Create new folder 'results' if it doesn't exist already.
+   if ~exist([path_d4, 'frames_', videoName, filesep, 'results'], 'dir')
+        mkdir([path_d4, 'frames_', videoName, filesep, 'results']);
+   end   
+%    filename = [path_d4, filename_scircle_centers];
+%    load(filename);
 
    t1 = tic;
    detection_small_circle_centers(path_d4, videoName, filename_scircle_centers);

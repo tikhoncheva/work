@@ -31,6 +31,6 @@ function [filename_scircle_centers] = detection_small_circle_centers(mainDir, vi
 
     points = res;
     
-    save( [mainDir, '/', filename_scircle_centers], 'points');
+    save( [frameDir, 'results', filesep, filename_scircle_centers], 'points');
 
 end

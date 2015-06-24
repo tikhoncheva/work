@@ -8,7 +8,6 @@ clc;
 
 pathVideos = '/export/home/etikhonc/Documents/Work/Videos/Wheel/';
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
-filename_scircle_centers = 'small_circle_centers_095.mat';
 
 d1 = dir(pathVideos);
 
