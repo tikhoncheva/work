@@ -100,7 +100,7 @@ for j = 1:nFramesets
    vel_wheel_l1_greedy = zeros(nFrames,4);      % vector of estimated wheel velocity between two consecutive frames
    
    %%
-   for i=2:2%nFrames
+   for i=2:nFrames
         fprintf('   iteration %d from %d \n', i, nFrames);
         
         frame_next = imread([frameDir, frames(i).name]);
@@ -156,7 +156,7 @@ for j = 1:nFramesets
    
    fclose(fileID);
     
-   fprints('   finished in %5.2f sec', toc);
+   fprintf('   finished in %5.2f sec', toc);
    %%
 %    for i=1:nFrames;
 %        frame = imread([frameDir, frames(i).name]); frame = rgb2gray(frame);
