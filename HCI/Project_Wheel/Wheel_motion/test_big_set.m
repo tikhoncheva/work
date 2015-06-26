@@ -3,10 +3,9 @@ clear all;
 close all;
 clc;
 
-addpath(genpath('../Wheel_Detection/'));
-addpath(genpath('/export/home/etikhonc/Documents/Tools/OpticalFlow'));
+addpath(genpath('../'));
+addpath(genpath('../../Tools/OpticalFlow'));
 
-pathVideos = '/export/home/etikhonc/Documents/Work/Videos/Wheel/';
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 
 maus_ID = 'Maus_1';
@@ -37,7 +36,7 @@ nFramesets = size(nameFolds_frames,1);
 
 % set optical flow parameters (see Coarse2FineTwoFrames.m for the definition of the parameters)
 alpha = 0.012;
-ratio = 0.85;
+ratio = 0.75;
 minWidth = 20;
 nOuterFPIterations = 3;
 nInnerFPIterations = 1;
@@ -45,7 +44,7 @@ nSORIterations = 20;
     
 OF_para = [alpha,ratio,minWidth,nOuterFPIterations,nInnerFPIterations,nSORIterations];
 
-
+%%
 % for each set of frames
 for j = 1:nFramesets
    videoName = nameFolds_frames{j,1};
@@ -75,9 +74,7 @@ for j = 1:nFramesets
    % % run through all frames and estimate velocity of the wheel
    
    ind_prev = 1;
-   frame_prev = imread([frameDir, frames(ind_prev).name]);
-%    frame_prev = rgb2gray(frame_prev);
-   
+   frame_prev = imread([frameDir, frames(ind_prev).name]);  
    [m,n] = size(frame_prev);
      
    % select area around wheels
@@ -86,7 +83,7 @@ for j = 1:nFramesets
    points = [repmat((1:m)',n,1), kron((1:n)',ones(m,1)) ];
    rad = sqrt((points(:,1)-y0).^2 + (points(:,2)-x0).^2);
    
-   sel_points_ind = ( rad>=R-margin & rad<=R+margin );
+   sel_points_ind = ( rad>=R-2*margin & rad<=R-margin);%+margin );
    sel_points = points(sel_points_ind,1:2);
    sel_points(:,[1 2]) = sel_points(:,[2 1]);
    
@@ -95,35 +92,44 @@ for j = 1:nFramesets
    
    mframe_prev = frame_prev.* uint8(mask);
    
-   vel_wheel_l1 = zeros(nFrames,4);      % vector of estimated wheel velocity between two consecutive frames
-%    vel_wheel_l2 = zeros(1,4);      % vector of estimated wheel velocity between two consecutive frames
-   vel_wheel_l1_greedy = zeros(nFrames,4);      % vector of estimated wheel velocity between two consecutive frames
    
    %%
-   for i=2:nFrames
-        fprintf('   iteration %d from %d \n', i, nFrames);
+   nStart = ind_prev; nStop = nFrames;
+   step = 3;
+   nIterations = floor((nStop-nStart)/step)+1;
+   
+   vel_wheel_l1 = zeros(nIterations,4);         % vector of estimated wheel velocity between two consecutive frames
+   vel_wheel_l1_greedy = zeros(nIterations,4);  % vector of estimated wheel velocity between two consecutive frames   
+   
+   for i= nStart+step:step:nStop
+        it = (i-nStart)/step;
+        fprintf('   iteration %d from %d \n', (i-nStart)/step, nIterations);
         
         frame_next = imread([frameDir, frames(i).name]);
-%         frame_next = rgb2gray(frame_next);
         mframe_next = frame_next.* uint8(mask);
         ind_next = i;
         
+        t1 = tic;
         [Vx, Vy] = Coarse2FineTwoFrames(frame_prev, frame_next, OF_para);
+        fprintf('     Optical flow: %.03f \n', toc(t1));
+        
         Vabs = sqrt(Vx.^2 + Vy.^2);
-        Vabs(Vabs<1) = 0;
-        Vx(Vabs<1) = 0;
-        Vy(Vabs<1) = 0;
+%         Vabs(Vabs<1) = 0;
+%         Vx(Vabs<1) = 0;
+%         Vy(Vabs<1) = 0;
     
         V = [ Vx(sel_points_ind), Vy(sel_points_ind)]';
         
+        t2 = tic;
         [theta, er, ~] = wheel_ME( sel_points, V, wheel_param, 'l1');
-        vel_wheel_l1(i,:) = [ind_prev, ind_next, theta, er];
+        vel_wheel_l1(it+1,:) = [ind_prev, ind_next, theta, er];
+        fprintf('     Velocity estimation: %.03f \n', toc(t2));
         
+        t3 = tic;
         [theta1, er1] = greedy_ME( sel_points, V, wheel_param, 'l1');
-        vel_wheel_l1_greedy(i,:) = [ind_prev, ind_next, theta1, er1];
-        
-%         [theta, er, ~] = wheel_ME( sel_points, V, wheel_param, 'l2');
-%         vel_wheel_l2(1,:) = [ind_prev, ind_next, theta, er];
+        vel_wheel_l1_greedy(it+1,:) = [ind_prev, ind_next, theta1, er1];
+        fprintf('     Velocity estimation: %.03f \n', toc(t3));
+       
 
         frame_prev = frame_next;
         mframe_prev = mframe_next;
@@ -133,60 +139,60 @@ for j = 1:nFramesets
    
    %%
    % save estimaed wheel motion (rad/frame) in a file
-   fileID = fopen([pathResults, videoName, '_wheel_motion_l1.txt'],'w');
-   
+   fileID = fopen([pathResults, videoName, '_wheel_motion_l1.txt'],'w'); 
    fprintf(fileID,'  frame   \t motion (rad/frame) \t summary error in frame \n');
    fprintf(fileID,'%05d-%05d \t     %2.3f          \t %2.3f \n', vel_wheel_l1(:,1:4)');
-   
    fclose(fileID);
-   
-%    % save estimaed wheel motion (rad/frame) in a file
-%    fileID = fopen([path_d4, videoName, '_wheel_motion_l2.txt'],'w');
-%    
-%    fprintf(fileID,'  frame   \t motion (rad/frame) \t summary error in frame\n');
-%    fprintf(fileID,'%05d-%05d \t     %2.3f          \t %2.3f \n', vel_wheel_l2(:,1:4)');
-%    
-%    fclose(fileID);
 
    % save estimaed wheel motion (rad/frame) in a file
    fileID = fopen([pathResults, videoName, '_wheel_motion_l1_greedy.txt'],'w');
-   
    fprintf(fileID,'  frame   \t motion (rad/frame) \t summary error in frame\n');
    fprintf(fileID,'%05d-%05d \t     %2.3f          \t %2.3f \n', vel_wheel_l1_greedy(:,1:4)');
-   
    fclose(fileID);
     
-   fprintf('   finished in %5.2f sec', toc);
+   fprintf('   finished in %5.2f sec\n', toc);
    %%
-%    for i=1:nFrames;
-%        frame = imread([frameDir, frames(i).name]); frame = rgb2gray(frame);
-%        
-%        ang=0:0.01:2*pi;
-%        x1 = R*cos(ang); y1 = R*sin(ang);
-%        
-%        if i==1
-%            theta = pi/2;
-%        else
-%            theta = theta - vel_wheel_l1(i,3);
-%        end
-%        
-%        f1 = figure('Visible', 'off'); 
-%        imshow(frame), hold on;
-%        plot(x0+x1,y0+y1,'LineWidth',2,'Color','green'), hold on;
-%        plot([x0-R*cos(theta), x0+R*cos(theta)], ...
-%             [y0+R*sin(theta), y0-R*sin(theta)], 'LineWidth',2,'Color','green'), hold on;
-%        plot([x0-R*cos(theta+pi/2), x0+R*cos(theta+pi/2)], ...
-%             [y0+R*sin(theta+pi/2), y0-R*sin(theta+pi/2)], 'LineWidth',2,'Color','green'), hold on;
-%        plot([x0-R*cos(theta+pi/4), x0+R*cos(theta+pi/4)], ...
-%             [y0+R*sin(theta+pi/4), y0-R*sin(theta+pi/4)], 'LineWidth',2,'Color','green'), hold on;
-%        plot([x0-R*cos(theta-pi/4), x0+R*cos(theta-pi/4)], ...
-%             [y0+R*sin(theta-pi/4), y0-R*sin(theta-pi/4)], 'LineWidth',2,'Color','green'), hold off;
-% 
-%         
-%        saveas(f1, [path_d4, 'output_wheel_motion', filesep,  sprintf('frame-%05d.jpg', i)]);
-%        
-%    end
+   
+%    A = dlmread([pathResults, videoName, '_wheel_motion_l1_greedy.txt'], '\t');
+%    vel_wheel_l1_greedy(:,3) = A(:,3);
+   
+   %%
+   theta = pi/2;
+   for i=1:nIterations
        
+       frame = imread([frameDir, frames(nStart + step*(i-1)).name]); 
+       
+       ang=0:0.01:2*pi;
+       x1 = R*cos(ang); y1 = R*sin(ang);
+       
+       if i==1
+           theta = pi/2;
+       else
+           theta = theta - vel_wheel_l1_greedy(i,3);
+       end
+       
+       f1 = figure('Visible', 'off'); 
+       imagesc(frame), colormap(gray), hold on;
+       plot(x0+x1,y0+y1,'LineWidth',2,'Color','green'), hold on;
+       plot([x0-R*cos(theta), x0+R*cos(theta)], ...
+            [y0+R*sin(theta), y0-R*sin(theta)], 'LineWidth',2,'Color','green'), hold on;
+       plot([x0-R*cos(theta+pi/2), x0+R*cos(theta+pi/2)], ...
+            [y0+R*sin(theta+pi/2), y0-R*sin(theta+pi/2)], 'LineWidth',2,'Color','green'), hold on;
+       plot([x0-R*cos(theta+pi/4), x0+R*cos(theta+pi/4)], ...
+            [y0+R*sin(theta+pi/4), y0-R*sin(theta+pi/4)], 'LineWidth',2,'Color','green'), hold on;
+       plot([x0-R*cos(theta-pi/4), x0+R*cos(theta-pi/4)], ...
+            [y0+R*sin(theta-pi/4), y0-R*sin(theta-pi/4)], 'LineWidth',2,'Color','green'), hold off;
+
+        
+       saveas(f1, [frameDir, 'results/output_wheel_motion_greedy', filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);
+       
+   end
+   
+   makeVideoFromFrames([frameDir, 'results', filesep, 'output_wheel_motion_greedy'],...
+                      [frameDir, 'results', filesep], ...
+                      [videoName, '_wheel_motion_greedy']);
+       
+   
 end
            
 
