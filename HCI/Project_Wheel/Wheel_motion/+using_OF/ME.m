@@ -1,8 +1,8 @@
 %% Estimate motion of the wheel given velocity of the single points
+%
 % Find best theta, thats fits the model
-%    min_theta || M - V||_l1
-% where M is the modeled velocity of the given points:
-% M = (Mx1y1, Mx2y2, ..., Mxnyn),
+%    min_theta || M - V||_l, where l is l1 or l2 norm and M is the modeled
+% velocity of the given points:  M = (Mx1y1, Mx2y2, ..., Mxnyn),
 %
 % Mxy = (mx, my)
 % mx = theta * R * sin(alpha)
@@ -18,7 +18,7 @@
 % theta         estimated velocity of the wheel
 % error         model error 
 
-function [theta, error, M] = wheel_ME( points, V, wheel_param, norm)
+function [theta, error, M] = ME( points, V, wheel_param, norm)
     
     % (x0, y0) center of the wheel, R - it's center
     x0 = wheel_param(1); y0 = wheel_param(2); R = wheel_param(3);

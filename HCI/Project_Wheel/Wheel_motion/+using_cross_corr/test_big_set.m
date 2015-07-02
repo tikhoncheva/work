@@ -3,6 +3,9 @@ clear all;
 close all;
 clc;
 
+addpath(genpath('../'));
+addpath(genpath('../../Tools/OpticalFlow'));
+
 % 
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 maus_ID = 'Maus_1';
@@ -10,9 +13,9 @@ cal_time = 'cal_1_day';
 network_ID = 'Network_1_new';
 
 % method
-% method = 1;         % using optical flow
-%  method = 2;         % using cross correlation
-method = 3;         % using gradients
+%method = 1;         % using optical flow
+method = 2;         % using cross correlation
+%method = 3;         % using gradients
 
 % go into deep 4 inside the selected folder
 path_d2 = [pathFrames, maus_ID, filesep];
@@ -69,50 +72,19 @@ for j = 1:nFramesets
    switch method
        
        case 1  % Method 1: using optical flow
-            % set optical flow parameters (see Coarse2FineTwoFrames.m for the definition of the parameters)
-            alpha = 0.012;
-            ratio = 0.75;
-            minWidth = 40;
-            nOuterFPIterations = 3;
-            nInnerFPIterations = 1;
-            nSORIterations = 20;
-
-            OF_param = [alpha,ratio,minWidth,nOuterFPIterations,nInnerFPIterations,nSORIterations];
-
-            % width of the area around circle
-            margin = 5;
-
-            % run estiomation
-            vel_wheel = using_OF.motion_estimation(frames, wheel_param, margin, OF_param, ....
-                                                   fstart, fstop, fstep, frameDir);            
-            
-            Suffix = '_wheel_motion_using_OF';
-            
+           
+           
        case 2  % Method 2: using cross correlation
            
             % location of the initial a patch
             alpha0 = 85*pi/180;
-%             rx = round(x0 + R* cos(alpha0));
-%             ry = round(y0 - R* sin(alpha0));
-%             rect = [rx-100, ry-50, 300, 100];
-%             figure, imshow(imcrop(imread([frameDir, frames(1).name]), rect));
             
-            vel_wheel = using_cross_corr.motion_estimation(frames, wheel_param, alpha0, ...
-                                                                  fstart, fstop, fstep, frameDir);
+            vel_wheel = motion_estimation(frames, wheel_param, alpha0, fstart, fstop, fstep, frameDir);
             
-            Suffix = '_wheel_motion_using_cross_correlation';
+            Suffix = '_wheel_motion_without_OF';
            
        case 3  % Method 3: using image gradient
-            
-            % width of the area around circle
-            margin = 5;
-
-            % run estiomation
-            vel_wheel = using_img_grad.motion_estimation(frames, wheel_param, margin,  ....
-                                                   fstart, fstop, fstep, frameDir);            
-            
-            Suffix = '_wheel_motion_using_image_gradient';
-            
+           
        otherwise
            fprintf('Error: Select one of three possible methods:\n');
            fprintf(' Method = 1: using optical flow\n');

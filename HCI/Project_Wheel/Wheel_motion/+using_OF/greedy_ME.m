@@ -1,4 +1,5 @@
- %% Greedy approach for wheel motion estimation
+%% Greedy approach for wheel motion estimation
+% call ME-function in greeady way
  
 % Find best theta, thats fits the model
 %    min_theta || M - V||_l1
@@ -41,7 +42,7 @@ function [theta, error] = greedy_ME( points, V, wheel_param, norm)
     
     while (nOut1~=nOut2 && nOut2~=n)
         
-       [theta, ~, ~] = wheel_ME( points(~ind,1:2), V(1:2,~ind), wheel_param, norm); 
+       [theta, ~, ~] = using_OF.ME( points(~ind,1:2), V(1:2,~ind), wheel_param, norm); 
        
        % Modeled velocity
        M(1,:) = theta*R*sin(alpha);
