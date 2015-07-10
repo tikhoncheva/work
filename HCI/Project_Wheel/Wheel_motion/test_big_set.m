@@ -3,6 +3,8 @@ clear all;
 close all;
 clc;
 
+addpath(genpath('../../Tools/OpticalFlow'))
+
 % 
 pathFrames = '/export/home/etikhonc/Documents/Work/Videos/Wheel_frames/';
 maus_ID = 'Maus_1';
@@ -10,9 +12,9 @@ cal_time = 'cal_1_day';
 network_ID = 'Network_1_new';
 
 % method
-% method = 1;         % using optical flow
+method = 1;         % using optical flow
 %  method = 2;         % using cross correlation
-method = 3;         % using gradients
+% % method = 3;         % using gradients
 
 % go into deep 4 inside the selected folder
 path_d2 = [pathFrames, maus_ID, filesep];

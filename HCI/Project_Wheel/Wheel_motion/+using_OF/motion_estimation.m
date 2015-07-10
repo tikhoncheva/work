@@ -26,8 +26,7 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, margin, OF_param, 
    fprintf('===========================================================\n');
    fprintf(' Motion estimation\n');
    fprintf('===========================================================\n');
-   
-   addpath(genpath('../../../Tools/OpticalFlow'));
+  
    
    % wheel parameters
    x0 = wheel_param(1); y0 = wheel_param(2); R = wheel_param(3);
