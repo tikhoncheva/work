@@ -8,13 +8,12 @@ function [nFrames] = extractFramesFromVideo( pathVideo, pathFrames, videoName)
     end
 
     mov = VideoReader([pathVideo, videoName, '.avi']);
-%     display(mov);
 
     nFrames = 0;
     while hasFrame(mov)
         img = readFrame(mov);
         nFrames = nFrames+1;
-        imwrite(img, [pathFrames, newFolder, filesep, sprintf('frame-%05d.jpg', nFrames)]);
+        imwrite(img, [pathFrames, newFolder, filesep, sprintf('frame-%05d.jpg', nFrames)], 'Quality', 100);
     end
 
 
