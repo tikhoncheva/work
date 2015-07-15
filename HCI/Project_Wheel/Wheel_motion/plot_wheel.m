@@ -1,6 +1,9 @@
 
 function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Suffix, videoName)
     
+
+   addpath(genpath('../../Tools/kamarain_image_alignment/.'));
+   
    fprintf('===========================================================\n');
    fprintf(' Save frames\n');
    fprintf('===========================================================\n');
@@ -8,7 +11,7 @@ function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Su
    
    if isempty(vel_wheel)
 %        A = dlmread([pathFrames, 'results/', videoName, '_wheel_motion_without_OF.txt'], '\t');
-       A = dlmread([pathFrames, 'results/', videoName, Suffix, '.txt'], '\t');
+       A = dlmread([pathFrames, 'results/', videoName, Suffix, '.txt'], '\t', 1);
        vel_wheel(:,3) = A(:,3);  
    end
    
@@ -44,8 +47,8 @@ function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Su
             [y0+R*sin(theta+pi/4), y0-R*sin(theta+pi/4)], 'LineWidth',2,'Color','green'), hold on;
        plot([x0-R*cos(theta-pi/4), x0+R*cos(theta-pi/4)], ...
             [y0+R*sin(theta-pi/4), y0-R*sin(theta-pi/4)], 'LineWidth',2,'Color','green'), hold off;
-
-       saveas(f1, [pathFrames, 'results/output', Suffix, filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);        
+       axis off;
+       saveas(f1, [pathFrames, 'results/output', Suffix, filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);       
        close all;
    end
    fprintf('===========================================================\n');

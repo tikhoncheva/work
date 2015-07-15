@@ -44,8 +44,8 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
    
 
    % range of possible wheel rotation angles 
-   tmin = -0.01;
-   tmax = 0.01;
+   tmin = -0.05;
+   tmax = 0.05;
    tstep = 0.0005;
    nIt_theta = floor((tmax-tmin)/tstep)+1;
    
@@ -72,6 +72,9 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
         Y = zeros( nIt_theta, nP); % gray values of corresponding region on the second frame
         ix = 1;
         
+                    figure;
+            imshow(imcrop(frame, rect))
+        
         for theta = tmin:tstep:tmax
             
             % center coordinates of the moved patch
@@ -88,6 +91,8 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
             sel_points_preserved = sel_points;
             sel_points_preserved_ind = sub2ind( [m,n], sel_points_preserved(:,2), sel_points_preserved(:,1) );            
             
+            figure;
+            imshow(imcrop(frame_next, rect_new))
 %             M(1,:) = theta*R*sin(alpha);
 %             M(2,:) = theta*R*cos(alpha);
             

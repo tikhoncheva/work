@@ -3,6 +3,7 @@ clear all;
 close all;
 clc;
 
+addpath(genpath('../../Tools/kamarain_image_alignment/.'));
 addpath(genpath('../../Tools/OpticalFlow'))
 
 % 
@@ -12,8 +13,8 @@ cal_time = 'cal_1_day';
 network_ID = 'Network_1_new';
 
 % method
-method = 1;         % using optical flow
-%  method = 2;         % using cross correlation
+% method = 1;         % using optical flow
+ method = 2;         % using cross correlation
 % % method = 3;         % using gradients
 
 % go into deep 4 inside the selected folder
