@@ -3,7 +3,7 @@ clear all;
 close all;
 clc;
 
-addpath(genpath('../../Tools/kamarain_image_alignment/.'));
+addpath(genpath('../../Tools/altmany_export_fig/.'));
 addpath(genpath('../../Tools/OpticalFlow'))
 
 % 
@@ -13,7 +13,7 @@ cal_time = 'cal_1_day';
 network_ID = 'Network_1_new';
 
 % method
-% method = 1;         % using optical flow
+%  method = 1;         % using optical flow
  method = 2;         % using cross correlation
 % % method = 3;         % using gradients
 
@@ -64,7 +64,7 @@ for j = 1:nFramesets
    load( [pathResults, filename_wheel_coord]);
    
    % Frames to consider
-   fstart = 250;
+   fstart = 350;
    fstop = 400; %nFrames;
    fstep = 1;
    

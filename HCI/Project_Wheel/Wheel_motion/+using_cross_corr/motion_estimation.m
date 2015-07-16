@@ -58,22 +58,27 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
    nFramePairs = floor((fstop-1-fstart)/fstep)+1;  % number of frame pairs  
    vel_wheel = zeros(nFramePairs,4);  % vector of estimated wheel velocity between two consecutive frames   
    
-   for i= fstart:fstep:fstop-1
+   
+   eps = 0.0005;  % bound, under which we do not distinguish optical flow
+   ind_prev = fstart;
+   frame_prev = im2double(imread([frameDir, frames(ind_prev).name]));        % first frame in the pair
+%    for i = fstart:fstep:fstop-fstep
+   for i = (fstart+fstep):fstep:fstop
         t1 = tic;
         
         it = (i-fstart)/fstep; 
         fprintf('   iteration %d from %d \t', (i-fstart)/fstep, nFramePairs);
         
-        frame = im2double(imread([frameDir, frames(i).name]));        % first frame in the pair
-        frame_next = im2double(imread([frameDir, frames(i+1).name])); % second frame in the pair
+%         frame = im2double(imread([frameDir, frames(i).name]));        % first frame in the pair
+%         frame_next = im2double(imread([frameDir, frames(i+1).name])); % second frame in the pair
+        ind_next = i;
+        frame_next = im2double(imread([frameDir, frames(i).name])); % second frame in the pair
         
         % shift selected points in frame according to the wheel motion theta
         X = zeros( nIt_theta, nP); % gray values of moved patch from the first frame
         Y = zeros( nIt_theta, nP); % gray values of corresponding region on the second frame
         ix = 1;
         
-                    figure;
-            imshow(imcrop(frame, rect))
         
         for theta = tmin:tstep:tmax
             
@@ -91,8 +96,6 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
             sel_points_preserved = sel_points;
             sel_points_preserved_ind = sub2ind( [m,n], sel_points_preserved(:,2), sel_points_preserved(:,1) );            
             
-            figure;
-            imshow(imcrop(frame_next, rect_new))
 %             M(1,:) = theta*R*sin(alpha);
 %             M(2,:) = theta*R*cos(alpha);
             
@@ -109,7 +112,7 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
 %             sel_points_preserved_ind = sub2ind( [m,n], sel_points_preserved(:,2), sel_points_preserved(:,1) );
             
 
-            X(ix, :) = frame(sel_points_preserved_ind);
+            X(ix, :) = frame_prev(sel_points_preserved_ind);
             Y(ix, :) = frame_next(sel_points_new_ind);
 %             X(ix, ~rows_to_del) = frame(sel_points_preserved_ind);
 %             Y(ix, ~rows_to_del) = frame_next(sel_points_new_ind);
@@ -126,7 +129,15 @@ function [vel_wheel] = motion_estimation(frames, wheel_param, alpha0, fstart, fs
         [max_corr, max_corr_pos] = max(corr_coeff);  % take the best one
 
         theta = tmin + (max_corr_pos-1)*tstep;       % save corresponding rotation angle
-        vel_wheel(it+1,:) = [i, i+1, theta, max_corr];
+        
+        
+        if abs(theta)>eps
+           frame_prev = frame_next;    
+           ind_prev = ind_next;
+        end
+        
+        vel_wheel(it+1,:) = [ind_prev, ind_next, theta, max_corr];
+%         vel_wheel(it+1,:) = [i, i+1, theta, max_corr];
         
         fprintf(' %5.2f sec\n', toc(t1));
         

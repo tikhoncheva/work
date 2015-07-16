@@ -2,7 +2,7 @@
 function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Suffix, videoName)
     
 
-   addpath(genpath('../../Tools/kamarain_image_alignment/.'));
+   addpath(genpath('../../Tools/altmany_export_fig/.'));
    
    fprintf('===========================================================\n');
    fprintf(' Save frames\n');
@@ -36,8 +36,8 @@ function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Su
            theta = theta - vel_wheel(i,3);
        end
 
-       f1 = figure('Visible', 'off'); 
-       imagesc(frame), colormap(gray), hold on;
+       f1 = figure('Visible', 'off', 'units','normalized','outerposition', [0 0 1 1]); 
+       imagesc(1:size(frame,2), 1:size(frame,1), frame), colormap(gray), hold on;
        plot(x0+x1,y0+y1,'LineWidth',2,'Color','green'), hold on;
        plot([x0-R*cos(theta), x0+R*cos(theta)], ...
             [y0+R*sin(theta), y0-R*sin(theta)], 'LineWidth',2,'Color','green'), hold on;
@@ -48,7 +48,8 @@ function plot_wheel(frames, wheel_param, nStart, step, vel_wheel, pathFrames, Su
        plot([x0-R*cos(theta-pi/4), x0+R*cos(theta-pi/4)], ...
             [y0+R*sin(theta-pi/4), y0-R*sin(theta-pi/4)], 'LineWidth',2,'Color','green'), hold off;
        axis off;
-       saveas(f1, [pathFrames, 'results/output', Suffix, filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);       
+%        saveas(f1, [pathFrames, 'results/output', Suffix, filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);
+       export_fig([pathFrames, 'results/output', Suffix, filesep,  sprintf('frame-%05d.jpg', nStart + step*(i-1))]);
        close all;
    end
    fprintf('===========================================================\n');

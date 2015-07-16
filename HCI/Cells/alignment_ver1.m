@@ -119,7 +119,8 @@ for k = 2:nImages
     offset_y(k) = Y0;               
 %     imwrite(aligned_images(:,:,k), ['.', filesep, 'results_normxcorr', filesep, 'channel0', channelnumb, filsep,  sprintf('frame-%05d.jpg', k)], 'jpg');           
     
-    img1 = img2;
+%     img1 = img2;
+    img1 = aligned_images(m+1+Y0:2*m+Y0, n+1+X0:2*n+X0,k);
 end
 
 figure;
@@ -130,7 +131,7 @@ title('Normalized 2-D cross-correlation between frames');
 
 %%
 % save alignment shifts in a file
-fileID = fopen(['.', filesep, 'offset_channel0', channelnumb, '.txt'],'w');
+fileID = fopen(['.', filesep, 'offset_channel0', channelnumb, '_1.txt'],'w');
 fprintf(fileID,'  offset x   \t offset y \n');
 fprintf(fileID,'  %5d        \t     %5d  \n', [offset_x, offset_y]');
 fclose(fileID);
