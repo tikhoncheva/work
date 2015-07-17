@@ -1,7 +1,9 @@
+clc; clear;
 %% read image of two frames
 fname_channel1 = '2014_09_10__17_08_13h__channel01';
 fname_channel2 = '2014_09_10__17_08_13h__channel02';
 
+settings = 'test';
 %%
 fName_tiff = './2014_09_10__17_08_13h__channel01.tif';
 info = imfinfo(fName_tiff);
@@ -13,8 +15,8 @@ GaussianFilter = fspecial('gaussian',[5 5], 0.5);
 channel1_16bit = [];
 for k = 1:T
     img16 = imread(fName_tiff, k, 'Info', info);
-    img16f = imfilter(img16, GaussianFilter, 'replicate');
-    channel1_16bit = cat(3, channel1_16bit, img16f);
+%     img16f = imfilter(img16, GaussianFilter, 'replicate');
+    channel1_16bit = cat(3, channel1_16bit, img16);
 end
 
 
@@ -25,8 +27,8 @@ T = numel(info);
 channel2_16bit = [];
 for k = 1:T
     img16 = imread(fName_tiff, k, 'Info', info);
-    img16f = imfilter(img16, GaussianFilter, 'replicate');
-    channel2_16bit = cat(3, channel2_16bit, img16f);
+%     img16f = imfilter(img16, GaussianFilter, 'replicate');
+    channel2_16bit = cat(3, channel2_16bit, img16);
 end
 
 
@@ -55,8 +57,8 @@ end
 
 %% read offset matrices
 
-offset = dlmread(['.', filesep, 'offset_channel01_1.txt'], '\t', 1, 0);
-offset(frames2del,:) = [];
+offset = dlmread(['.', filesep, 'offset_channel01_', settings, '.txt'], '\t', 1, 0);
+% offset(frames2del,:) = [];
 
 % offset_x = offset(:,1);
 % offset_y = offset(:,2); 
@@ -120,10 +122,11 @@ s = s./double(channel2_16bit_aligned);
 channel2_16bit_aligned(ind_div0) = 0;
 
 s_8 = [];
+mi = min(s(:));
+ma = max(s(:));
+
 for k = 1:T    
     img = s(:,:,k);
-    mi = min(img(:));
-    ma = max(img(:));
     img = uint8(255*(img-mi)/(ma-mi)); 
     s_8 = cat(3, s_8, img);
 end
@@ -133,9 +136,9 @@ end
 % s_16 = s_16./repmat(sum_s,1,1,T);
 
 
-imwrite(s_8(:,:,1), ['.', filesep, 's_smoothed.tif']);
+imwrite(s_8(:,:,1), ['.', filesep, 's_', settings, '.tif']);
 for k = 2:T
-    imwrite(s_8(:,:,k), ['.', filesep, 's_smoothed.tif'], 'WriteMode','append');
+    imwrite(s_8(:,:,k), ['.', filesep, 's_', settings, '.tif'], 'WriteMode','append');
 end
 
 
@@ -188,10 +191,10 @@ end
 ns = ns_8bit;
 %% assign gray values to percentiel values and save result
 
-imwrite(ns(:,:,1), ['.', filesep, 'ns_smoothed.tif']);
+imwrite(ns(:,:,1), ['.', filesep, 'ns_', settings, '.tif']);
 % imwrite(I, ['.', filesep, 'ns', filesep, sprintf('frame-%05d.jpg', 1)]);
 for t = 2:T
-    imwrite(ns(:,:,t), ['.', filesep, 'ns_smoothed.tif'], 'WriteMode','append');
+    imwrite(ns(:,:,t), ['.', filesep, 'ns_', settings, '.tif'], 'WriteMode','append');
 %     imwrite(I, ['.', filesep, 'ns', filesep, sprintf('frame-%05d.jpg', t)]);
 end
 
