@@ -1,7 +1,5 @@
 clc; clear;
 
-settings = 'Gaussian';
-
 %% Channel 1
 fName_tiff = './2014_09_10__17_08_13h__channel01.tif';
 
@@ -54,60 +52,29 @@ channel2_d(:,:, frames2del) = [];
 nImages = size(channel1_d, 3);
 
 %%
-% 
-% DiskFilter = fspecial('disk',1);
-% subsampleRate = 1;
-% 
-% channel1_dfs = [];
-% channel2_dfs = [];
-% for k = 1:nImages
-%     
-%     img1 = channel1_d(:,:,k);
-%     img2 = channel2_d(:,:,k);
-%     
-%     img1s = img1(1:subsampleRate:end, 1:subsampleRate:end);
-%     img2s = img2(1:subsampleRate:end, 1:subsampleRate:end);
-% 
-% %     img1fs = img1s;
-% %     img2fs = img2s;
-% 
-% %     img1fs = imfilter(img1s, DiskFilter, 'replicate');
-% %     img2fs = imfilter(img2s, DiskFilter, 'replicate');
-% 
-%     img1fs = imgaussfilt(img1s, 1.5);
-%     img2fs = imgaussfilt(img2s, 1.5);
-%     
-% %     img1fs = medfilt2(img1s);
-% %     img2fs = medfilt2(img2s);
-% 
-% %     [img1fs,~] = wiener2(img1s,[3 3]);
-% %     [img2fs,~] = wiener2(img2s,[3 3]);
-% 
-% %     img1fs = img1f(1:subsampleRate:end, 1:subsampleRate:end);
-% %     img2fs = img2f(1:subsampleRate:end, 1:subsampleRate:end);
-% 
-%     channel1_dfs = cat(3, channel1_dfs, img1fs);
-%     channel2_dfs = cat(3, channel2_dfs, img2fs);
-% end
-
-
-%%
 
 % Template image
-T = channel1_d(:,:,5);
+% T = channel1_d(:,:,5);
 % T = channel1_dfs(:,:,5);
-% T = mean(channel1_dfs,3);
+T1 = mean(channel1_d,3);
+T2 = mean(channel2_d,3);
 % T = (T-min(T(:))) / (max(T(:)) - min(T(:)));
 
 
 %% Alignment
 
-% [p, ~, ~, ~, ~, ~, ~, channels_aligned] = correct_scanned_imaging(channel1_dfs, T, [], channel2_dfs);
+[p, ~, ~, ~, ~, ~, ~, channels_aligned] = correct_scanned_imaging(channel1_d, T1, [], channel2_d);
+channel1_aligned = channels_aligned(:,:,:,1);
+channel2_aligned = channels_aligned(:,:,:,2);
+
+% [p1, ~, ~, ~, ~, ~, ~, channel1_aligned] = correct_scanned_imaging(channel1_d, T1);
+% [p2, ~, ~, ~, ~, ~, ~, channel2_aligned] = correct_scanned_imaging(channel2_d, T2);
+
+
+% [p, ~, ~, ~, ~, ~, ~, channels_aligned] = correct_scanned_imaging(channel1_d, T1, [], channel2_d);
 % channel1_aligned = channels_aligned(:,:,:,1);
 % channel2_aligned = channels_aligned(:,:,:,2);
 
-[~, ~, ~, ~, ~, ~, ~, channel1_aligned] = correct_scanned_imaging(channel1_d, T);
-[~, ~, ~, ~, ~, ~, ~, channel2_aligned] = correct_scanned_imaging(channel2_d, T);
 
 %%
 
@@ -123,22 +90,20 @@ for k = 1:nImages
     img1_8bit = uint8(255*(img1-mi1)/(ma1-mi1));
     channel1_aligned_8bit = cat(3, channel1_aligned_8bit, img1_8bit);
 
-    img2 = channel1_aligned(:,:,k);
+    img2 = channel2_aligned(:,:,k);
     img2_8bit = uint8(255*(img2-mi2)/(ma2-mi2));
     channel2_aligned_8bit = cat(3, channel2_aligned_8bit, img2_8bit);
 end
 
 
 %%
-imwrite(channel1_aligned(:,:,1), ['.', filesep, 'aligned_channel01_singlechannel_', settings '.tif']);
+imwrite(channel1_aligned_8bit(:,:,1), ['.', filesep, 'aligned_channel01.tif']);
 for k = 2:nImages
-    imwrite(channel1_aligned(:,:,k), ['.', filesep, 'aligned_channel01_singlechannel_', settings '.tif'],...
-            'WriteMode','append');
+    imwrite(channel1_aligned_8bit(:,:,k), ['.', filesep, 'aligned_channel01.tif'], 'WriteMode','append');
 end
 
-%%
-imwrite(channel2_aligned(:,:,1), ['.', filesep, 'aligned_channel02_singlechannel_', settings '.tif']);
+% %%
+imwrite(channel2_aligned_8bit(:,:,1), ['.', filesep, 'aligned_channel02.tif']);
 for k = 2:nImages
-    imwrite(channel2_aligned(:,:,k), ['.', filesep, 'aligned_channel02_singlechannel_', settings '.tif'],...
-            'WriteMode','append');
+    imwrite(channel2_aligned_8bit(:,:,k), ['.', filesep, 'aligned_channel02.tif'], 'WriteMode','append');
 end

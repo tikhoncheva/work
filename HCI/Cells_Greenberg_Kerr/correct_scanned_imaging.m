@@ -138,7 +138,7 @@ if ~exist('isbidirec','var') || isempty(isbidirec)
     isbidirec = false;
 end
 if ~exist('pregauss','var') || isempty(pregauss)
-    pregauss = 0;
+    pregauss = 1.5;
 end
 if ~exist('leftexclude','var') || isempty(leftexclude)
     leftexclude = 0;
@@ -560,8 +560,9 @@ for k = 1:size(data,3)
 end
 
 function settings = init_settings(settings, nlines, linewidth, subrec, isbidirec, pregauss, leftexclude) %initialize settings structure
+% scanlinesperparameter := 8 => 8 groups of 16 pixels in each row
 if isempty(settings)
-    settings = struct('move_thresh',0.010,'corr_thresh',0.75,'max_iter',120,'scanlinesperparameter',2,'pregauss',pregauss,'haltcorr',0.995,'bidirec',isbidirec,'leftexclude',leftexclude);
+    settings = struct('move_thresh',0.001,'corr_thresh',0.75,'max_iter',120,'scanlinesperparameter',4,'pregauss',pregauss,'haltcorr',0.995,'bidirec',isbidirec,'leftexclude',leftexclude);
 else
     %should check that it's a valid structure FIXME
 end

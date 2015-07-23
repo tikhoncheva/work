@@ -2,7 +2,9 @@ clc; clear;
 
 %%
 
-fName_tiff = 'aligned_channel01_singlechannel_Gaussian.tif';
+% fName_tiff = 'aligned_channel01_single.tif';
+fName_tiff = 'aligned_channel01.tif';
+
 info = imfinfo(fName_tiff);
 T = numel(info);
 
@@ -13,7 +15,8 @@ for k = 1:T
 end
 
 
-fName_tiff = 'aligned_channel02_singlechannel_Gaussian.tif';
+% fName_tiff = 'aligned_channel02_single.tif';
+fName_tiff = 'aligned_channel02.tif';
 info = imfinfo(fName_tiff);
 T = numel(info);
 
@@ -46,10 +49,10 @@ end
 % ind = (sum_s==0); sum_s(ind) = 1;
 % s_16 = s_16./repmat(sum_s,1,1,T);
 
-
-imwrite(s_8(:,:,1), ['.', filesep, 's_', settings, '.tif']);
+%%
+imwrite(s(:,:,1), ['.', filesep, 's2.tif']);
 for k = 2:T
-    imwrite(s_8(:,:,k), ['.', filesep, 's_', settings, '.tif'], 'WriteMode','append');
+    imwrite(s(:,:,k), ['.', filesep, 's2.tif'], 'WriteMode','append');
 end
 
 
@@ -102,10 +105,10 @@ end
 ns = ns_8bit;
 %% assign gray values to percentiel values and save result
 
-imwrite(ns(:,:,1), ['.', filesep, 'ns_', settings, '.tif']);
+imwrite(ns(:,:,1), ['.', filesep, 'ns2.tif']);
 % imwrite(I, ['.', filesep, 'ns', filesep, sprintf('frame-%05d.jpg', 1)]);
 for t = 2:T
-    imwrite(ns(:,:,t), ['.', filesep, 'ns_', settings, '.tif'], 'WriteMode','append');
+    imwrite(ns(:,:,t), ['.', filesep, 'ns2.tif'], 'WriteMode','append');
 %     imwrite(I, ['.', filesep, 'ns', filesep, sprintf('frame-%05d.jpg', t)]);
 end
 
