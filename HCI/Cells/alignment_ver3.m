@@ -17,7 +17,7 @@ settings = 'test';
 GaussianFilter = fspecial('gaussian',[5 5], 0.5);
 DiskFilter = fspecial('disk',1);
 
-subsampleRate = 2;
+subsampleRate = 1;
 
 info = imfinfo(fName_tiff);
 nImages = numel(info);

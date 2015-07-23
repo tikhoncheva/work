@@ -94,7 +94,7 @@ for j = 1:nFramesets
        case 2  % Method 2: using cross correlation
            
             % location of the initial a patch
-            alpha0 = 85*pi/180;
+            alpha0 = 90*pi/180;
 %             rx = round(x0 + R* cos(alpha0));
 %             ry = round(y0 - R* sin(alpha0));
 %             rect = [rx-100, ry-50, 300, 100];
