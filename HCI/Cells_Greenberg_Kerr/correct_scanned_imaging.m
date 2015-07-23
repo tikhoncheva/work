@@ -610,8 +610,7 @@ z(matind + 1) = z(matind + 1) + (1 - x_frac) .* y_frac .* d;
 z(matind + nrows_template) = z(matind + nrows_template) + x_frac .* (1 - y_frac) .* d;
 z(matind + nrows_template + 1) = z(matind + nrows_template + 1) + x_frac .* y_frac .* d;
 
-%keeping track of denominator weights for final normalization:
-n(matind + 1) = n(matind + 1) + (1 - x_frac) .* y_frac;
+%keeping track of denominator weights for final normalization:an(matind + 1) = n(matind + 1) + (1 - x_frac) .* y_frac;
 n(matind + nrows_template) = n(matind + nrows_template) + x_frac .* (1 - y_frac);
 n(matind) = n(matind) + (1 - x_frac) .* (1 - y_frac);
 n(matind + nrows_template + 1) = n(matind + nrows_template + 1) + x_frac .* y_frac;

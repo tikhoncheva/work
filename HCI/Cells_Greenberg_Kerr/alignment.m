@@ -1,7 +1,9 @@
 clc; clear;
 
+sname = '2014_09_10__18_20_38h';
+
 %% Channel 1
-fName_tiff = './2014_09_10__17_08_13h__channel01.tif';
+fName_tiff = ['./signals/', sname, '__channel01.tif'];
 
 info = imfinfo(fName_tiff);
 nImages = numel(info);
@@ -14,7 +16,7 @@ end
 
 
 %% Channel 2
-fName_tiff = './2014_09_10__17_08_13h__channel02.tif';
+fName_tiff = ['./signals/', sname, '__channel02.tif'];
 
 info = imfinfo(fName_tiff);
 nImages = numel(info);
@@ -44,8 +46,10 @@ for k = 1:nImages
     channel2_d = cat(3, channel2_d, img2_d);
 end
 
+%%
 
-frames2del = [1; 123; 124];
+% frames2del = [1; 123; 124];
+frames2del = [1];
 channel1_d(:,:, frames2del) = [];
 channel2_d(:,:, frames2del) = [];
 
@@ -54,11 +58,9 @@ nImages = size(channel1_d, 3);
 %%
 
 % Template image
-% T = channel1_d(:,:,5);
-% T = channel1_dfs(:,:,5);
 T1 = mean(channel1_d,3);
 T2 = mean(channel2_d,3);
-% T = (T-min(T(:))) / (max(T(:)) - min(T(:)));
+
 
 
 %% Alignment
@@ -78,11 +80,11 @@ channel2_aligned = channels_aligned(:,:,:,2);
 
 %%
 
-ma1 = max(channel1_aligned(:));
-mi1 = min(channel1_aligned(:));
+ma1 = max(channel1_aligned(~isnan(channel1_aligned)));
+mi1 = min(channel1_aligned(~isnan(channel1_aligned)));
 
-ma2 = max(channel2_aligned(:));
-mi2 = min(channel2_aligned(:));
+ma2 = max(channel2_aligned(~isnan(channel1_aligned)));
+mi2 = min(channel2_aligned(~isnan(channel1_aligned)));
     
 channel1_aligned_8bit = []; channel2_aligned_8bit= [];
 for k = 1:nImages
@@ -97,13 +99,13 @@ end
 
 
 %%
-imwrite(channel1_aligned_8bit(:,:,1), ['.', filesep, 'aligned_channel01.tif']);
+imwrite(channel1_aligned(:,:,1), ['.', filesep, 'aligned_channel01_', sname, '.tif']);
 for k = 2:nImages
-    imwrite(channel1_aligned_8bit(:,:,k), ['.', filesep, 'aligned_channel01.tif'], 'WriteMode','append');
+    imwrite(channel1_aligned(:,:,k), ['.', filesep,  'aligned_channel01_', sname, '.tif'], 'WriteMode','append');
 end
 
 % %%
-imwrite(channel2_aligned_8bit(:,:,1), ['.', filesep, 'aligned_channel02.tif']);
+imwrite(channel2_aligned(:,:,1), ['.', filesep,  'aligned_channel02_', sname, '.tif']);
 for k = 2:nImages
-    imwrite(channel2_aligned_8bit(:,:,k), ['.', filesep, 'aligned_channel02.tif'], 'WriteMode','append');
+    imwrite(channel2_aligned(:,:,k), ['.', filesep,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
 end
