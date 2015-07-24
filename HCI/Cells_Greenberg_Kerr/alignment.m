@@ -1,9 +1,11 @@
 clc; clear;
 
-sname = '2014_09_10__18_20_38h';
+pathIn = ['.', filesep, 'signals', filesep];
+sname = '2014_09_10__17_08_13h';
+pathOut = ['.', filesep, 'signals_aligned', filesep];
 
 %% Channel 1
-fName_tiff = ['./signals/', sname, '__channel01.tif'];
+fName_tiff = [pathIn, sname, '__channel01.tif'];
 
 info = imfinfo(fName_tiff);
 nImages = numel(info);
@@ -16,7 +18,7 @@ end
 
 
 %% Channel 2
-fName_tiff = ['./signals/', sname, '__channel02.tif'];
+fName_tiff = [pathIn , sname, '__channel02.tif'];
 
 info = imfinfo(fName_tiff);
 nImages = numel(info);
@@ -80,32 +82,32 @@ channel2_aligned = channels_aligned(:,:,:,2);
 
 %%
 
-ma1 = max(channel1_aligned(~isnan(channel1_aligned)));
-mi1 = min(channel1_aligned(~isnan(channel1_aligned)));
-
-ma2 = max(channel2_aligned(~isnan(channel1_aligned)));
-mi2 = min(channel2_aligned(~isnan(channel1_aligned)));
-    
-channel1_aligned_8bit = []; channel2_aligned_8bit= [];
-for k = 1:nImages
-    img1 = channel1_aligned(:,:,k);
-    img1_8bit = uint8(255*(img1-mi1)/(ma1-mi1));
-    channel1_aligned_8bit = cat(3, channel1_aligned_8bit, img1_8bit);
-
-    img2 = channel2_aligned(:,:,k);
-    img2_8bit = uint8(255*(img2-mi2)/(ma2-mi2));
-    channel2_aligned_8bit = cat(3, channel2_aligned_8bit, img2_8bit);
-end
+% ma1 = max(channel1_aligned(~isnan(channel1_aligned)));
+% mi1 = min(channel1_aligned(~isnan(channel1_aligned)));
+% 
+% ma2 = max(channel2_aligned(~isnan(channel1_aligned)));
+% mi2 = min(channel2_aligned(~isnan(channel1_aligned)));
+%     
+% channel1_aligned_8bit = []; channel2_aligned_8bit= [];
+% for k = 1:nImages
+%     img1 = channel1_aligned(:,:,k);
+%     img1_8bit = uint8(255*(img1-mi1)/(ma1-mi1));
+%     channel1_aligned_8bit = cat(3, channel1_aligned_8bit, img1_8bit);
+% 
+%     img2 = channel2_aligned(:,:,k);
+%     img2_8bit = uint8(255*(img2-mi2)/(ma2-mi2));
+%     channel2_aligned_8bit = cat(3, channel2_aligned_8bit, img2_8bit);
+% end
 
 
 %%
-imwrite(channel1_aligned(:,:,1), ['.', filesep, 'aligned_channel01_', sname, '.tif']);
+imwrite(channel1_aligned(:,:,1), [pathOut, 'aligned_channel01_', sname, '.tif']);
 for k = 2:nImages
-    imwrite(channel1_aligned(:,:,k), ['.', filesep,  'aligned_channel01_', sname, '.tif'], 'WriteMode','append');
+    imwrite(channel1_aligned(:,:,k), [pathOut,  'aligned_channel01_', sname, '.tif'], 'WriteMode','append');
 end
 
 % %%
-imwrite(channel2_aligned(:,:,1), ['.', filesep,  'aligned_channel02_', sname, '.tif']);
+imwrite(channel2_aligned(:,:,1), [pathOut,  'aligned_channel02_', sname, '.tif']);
 for k = 2:nImages
-    imwrite(channel2_aligned(:,:,k), ['.', filesep,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
+    imwrite(channel2_aligned(:,:,k), [pathOut,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
 end

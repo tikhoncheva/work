@@ -1,59 +1,65 @@
 clc; clear;
 
-sname = '2014_09_10__18_20_38h';
+pathIn = ['.', filesep, 'signals_aligned', filesep];
+sname = '2014_09_10__17_08_13h';
+pathOut = ['.', filesep, 's_ns', filesep];
 % suffix = '';
 
 %%
 
-fName_tiff = ['aligned_channel01_', sname, '.tif'];
+fName_tiff = [pathIn, 'aligned_channel01_', sname, '.tif'];
 
 info = imfinfo(fName_tiff);
 T = numel(info);
 
-channel1_8bit_aligned = [];
+channel1_d_aligned = [];
 for k = 1:T
-    img8 = imread(fName_tiff, k, 'Info', info);
-    channel1_8bit_aligned = cat(3, channel1_8bit_aligned, img8);
+%     img8 = imread(fName_tiff, k, 'Info', info);    
+%     channel1_8bit_aligned = cat(3, channel1_8bit_aligned, img8);
+    img = im2double(imread(fName_tiff, k, 'Info', info));
+    channel1_d_aligned = cat(3, channel1_d_aligned, img);    
 end
 
 
-fName_tiff = ['aligned_channel02_', sname, '.tif'];
+fName_tiff = [pathIn, 'aligned_channel02_', sname, '.tif'];
 info = imfinfo(fName_tiff);
 T = numel(info);
 
-channel2_8bit_aligned = [];
+channel2_d_aligned = [];
 for k = 1:T
-    img8 = imread(fName_tiff, k, 'Info', info);
-    channel2_8bit_aligned = cat(3, channel2_8bit_aligned, img8);
+%     img8 = imread(fName_tiff, k, 'Info', info);
+%     channel2_8bit_aligned = cat(3, channel2_8bit_aligned, img8);
+    img = im2double(imread(fName_tiff, k, 'Info', info));
+    channel2_d_aligned = cat(3, channel2_d_aligned, img);    
 end
 
 
 %% create new signal s = channel1_alligned(x,y,t)/channel1_alligned(x,y,t)
 
-s = double(channel1_8bit_aligned);
-ind_div0 = (channel2_8bit_aligned ==0);
-channel2_8bit_aligned(ind_div0) = 1;
-s = s./double(channel2_8bit_aligned);
-channel2_8bit_aligned(ind_div0) = 0;
+s = double(channel1_d_aligned);
+ind_div0 = (channel2_d_aligned ==0);
+channel2_d_aligned(ind_div0) = 1;
+s = s./double(channel2_d_aligned);
+channel2_d_aligned(ind_div0) = 0;
 
-s_8 = [];
-mi = min(s(:));
-ma = max(s(:));
-
-for k = 1:T    
-    img = s(:,:,k);
-    img = uint8(255*(img-mi)/(ma-mi)); 
-    s_8 = cat(3, s_8, img);
-end
+% s_8 = [];
+% mi = min(s(:));
+% ma = max(s(:));
+% 
+% for k = 1:T    
+%     img = s(:,:,k);
+%     img = uint8(255*(img-mi)/(ma-mi)); 
+%     s_8 = cat(3, s_8, img);
+% end
 
 % sum_s = sum(s_16,3);
 % ind = (sum_s==0); sum_s(ind) = 1;
 % s_16 = s_16./repmat(sum_s,1,1,T);
 
 %%
-imwrite(s(:,:,1), ['.', filesep, 's_', sname, '.tif']);
+imwrite(s(:,:,1), [pathOut, 's_', sname, '.tif']);
 for k = 2:T
-    imwrite(s(:,:,k), ['.', filesep, 's_', sname, '.tif'], 'WriteMode','append');
+    imwrite(s(:,:,k), [pathOut, 's_', sname, '.tif'], 'WriteMode','append');
 end
 
 
@@ -106,9 +112,9 @@ end
 ns = ns_8bit;
 %% assign gray values to percentiel values and save result
 
-imwrite(ns(:,:,1), ['.', filesep, 'ns_', sname, '.tif']);
+imwrite(ns(:,:,1), [pathOut, 'ns_', sname, '.tif']);
 for t = 2:T
-    imwrite(ns(:,:,t), ['.', filesep, 'ns_', sname, '.tif'], 'WriteMode','append');
+    imwrite(ns(:,:,t), [pathOut, 'ns_', sname, '.tif'], 'WriteMode','append');
 end
 
 
