@@ -7,7 +7,7 @@
 ********************************************************************************/
 
 #ifndef UI_REPORTWINDOW_H
-#define UI_REPORTWINDOW_H
+#define UI_REPORTWINDOW_H 
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
