@@ -29,7 +29,7 @@ for k = 1:nImages
     channel2 = cat(3, channel2, img2);
 end
 
-%% Smooth images
+%% Convert to double
 
 ma1 = double(max(channel1(:)));
 mi1 = double(min(channel1(:)));
@@ -50,20 +50,16 @@ end
 
 %%
 
-% frames2del = [1; 123; 124];
-frames2del = [1];
+frames2del = [1; 123; 124];
+% frames2del = [1];
 channel1_d(:,:, frames2del) = [];
 channel2_d(:,:, frames2del) = [];
 
 nImages = size(channel1_d, 3);
 
-%%
-
-% Template image
+%% Template image
 T1 = mean(channel1_d,3);
 T2 = mean(channel2_d,3);
-
-
 
 %% Alignment
 
@@ -101,13 +97,13 @@ channel2_aligned = channels_aligned(:,:,:,2);
 
 
 %%
-imwrite(channel1_aligned(:,:,1), [pathOut, 'aligned_channel01_', sname, '.tif']);
-for k = 2:nImages
-    imwrite(channel1_aligned(:,:,k), [pathOut,  'aligned_channel01_', sname, '.tif'], 'WriteMode','append');
-end
-
-% %%
-imwrite(channel2_aligned(:,:,1), [pathOut,  'aligned_channel02_', sname, '.tif']);
-for k = 2:nImages
-    imwrite(channel2_aligned(:,:,k), [pathOut,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
-end
+% imwrite(channel1_aligned(:,:,1), [pathOut, 'aligned_channel01_', sname, '.tif']);
+% for k = 2:nImages
+%     imwrite(channel1_aligned(:,:,k), [pathOut,  'aligned_channel01_', sname, '.tif'], 'WriteMode','append');
+% end
+% 
+% % %%
+% imwrite(channel2_aligned(:,:,1), [pathOut,  'aligned_channel02_', sname, '.tif']);
+% for k = 2:nImages
+%     imwrite(channel2_aligned(:,:,k), [pathOut,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
+% end
