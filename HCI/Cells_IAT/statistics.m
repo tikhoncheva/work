@@ -93,6 +93,9 @@ end
 
 %% 
 
+[I,J] = find(true(Py,Px) ); % all patches are interesting
+nInterPatches = size(I,1);
+
 s_RGB = cell(1,T);
 
 for t =1:T

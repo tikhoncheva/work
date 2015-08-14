@@ -1,7 +1,7 @@
 clc; clear;
 
 pathIn = ['.', filesep, 'signals_aligned', filesep];
-sname = '2014_09_10__17_08_13h';
+sname = '2014_09_10__18_20_38h';
 pathOut = ['.', filesep, 's_ns', filesep];
 % suffix = '';
 
@@ -30,6 +30,16 @@ for k = 1:T
 end
 
 
+%% Remove gaussian noise
+
+fchannel1_d_aligned = channel1_d_aligned;
+fchannel2_d_aligned = channel2_d_aligned;
+
+for i = 1:size(channel1_d_aligned,3)
+    fchannel1_d_aligned(:,:,i) = wiener2(fchannel1_d_aligned(:,:,i),[5 5]);
+    fchannel2_d_aligned(:,:,i) = wiener2(fchannel2_d_aligned(:,:,i),[5 5]);
+end
+
 %% create new signal s = channel1_alligned(x,y,t)/channel1_alligned(x,y,t)
 
 s = double(channel1_d_aligned);
@@ -38,6 +48,12 @@ channel2_d_aligned(ind_div0) = 1;
 s = s./double(channel2_d_aligned);
 channel2_d_aligned(ind_div0) = 0;
 
+% s = double(fchannel1_d_aligned);
+% ind_div0 = (fchannel2_d_aligned ==0);
+% fchannel2_d_aligned(ind_div0) = 1;
+% s = s./double(fchannel2_d_aligned);
+% fchannel2_d_aligned(ind_div0) = 0;
+
 % normalize values of s to range [0,1]
 mi = min(s(:));
 ma = max(s(:));
@@ -45,6 +61,11 @@ s_norm = (s-mi)./(ma-mi);
 
 s = s_norm;
 
+%%
+fs = s;
+for i = 1:size(fs,3)
+    fs(:,:,i) = wiener2(fs(:,:,i), [5,5]);
+end
 %%
 imwrite(s(:,:,1), [pathOut, 's_', sname, '.tif']);
 for k = 2:T
@@ -61,6 +82,35 @@ end
 % cdf_s = cdf_s/T;
 
 %% Calculate percentiles
+
+s_cf(:,:,1) = fs(:,:,1);
+for i = 2:size(fs,3)
+    s_cf(:,:,i) = sum(fs(:,:,1:i), 3);
+end
+
+cf_mean = mean(reshape(s_cf, size(s_cf,1)*size(s_cf,2), size(s_cf,3)));
+
+%% normalization of the gray values
+cfmean = reshape(repmat(cf_mean, 64*128,1), 64, 128, 374);
+
+diff = s_cf - cfmean;
+% diff_min = min(diff(:));
+% diff_max = max(diff(:));
+% 
+% diff2 = (diff - diff_min)/ (diff_max-diff_min);
+
+ns1 = s;
+for i = 1:size(s,3)
+   
+   temp = diff(:,:,i);
+   diff_min = min(temp(:));
+   diff_max = max(temp(:));  
+   
+   ns1(:,:,i) = (s(:,:,i)-diff_min) / (diff_max-diff_min);
+    
+end
+
+%%
 s_sorted = sort(s,3);
 
 p = [1:0.5:100];
@@ -82,17 +132,17 @@ end
 ns = ns/100;
 
 %% 
-% mi = min(ns(:));
-% ma = max(ns(:));
-% ns_8bit = uint8(255*(ns-mi)./(ma-mi));
-% 
-% ns = ns_8bit;
+mi = min(ns(:));
+ma = max(ns(:));
+ns_8bit = uint8(255*(ns-mi)./(ma-mi));
+
+ns = ns_8bit;
 
 %% assign gray values to percentiel values and save result
 
-imwrite(ns(:,:,1), [pathOut, 'ns_', sname, '.tif']);
+imwrite(ns(:,:,1), [pathOut, 'ns12_', sname, '.tif']);
 for t = 2:T
-    imwrite(ns(:,:,t), [pathOut, 'ns_', sname, '.tif'], 'WriteMode','append');
+    imwrite(ns(:,:,t), [pathOut, 'ns12_', sname, '.tif'], 'WriteMode','append');
 end
 
 

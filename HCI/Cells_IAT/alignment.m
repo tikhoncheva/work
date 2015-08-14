@@ -4,7 +4,7 @@ addpath(genpath('../Tools/IAT_v0.9.1/'))
 
 %%
 pathIn = ['.', filesep, 'signals', filesep];
-sname = '2014_09_13__21_58_05h';
+sname = '2014_09_10__18_20_38h';
 pathOut = ['.', filesep, 'signals_aligned', filesep];
 
 %% Channel 1
