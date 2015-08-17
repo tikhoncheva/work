@@ -2,16 +2,17 @@
 
 clc; clear;
 
+addpath(genpath('../Tools/piotr_toolbox_V3.26/'));
 %%
 % pathIn = ['.', filesep, 'signals_aligned', filesep];
-pathIn = ['.', filesep, 's_ns', filesep];
+pathIn = ['.', filesep, 'fs', filesep];
 sname = '2014_09_10__18_20_38h';
 pathOut = ['.', filesep, 'statistics_cf_of_maxgv', filesep];
 % suffix = '';
 %%
 
 % fName_stiff = [pathIn, 'aligned_channel01_', sname, '.tif'];
-fName_stiff = [pathIn, 's_', sname, '.tif'];
+fName_stiff = [pathIn, 'fsharp_sigma11_alpha1.1_s_', sname, '.tif'];
 
 info = imfinfo(fName_stiff);
 T = numel(info);
@@ -188,7 +189,7 @@ end
 % close(writerObj);
 
 %% write Tiff
-fileName = [pathOut, 's_picks_', sname, '.tif'];
+fileName = [pathOut, 'fsharp_sigma11_alpha1.1_s_picks_', sname, '.tif'];
 tif_obj = Tiff(fileName, 'w') ;
 
 tagstruct.ImageLength = size(s_picks{1},1);
