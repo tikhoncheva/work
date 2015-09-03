@@ -55,11 +55,18 @@ channel2_d_aligned(ind_div0) = 0;
 % fchannel2_d_aligned(ind_div0) = 0;
 
 % normalize values of s to range [0,1]
+
 mi = min(s(:));
 ma = max(s(:));
 s_norm = (s-mi)./(ma-mi);
 
-s = s_norm;
+mi = 0.2;
+ma = 0.8;
+s = s-mi;
+s(s<0)=0;
+s = s./(ma-mi);
+s(s>1)=1;
+    
 
 %%
 fs = s;
