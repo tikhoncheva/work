@@ -1,16 +1,15 @@
-function preprocessing_brain_video(sname)
-    % clc; clear;
-    % addpath('./signal/new/');
-    % addpath('../common', 'utils');
+function preprocessing_brain_video(sname, readpath, savepath)
 
     
     addpath(genpath('../Tools/IAT_v0.9.1/'));
     addpath(genpath('../Tools/BM3D/'));
 
-%     pathIn = ['.', filesep, 'signals', filesep, 'new', filesep];
-    pathIn = ['.', filesep, 'signals', filesep];
-    pathOut_signal_aligned = ['.', filesep, 'signals_aligned', filesep];
-    pathOut_s = ['.', filesep, './s_ns', filesep];
+    pathIn = readpath; %['.', filesep, 'signals', filesep];
+    
+    pathOut_signal_aligned = ['..', filesep, 'brain_data', filesep, 'signals_aligned', filesep, savepath]; 
+    %['.', filesep, 'signals_aligned', filesep];
+    pathOut_s = ['..', filesep, 'brain_data', filesep, 's_ns', filesep, savepath]; 
+    %['.', filesep, './s_ns', filesep];
 
 %     sname = '2014_09_10__18_07_13h';
 
@@ -139,16 +138,16 @@ function preprocessing_brain_video(sname)
     channel2_d_aligned(ind_div0) = 0;
 
 
-    mi = min(s(:));
-    ma = max(s(:));
-    s = (s-mi)./(ma-mi);
-
-    mi = 0.2;
-    ma = 0.8;
-    s = s-mi;
-    s(s<0)=0;
-    s = s./(ma-mi);
-    s(s>1)=1;
+%     mi = min(s(:));
+%     ma = max(s(:));
+%     s = (s-mi)./(ma-mi);
+% 
+% %     mi = 0.2;
+% %     ma = 0.8;
+% %     s = s-mi;
+% %     s(s<0)=0;
+% %     s = s./(ma-mi);
+% %     s(s>1)=1;
 
     writeTiffFile(s, [pathOut_s, 's_', sname, '.tif']);
 
