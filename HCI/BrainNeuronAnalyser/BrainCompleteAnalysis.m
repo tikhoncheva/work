@@ -4,14 +4,17 @@ addpath('fast_oopsi')
 %% 
 % original_signals_folder = '../brain_data/signals/new/';
 denoiseAlignMerge_signal_folder = '../brain_data/s_ns/new/';
+% denoiseAlignMerge_signal_folder = '../brain_data/s_ns/';
 
-for s_ind = [2]
+for s_ind = [1]
     
 %% Get Info
 brain_info = brainInfo(s_ind);
-signal_name = brain_info.brain;
-% signal_name = '2014_09_10__18_24_12h';    % for testing detection of corrupted frames
-mouse_name  = brain_info.mouse;
+% signal_name = brain_info.brain;
+signal_name = '2014_09_10__18_24_12h';    % for testing detection of corrupted frames
+% signal_name = '2014_09_13__15_14_14h';    % for testing detection of corrupted frames
+% signal_name = '2014_09_11__20_42_30h';
+% mouse_name  = brain_info.mouse;
 
 mouse_time_events_file = ['Mouse_vector/mouse_time_events_', mouse_name, '.txt'];
 % Generate signal
@@ -30,6 +33,7 @@ signal = original_signal;
 %% detect damaged frames
 ind_damaged = find_damaged_frames(signal);
 
+signal_damaged = signal(:,:,ind_damaged);
 %% Normalize signal
 % [mouse_behavious, mouse_vector, wheel_vel] = readMouseVector(mouse_time_events_file, T);
 % no_motion_frames = getNoMotionFrames(mouse_vector, wheel_vel);

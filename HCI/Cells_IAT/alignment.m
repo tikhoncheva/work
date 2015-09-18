@@ -3,9 +3,9 @@ clc; clear;
 addpath(genpath('../Tools/IAT_v0.9.1/'))
 
 %%
-pathIn = ['.', filesep, 'signals', filesep];
-sname = '2014_09_10__18_20_38h';
-pathOut = ['.', filesep, 'signals_aligned', filesep];
+pathIn = ['..', filesep, 'brain_data', filesep, 'signals', filesep, 'new', filesep];
+sname = '2014_09_10__18_24_12h';
+pathOut = ['..', filesep, 'brain_data', filesep, 'signals_aligned', filesep];
 
 %% Channel 1
 fName_tiff = [pathIn, sname, '__channel01.tif'];
@@ -99,14 +99,18 @@ img2 = channel2_d(:,:,i);
 [LKWarp2]=iat_LucasKanade(img2, T2, par);
 
 % Compute the warped image and visualize the error
-[img1aligned, ~] = iat_inverse_warping(img1, LKWarp1, par.transform, 1:size(T1,2),1:size(T1,1));
-[img2aligned, ~] = iat_inverse_warping(img2, LKWarp2, par.transform, 1:size(T2,2),1:size(T2,1));
+[img1aligned, support1] = iat_inverse_warping(img1, LKWarp1, par.transform, 1:size(T1,2),1:size(T1,1));
+[img2aligned, support2] = iat_inverse_warping(img2, LKWarp2, par.transform, 1:size(T2,2),1:size(T2,1));
 
-ind1 = (img1aligned==0); 
-ind2 = (img2aligned==0); 
+ind1 = (support1==0); 
+ind2 = (support2==0); 
+img1aligned(ind1) = NaN;
+img2aligned(ind2) = NaN;
 
-img1aligned(ind1) = T1(ind1);
-img2aligned(ind2) = T2(ind2);
+% ind1 = (img1aligned==0); 
+% ind2 = (img2aligned==0); 
+% img1aligned(ind1) = T1(ind1);
+% img2aligned(ind2) = T2(ind2);
 
 channel1_aligned = cat(3, channel1_aligned, img1aligned);
 channel2_aligned = cat(3, channel2_aligned, img2aligned);
@@ -114,7 +118,20 @@ end
 
 display(sprintf('alignment done in %0.3f sec', toc));
 
+s = double(channel1_aligned);
+ind_div0 = (channel2_aligned ==0);
+channel2_aligned(ind_div0) = 1;
+s = s./double(channel2_aligned);
+channel2_aligned(ind_div0) = 0;
 
+save([pathOut, 's_', sname, '.mat'], 's');
+
+ind = ~isnan(s);
+mi = min(s(ind));
+ma = max(s(ind));
+
+s = (s-mi)/(ma-mi);
+    
 %%
 
 % ma1 = max(channel1_aligned(:));
@@ -145,4 +162,10 @@ end
 imwrite(channel2_aligned(:,:,1), [pathOut,  'aligned_channel02_', sname, '.tif']);
 for k = 2:nImages
     imwrite(channel2_aligned(:,:,k), [pathOut,  'aligned_channel02_', sname, '.tif'], 'WriteMode','append');
+end
+
+%%
+imwrite(s(:,:,1), [pathOut,  's_', sname, '.tif']);
+for k = 2:nImages
+    imwrite(s(:,:,k), [pathOut,  's_', sname, '.tif'], 'WriteMode','append');
 end

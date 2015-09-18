@@ -1,9 +1,9 @@
 
 %% path to the folder with the tif videos
 
-path_signals = ['..', filesep, 'brain_data', filesep, 'signals', filesep, 'new_03092015', filesep, '15_09_03_animal1_CaI_Base_Net1_14_09_11_small', filesep];
+path_signals = ['..', filesep, 'brain_data', filesep, 'signals', filesep, 'new', filesep];
 readpath = path_signals;
-savepath = ['new_03092015', filesep, '15_09_03_animal1_CaI_Base_Net1_14_09_11_small', filesep];
+savepath = ['new', filesep];
 
 d = dir([path_signals, '*.tif']);
 filenames = {d.name}';

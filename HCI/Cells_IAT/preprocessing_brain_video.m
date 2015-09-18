@@ -6,12 +6,11 @@ function preprocessing_brain_video(sname, readpath, savepath)
 
     pathIn = readpath; %['.', filesep, 'signals', filesep];
     
-    pathOut_signal_aligned = ['..', filesep, 'brain_data', filesep, 'signals_aligned', filesep, savepath]; 
+    pathOut_signal_aligned = ['..', filesep, 'brain_data', filesep, 'signals_aligned2', filesep, savepath]; 
     %['.', filesep, 'signals_aligned', filesep];
-    pathOut_s = ['..', filesep, 'brain_data', filesep, 's_ns', filesep, savepath]; 
+    pathOut_s = ['..', filesep, 'brain_data', filesep, 's_ns2', filesep, savepath]; 
     %['.', filesep, './s_ns', filesep];
 
-%     sname = '2014_09_10__18_07_13h';
 
     %% Channel 1
     fName_tiff = [pathIn, sname, '__channel01.tif'];
@@ -100,14 +99,18 @@ function preprocessing_brain_video(sname, readpath, savepath)
         [LKWarp2]=iat_LucasKanade(img2, T2, par);
 
         % Compute the warped image and visualize the error
-        [img1aligned, ~] = iat_inverse_warping(img1, LKWarp1, par.transform, 1:size(T1,2),1:size(T1,1));
-        [img2aligned, ~] = iat_inverse_warping(img2, LKWarp2, par.transform, 1:size(T2,2),1:size(T2,1));
+        [img1aligned, support1] = iat_inverse_warping(img1, LKWarp1, par.transform, 1:size(T1,2),1:size(T1,1));
+        [img2aligned, support2] = iat_inverse_warping(img2, LKWarp2, par.transform, 1:size(T2,2),1:size(T2,1));
 
-        ind1 = (img1aligned==0); 
-        ind2 = (img2aligned==0); 
-
-        img1aligned(ind1) = T1(ind1);
-        img2aligned(ind2) = T2(ind2);
+        ind1 = (support1==0); 
+        ind2 = (support2==0); 
+        img1aligned(ind1) = NaN;
+        img2aligned(ind2) = NaN;        
+%         ind1 = (img1aligned==0); 
+%         ind2 = (img2aligned==0); 
+% 
+%         img1aligned(ind1) = T1(ind1);
+%         img2aligned(ind2) = T2(ind2);
 
         channel1_aligned = cat(3, channel1_aligned, img1aligned);
         channel2_aligned = cat(3, channel2_aligned, img2aligned);
@@ -137,11 +140,14 @@ function preprocessing_brain_video(sname, readpath, savepath)
     s = s./double(channel2_d_aligned);
     channel2_d_aligned(ind_div0) = 0;
 
+    save([pathOut_s, 's_', sname, '.mat'], 's');
+    
+    ind = ~isnan(s);
+    mi = min(s(ind));
+    ma = max(s(ind));
 
-%     mi = min(s(:));
-%     ma = max(s(:));
-%     s = (s-mi)./(ma-mi);
-% 
+    s = (s-mi)/(ma-mi);
+
 % %     mi = 0.2;
 % %     ma = 0.8;
 % %     s = s-mi;
@@ -149,9 +155,10 @@ function preprocessing_brain_video(sname, readpath, savepath)
 % %     s = s./(ma-mi);
 % %     s(s>1)=1;
 
+    
     writeTiffFile(s, [pathOut_s, 's_', sname, '.tif']);
 
-    s_sumsqr = sum(s.^2,3);
-    imwrite(s_sumsqr, [pathOut_s, 'sscm_', sname, '.jpg'])
+%     s_sumsqr = sum(s.^2,3);
+%     imwrite(s_sumsqr, [pathOut_s, 'sscm_', sname, '.jpg'])
 
 end

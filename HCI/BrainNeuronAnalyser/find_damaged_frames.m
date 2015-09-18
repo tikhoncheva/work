@@ -26,56 +26,66 @@ for i = 1:N
 %         stmax=round(5*S/100)+1;
 %         edmax=round(20*S/100);
 %         val = mean(pixels(stmax:edmax));
-        val = median(pixels(:));
-        stack_1Dsignals(i,t) = abs(max(pixels(:)) - min(pixels(:)));
+%         val = median(pixels(:));
+        val = abs(max(pixels(:)) - min(pixels(:)));
+        stack_1Dsignals(i,t) = val;
    end
 end
 
-% create binary vector of picks
-stack_1Dsignals_b = false(N, T);
-for i = 1:N
-   s = stack_1Dsignals(i,:);
-   [~, loc] = findpeaks(s);
-   stack_1Dsignals_b(i,loc) = true;
-end
+% % create binary vector of picks
+% stack_1Dsignals_b = false(N, T);
+% for i = 1:N
+%    s = stack_1Dsignals(i,:);
+%    [~, loc] = findpeaks(s);
+%    stack_1Dsignals_b(i,loc) = true;
+% end
 
 mean_stack_1Dsignals = mean(stack_1Dsignals,2);
 diff = abs(stack_1Dsignals-repmat(mean_stack_1Dsignals,1,T));
 diff_curv1 = sum(diff,1);
 diff_curv2 = sqrt(sum(diff.^2,1));
 
-[val1, ind1] = sort(diff_curv1, 'descend');
-[val2, ind2] = sort(diff_curv2, 'descend');
+D1 = squareform(pdist(diff_curv1'));
+sD1 = sum(D1,2);
+sD1 = (sD1-min(sD1(:)))/(max(sD1(:))-min(sD1(:)));
 
-val1_med = median(val1);
-val2_med = median(val2);
+ths1 = 0.5;
 
-val1_dist = abs(val1-val1_med);
-val2_dist = abs(val2-val2_med);
+ind = (1:T);
+frame_ind1 = ind(sD1>ths1);
 
-ths1 = 0.4*max(val1_dist);
-ths2 = 0.2*max(val2_dist);
-
-frame_ind1 = ind1(val1_dist>ths1);
-frame_ind2 = ind2(val2_dist>ths2);
+% [val1, ind1] = sort(diff_curv1, 'descend');
+% [val2, ind2] = sort(diff_curv2, 'descend');
+% 
+% val1_med = median(val1);
+% val2_med = median(val2);
+% 
+% val1_dist = abs(val1-val1_med);
+% val2_dist = abs(val2-val2_med);
+% 
+% ths1 = 0.4*max(val1_dist);
+% ths2 = 0.2*max(val2_dist);
+% 
+% frame_ind1 = ind1(val1_dist>ths1);
+% frame_ind2 = ind2(val2_dist>ths2);
 
 %% plot diff-values in time
-frames_to_del1 = find(val1_dist>ths1);
 
 figure;
 plot(diff_curv1, 'r-'), hold on;
-plot(val1_med*ones(1,T), 'r--'), hold on;
+% plot(val1_med*ones(1,T), 'r--'), hold on;
 plot(frame_ind1,diff_curv1(frame_ind1), 'kx');
 title('decision curve l1 norm');
 
-frames_to_del2 = find(val2_dist>ths2);
-figure;
-plot(diff_curv2, 'b-'), hold on;
-plot(val2_med*ones(1,T), 'b--');
-plot(frame_ind2,diff_curv2(frame_ind2), 'kx');
-title('decision curve l2 norm ');
+% figure;
+% plot(diff_curv2, 'b-'), hold on;
+% % plot(val2_med*ones(1,T), 'b--');
+% plot(frame_ind2,diff_curv2(frame_ind2), 'kx');
+% title('decision curve l2 norm ');
+
 %% plot signal of patches on the suspicious frames
 % ind_suspect = [119, 122, (123:128), 132:138];
+% % ind_suspect = [1];
 % Nbad = numel(ind_suspect);
 % 
 % Ymin = min(stack_1Dsignals(:));
