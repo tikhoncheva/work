@@ -12,7 +12,8 @@ count=1;
 while count <= neg_num
     x=randi(C, [1, 1]);
     y=randi(R, [1, 1]);
-    r=randi(radius, [1, 1]);
+    %r=randi(radius, [1, 1]);
+    r=radius;
     
     circle = int32([x y r]);
     blob_img = zeros(R, C, 'uint8');

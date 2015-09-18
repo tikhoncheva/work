@@ -1,5 +1,5 @@
 function [detected_regions, detection, probability]= detectNeurons(regions, positive_stacks, negative_stacks, num_detection)
-addpath('~/Desktop/MouseOnWheelSimpleMovement/external_code/Exemplar_SVM/libsvm');
+addpath('./libsvm');
 
 nr  = size(positive_stacks, 1);
 nnr = size(negative_stacks, 1);
