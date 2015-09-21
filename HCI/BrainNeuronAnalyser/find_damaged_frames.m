@@ -5,6 +5,7 @@
 % frame_ind     index of damaged frames
 function [ind_damaged_frames] = find_damaged_frames(signal)
 rng('default');
+addpath(genpath('../Tools/piotr_toolbox_V3.26/'));
 
 [R, C, T] = size(signal);
 ind_damaged_frames = (1:T);          % per default all frames are good
@@ -12,8 +13,8 @@ ind_damaged_frames = (1:T);          % per default all frames are good
 N = 100;    % number of patches
 S = 8;      % size of one patch SxS
 
-% randomly smaple signal and convert them into 1D signal
-stack_1Dsignals = zeros(N, T);
+% randomly smaple patches and convert them into 1D signal
+signals1D = zeros(N, T);
 for i = 1:N
    lt_corner = [randi(R-S+1), randi(C-S-1)];
    patch = signal(lt_corner(1):lt_corner(1)+S-1, ...
@@ -22,13 +23,13 @@ for i = 1:N
    % convert patch into 1D signal
    for t = 1:T
         pixels = patch(:,:,t);
-        pixels=sort(pixels, 'descend');
+%         pixels = sort(pixels, 'descend');
 %         stmax=round(5*S/100)+1;
 %         edmax=round(20*S/100);
 %         val = mean(pixels(stmax:edmax));
-%         val = median(pixels(:));
-        val = abs(max(pixels(:)) - min(pixels(:)));
-        stack_1Dsignals(i,t) = val;
+        val = median(pixels(:));
+%         val = abs(max(pixels(:)) - min(pixels(:)));
+        signals1D(i,t) = val;
    end
 end
 
@@ -40,19 +41,61 @@ end
 %    stack_1Dsignals_b(i,loc) = true;
 % end
 
-mean_stack_1Dsignals = mean(stack_1Dsignals,2);
-diff = abs(stack_1Dsignals-repmat(mean_stack_1Dsignals,1,T));
-diff_curv1 = sum(diff,1);
-diff_curv2 = sqrt(sum(diff.^2,1));
+mean_signals1D = mean(signals1D,2);
+med_signals1D = median(signals1D,2);
 
-D1 = squareform(pdist(diff_curv1'));
-sD1 = sum(D1,2);
-sD1 = (sD1-min(sD1(:)))/(max(sD1(:))-min(sD1(:)));
+% norm_signals1D = signals1D-repmat(mean_signals1D,1,T);
+norm_signals1D = signals1D-repmat(med_signals1D,1,T);
 
-ths1 = 0.5;
+var_signals1D = var(signals1D,0,2); %mean(norm_signals1D.^2, 2);
+mean_var = mean(var_signals1D); % mean variance
 
-ind = (1:T);
-frame_ind1 = ind(sD1>ths1);
+signal1 = sum(abs(norm_signals1D),1);
+signal2 = sqrt(sum(norm_signals1D.^2,1));
+
+mean_signal1=mean(signal1);
+mean_signal2=mean(signal2);
+
+var1 = mean((signal1-repmat(mean_signal1,1,T)).^2,2);
+var2 = mean((signal2-repmat(mean_signal2,1,T)).^2,2);
+
+% figure;
+% plot(signal1, 'b-'), hold on;
+% plot((mean_signal1)*ones(1,T), 'r-');
+% plot((mean_signal1-var1)*ones(1,T), 'r--');
+% plot((mean_signal1+var1)*ones(1,T), 'r--');
+% plot((mean_signal1-2*var1)*ones(1,T), 'r--');
+% plot((mean_signal1+2*var1)*ones(1,T), 'r--');
+% 
+% figure;
+% plot(signal2, 'b-'), hold on;
+% plot((mean_signal2)*ones(1,T), 'r-');
+% plot((mean_signal2-var2)*ones(1,T), 'r--');
+% plot((mean_signal2+var2)*ones(1,T), 'r--');
+
+signal1_thr = signal1;
+% signal2_thr = signal2;
+signal1_thr(abs(signal1-repmat(mean_signal1,1,T))<3*var1) = 0;
+
+
+% h = fspecial('gaussian',[1,3], 4);
+% fsignal1_thr = conv(signal1_thr,h);
+
+frame_ind1 =  find(logical(signal1_thr));
+% radius = 2;
+% thr = 0.3;
+% [subs1,~] = nonMaxSupr(abs(signal1_thr_grad), radius, thr);
+% frame_ind1 = sort(subs1(:,2)+1);
+
+% D1 = squareform(pdist(diff_curv1'));
+% sD1 = sum(D1,2);
+% sD1 = (sD1-min(sD1(:)))/(max(sD1(:))-min(sD1(:)));
+% ths1 = 0.5;
+% 
+% ind = (1:T);
+% frame_ind1 = ind(sD1>ths1);
+
+
 
 % [val1, ind1] = sort(diff_curv1, 'descend');
 % [val2, ind2] = sort(diff_curv2, 'descend');
@@ -72,9 +115,9 @@ frame_ind1 = ind(sD1>ths1);
 %% plot diff-values in time
 
 figure;
-plot(diff_curv1, 'r-'), hold on;
+plot(signal1, 'r-'), hold on;
 % plot(val1_med*ones(1,T), 'r--'), hold on;
-plot(frame_ind1,diff_curv1(frame_ind1), 'kx');
+plot(frame_ind1,signal1(frame_ind1), 'kx');
 title('decision curve l1 norm');
 
 % figure;
