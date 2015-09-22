@@ -2,7 +2,7 @@ function writeTiffFile(frames, fileName)
 % frames = s_bk_sub;
 % fileName = [sname, '_bk_sub_th', num2str(bk_th), '.tif'];
 
-if ~isa(frames, 'uint16')
+if ~isa(frames, 'uint8')
     frames = uint16(frames*65535);
 end
 dim = length(size(frames));
@@ -24,7 +24,7 @@ else
 tagstruct.Photometric = Tiff.Photometric.MinIsBlack;
 end
 
-tagstruct.BitsPerSample = 16;
+tagstruct.BitsPerSample = 8;
 tagstruct.SamplesPerPixel = ch;
 tagstruct.RowsPerStrip = 16;
 tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky;

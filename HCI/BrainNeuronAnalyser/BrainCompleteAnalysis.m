@@ -31,7 +31,7 @@ signal = original_signal;
 % implay(1-original_signal)
 
 %% detect damaged frames
-ind_damaged = find_damaged_frames(signal);
+% ind_damaged = find_damaged_frames(signal);
 
 signal_damaged = signal(:,:,ind_damaged);
 %% Normalize signal

@@ -114,11 +114,11 @@ frame_ind1 =  find(logical(signal1_thr));
 
 %% plot diff-values in time
 
-figure;
-plot(signal1, 'r-'), hold on;
-% plot(val1_med*ones(1,T), 'r--'), hold on;
-plot(frame_ind1,signal1(frame_ind1), 'kx');
-title('decision curve l1 norm');
+% figure;
+% plot(signal1, 'r-'), hold on;
+% % plot(val1_med*ones(1,T), 'r--'), hold on;
+% plot(frame_ind1,signal1(frame_ind1), 'kx');
+% title('decision curve l1 norm');
 
 % figure;
 % plot(diff_curv2, 'b-'), hold on;
