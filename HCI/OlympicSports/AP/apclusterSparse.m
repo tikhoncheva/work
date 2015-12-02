@@ -215,7 +215,7 @@ end;
 % Execute parallel affinity propagation updates
 e=zeros(N,convits); dn=0; i=0;
 while ~dn
-    i=i+1
+    i=i+1;
 
     % Compute responsibilities
     for j=1:N
@@ -283,7 +283,11 @@ while ~dn
         ylabel('Net similarity of quantized intermediate solution');
         drawnow;
     end;
+    
+    fprintf('Iteration %5d, obval(netsim) = %0.5f, expref = %0.5f\n', ...
+            i, tmpnetsim, tmpexpref);
 end;
+
 % Identify  exemplars
 E=((A(M-N+1:M)+R(M-N+1:M))>0); K=sum(E);
 if K>0
@@ -323,6 +327,7 @@ if K>0
 else
     tmpidx=nan*ones(N,1); tmpnetsim=nan; tmpexpref=nan;
 end;
+
 if details
     netsim(i+1)=tmpnetsim; netsim=netsim(1:i+1);
     dpsim(i+1)=tmpnetsim-tmpexpref; dpsim=dpsim(1:i+1);
