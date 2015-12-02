@@ -24,7 +24,7 @@ else
 tagstruct.Photometric = Tiff.Photometric.MinIsBlack;
 end
 
-tagstruct.BitsPerSample = 8;
+tagstruct.BitsPerSample = 16;
 tagstruct.SamplesPerPixel = ch;
 tagstruct.RowsPerStrip = 16;
 tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky;

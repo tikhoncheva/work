@@ -3,15 +3,16 @@
 
 % Output
 % frame_ind     index of damaged frames
-function [ind_damaged_frames] = find_damaged_frames(signal)
+function [ind_damaged_frames] = find_damaged_frames(signal, mask)
 rng('default');
 addpath(genpath('../Tools/piotr_toolbox_V3.26/'));
 
 [R, C, T] = size(signal);
-ind_damaged_frames = (1:T);          % per default all frames are good
+ind_damaged_frames = [];          % per default all frames are good
 
-N = 100;    % number of patches
-S = 8;      % size of one patch SxS
+N = 200;                    % number of patches
+S = 10;                     % size of one patch SxS
+thr_factor = 2.0;           % factor on the signal variance
 
 % randomly smaple patches and convert them into 1D signal
 signals1D = zeros(N, T);
@@ -19,7 +20,17 @@ for i = 1:N
    lt_corner = [randi(R-S+1), randi(C-S-1)];
    patch = signal(lt_corner(1):lt_corner(1)+S-1, ...
                   lt_corner(2):lt_corner(2)+S-1, :);
-      
+   patch_mask = mask(lt_corner(1):lt_corner(1)+S-1, ...
+                     lt_corner(2):lt_corner(2)+S-1);
+                 
+   while (sum(patch_mask(:))<0.8*S*S)
+       lt_corner = [randi(R-S+1), randi(C-S-1)];
+       patch = signal(lt_corner(1):lt_corner(1)+S-1, ...
+                      lt_corner(2):lt_corner(2)+S-1, :);
+       patch_mask = mask(lt_corner(1):lt_corner(1)+S-1, ...
+                         lt_corner(2):lt_corner(2)+S-1);    
+   end
+   patch = patch.*repmat(patch_mask,1,1,T);              
    % convert patch into 1D signal
    for t = 1:T
         pixels = patch(:,:,t);
@@ -42,40 +53,48 @@ end
 % end
 
 mean_signals1D = mean(signals1D,2);
-med_signals1D = median(signals1D,2);
+% med_signals1D = median(signals1D,2);
 
-% norm_signals1D = signals1D-repmat(mean_signals1D,1,T);
-norm_signals1D = signals1D-repmat(med_signals1D,1,T);
+norm_signals1D = signals1D-repmat(mean_signals1D,1,T);
+% norm_signals1D = signals1D-repmat(med_signals1D,1,T);
 
-var_signals1D = var(signals1D,0,2); %mean(norm_signals1D.^2, 2);
+% var_signals1D = var(signals1D,0,2); %mean(norm_signals1D.^2, 2); % l2
+var_signals1D = mean(abs(norm_signals1D), 2); % l1
 mean_var = mean(var_signals1D); % mean variance
 
-signal1 = sum(abs(norm_signals1D),1);
-signal2 = sqrt(sum(norm_signals1D.^2,1));
+signal1 = sum(abs(norm_signals1D),1);        % l1
+signal2 = sqrt(sum(norm_signals1D.^2,1));    % l2
 
 mean_signal1=mean(signal1);
 mean_signal2=mean(signal2);
 
-var1 = mean((signal1-repmat(mean_signal1,1,T)).^2,2);
-var2 = mean((signal2-repmat(mean_signal2,1,T)).^2,2);
+var1 = mean(abs(signal1-repmat(mean_signal1,1,T)),2); % l1
+% var1 = mean((signal1-repmat(mean_signal1,1,T)).^2,2); % l2
+
+var2 = mean(abs(signal1-repmat(mean_signal1,1,T)).^2,2); % l1
+% var2 = mean((signal2-repmat(mean_signal2,1,T)).^2,2); % l2
 
 % figure;
 % plot(signal1, 'b-'), hold on;
 % plot((mean_signal1)*ones(1,T), 'r-');
 % plot((mean_signal1-var1)*ones(1,T), 'r--');
 % plot((mean_signal1+var1)*ones(1,T), 'r--');
-% plot((mean_signal1-2*var1)*ones(1,T), 'r--');
-% plot((mean_signal1+2*var1)*ones(1,T), 'r--');
+% plot((mean_signal1-thr_factor*var1)*ones(1,T), 'r--');
+% plot((mean_signal1+thr_factor*var1)*ones(1,T), 'r--');
+% title(sprintf('Mean signal of %d patches %dx%d, thr=%0.1fxVar(l1)', N, S, S, thr_factor));
 % 
 % figure;
 % plot(signal2, 'b-'), hold on;
 % plot((mean_signal2)*ones(1,T), 'r-');
 % plot((mean_signal2-var2)*ones(1,T), 'r--');
 % plot((mean_signal2+var2)*ones(1,T), 'r--');
+% plot((mean_signal2-thr_factor*var2)*ones(1,T), 'r--');
+% plot((mean_signal2+thr_factor*var2)*ones(1,T), 'r--');
+% title(sprintf('Mean signal of %d patches %dx%d, thr=%0.1fxVar(l1)', N, S, S, thr_factor));
 
 signal1_thr = signal1;
 % signal2_thr = signal2;
-signal1_thr(abs(signal1-repmat(mean_signal1,1,T))<3*var1) = 0;
+signal1_thr(abs(signal1-repmat(mean_signal1,1,T))< thr_factor*var1) = 0;
 
 
 % h = fspecial('gaussian',[1,3], 4);
