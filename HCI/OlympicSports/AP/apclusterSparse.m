@@ -150,11 +150,11 @@ if ~nonoise
 end;
 
 % Construct indices of neighbors
-t1 = tic;
+
 % ind1e=zeros(N,1);
 % for j=1:M, k=s(j,1); ind1e(k)=ind1e(k)+1; end;
-% [ind1e,~]=hist(s(:,1),unique(s(:,1)));
-% ind1e = ind1e';
+% % [ind1e,~]=hist(s(:,1),unique(s(:,1)));
+% % ind1e = ind1e';
 ind1e = (N)*ones(N,1);
 
 ind1e=cumsum(ind1e); ind1s=[1;ind1e(1:end-1)+1];
@@ -164,8 +164,8 @@ ind1e=cumsum(ind1e); ind1s=[1;ind1e(1:end-1)+1];
 
 % ind2e=zeros(N,1);
 % for j=1:M k=s(j,2); ind2e(k)=ind2e(k)+1; end;
-% [ind2e,~]=hist(s(:,2),unique(s(:,2)));
-% ind2e = ind2e';
+% % [ind2e,~]=hist(s(:,2),unique(s(:,2)));
+% % ind2e = ind2e';
 ind2e = (N)*ones(N,1);
 
 ind2e=cumsum(ind2e); ind2s=[1;ind2e(1:end-1)+1];
@@ -188,17 +188,17 @@ tmp1 = [tmp1_1+tmp1_2;b];
 ind1 = reshape(tmp1, N*N,1);
 
 clear A b tmp1_1 tmp1_2 tmp1 tmp2;
-t1 = toc(t1);
-% tmp2_1 = repmat((1:N)', 1, N);
-% tmp2_2 = (N-1)*repmat( (0:N-1), N, 1);
-% tmp2 = tmp2_1 + tmp2_2;
-% tmp2(end,:) = N*(N-1)*ones(1,N)+(1:N);
-% ind2 = reshape(tmp2, N*N,1);
-% 
-% tmp1 = tmp2';                            <- wrong indexing
-% ind1 = reshape(tmp1, N*N, 1);
-% 
-% clear tmp2_1 tmp2_2 tmp2 tmp1;
+
+% % tmp2_1 = repmat((1:N)', 1, N);
+% % tmp2_2 = (N-1)*repmat( (0:N-1), N, 1);
+% % tmp2 = tmp2_1 + tmp2_2;
+% % tmp2(end,:) = N*(N-1)*ones(1,N)+(1:N);
+% % ind2 = reshape(tmp2, N*N,1);
+% % 
+% % tmp1 = tmp2';                            <- wrong indexing
+% % ind1 = reshape(tmp1, N*N, 1);
+% % 
+% % clear tmp2_1 tmp2_2 tmp2 tmp1;
 
 
 
@@ -284,8 +284,8 @@ while ~dn
         drawnow;
     end;
     
-    fprintf('Iteration %5d, obval(netsim) = %0.5f, expref = %0.5f\n', ...
-            i, tmpnetsim, tmpexpref);
+%     fprintf('Iteration %5d, obval(netsim) = %0.5f, expref = %0.5f\n', ...
+%             i, tmpnetsim, tmpexpref);
 end;
 
 % Identify  exemplars

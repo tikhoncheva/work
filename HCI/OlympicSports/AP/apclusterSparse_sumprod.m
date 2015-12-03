@@ -220,31 +220,47 @@ while ~dn
     % Compute responsibilities
     for j=1:N
         ss=s(ind1(ind1s(j):ind1e(j)),3);
-        as=A(ind1(ind1s(j):ind1e(j)))+ss;
-        
-        exp_as = exp(as);      
-        r = ss - log(sum(exp_as) - exp_as);
-        
+%         as=A(ind1(ind1s(j):ind1e(j)))+ss;
 %         [Y,I]=max(as); as(I)=-realmax; [Y2,I2]=max(as);
-%         r=ss-Y; r(I)=ss(I)-Y2;
+%         r=ss-Y; r(I)=ss(I)-Y2;  
+        aa=A(ind1(ind1s(j):ind1e(j)));
+        
+        exp_ss = exp(ss);
+        exp_aa = exp(aa);
+        
+        denom = sum(exp_ss.*exp_aa)-exp_ss.*exp_aa;
+        
+        exp_r = exp_ss./denom;
+        
+        r = log(exp_r);     
+       
         R(ind1(ind1s(j):ind1e(j)))=(1-lam)*r+ ...
             lam*R(ind1(ind1s(j):ind1e(j)));
+        
+        clear ss aa exp_ss exp_aa denom exp_r r;
     end;
 
     % Compute availabilities
     for j=1:N
-        rp=R(ind2(ind2s(j):ind2e(j)));
-        exp_rp = exp(rp);
-
-%         rp(1:end-1)=exp_rp(1:end-1);
+%         rp=R(ind2(ind2s(j):ind2e(j)));
 %         rp(1:end-1)=max(rp(1:end-1),0);
 %         a=sum(rp)-rp;
-        a = sum(1+exp_rp)-exp_rp;
 %         a(1:end-1)=min(a(1:end-1),0);
-        a(1:end-1) = -a(1:end-1);
+        
+        r=R(ind2(ind2s(j):ind2e(j)));
+        exp_r = exp(r);
+        
+        exp_a = prod(1+exp_r)./(1+exp_r);
+        
+        exp_a(1:end-1) = exp(-r(end))./exp_a(1:end-1) + 1;
+        exp_a(1:end-1) = 1./exp_a(1:end-1);
+        
+        a = log(exp_a);
         
         A(ind2(ind2s(j):ind2e(j)))=(1-lam)*a+ ...
             lam*A(ind2(ind2s(j):ind2e(j)));
+        
+        clear r exp_r exp_a a;
     end;
 
     % Check for convergence
