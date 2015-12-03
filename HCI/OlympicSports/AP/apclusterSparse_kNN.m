@@ -75,7 +75,7 @@
 %
 %
 %%
-function [idx,netsim,dpsim,expref,s_new] = apclusterSparse_kNN(s, p, list_knn, varargin)
+function [idx,netsim,dpsim,expref,s_new] = apclusterSparse_kNN(s, p, knn_mask, varargin)
 
 % Handle arguments to function
 if nargin<2 error('Too few input arguments');
@@ -190,6 +190,26 @@ ind1 = reshape(tmp1, N*N,1);
 
 clear A b tmp1_1 tmp1_2 tmp1 tmp2;
 t1 = toc(t1);
+
+%% create index of the elements that can exchange messages
+% (based on the nearest neighbors)
+t2 = tic;
+[I,J] = find(ones(N)-eye(N));
+ind = sub2ind([N,N], I, J);
+t2 = toc(t2);
+indexing_mat = zeros(N);
+indexing_mat(ind) = 1:N*(N-1);
+indexing_mat = indexing_mat + diag((N*(N-1)+1:N*N));
+
+ind_knn1 = indexing_mat(knn_mask);
+ind_knn2 = indexing_mat(knn_mask');
+
+clear I J ind;
+
+ind1_bool = ismember(ind1, ind_knn1);
+ind2_bool = ismember(ind2, ind_knn2);
+
+
 % tmp2_1 = repmat((1:N)', 1, N);
 % tmp2_2 = (N-1)*repmat( (0:N-1), N, 1);
 % tmp2 = tmp2_1 + tmp2_2;
@@ -220,22 +240,28 @@ while ~dn
 
     % Compute responsibilities
     for j=1:N
-        ss=s(ind1(ind1s(j):ind1e(j)),3);
-        as=A(ind1(ind1s(j):ind1e(j)))+ss;
+        ind = ind1(ind1s(j):ind1e(j));
+        ind = ind(ind1_bool(ind1s(j):ind1e(j)));
+%         ind = ind(ismember(ind, ind_knn1));
+        
+        ss=s(ind,3);
+        as=A(ind)+ss;
         [Y,I]=max(as); as(I)=-realmax; [Y2,I2]=max(as);
         r=ss-Y; r(I)=ss(I)-Y2;
-        R(ind1(ind1s(j):ind1e(j)))=(1-lam)*r+ ...
-            lam*R(ind1(ind1s(j):ind1e(j)));
+        R(ind)=(1-lam)*r+lam*R(ind);
     end;
 
     % Compute availabilities
     for j=1:N
-        rp=R(ind2(ind2s(j):ind2e(j)));
+        ind = ind2(ind2s(j):ind2e(j));
+        ind = ind(ind2_bool(ind2s(j):ind2e(j)));
+%         ind = ind(ismember(ind, ind_knn2));
+        
+        rp=R(ind);
         rp(1:end-1)=max(rp(1:end-1),0);
         a=sum(rp)-rp;
         a(1:end-1)=min(a(1:end-1),0);
-        A(ind2(ind2s(j):ind2e(j)))=(1-lam)*a+ ...
-            lam*A(ind2(ind2s(j):ind2e(j)));
+        A(ind)=(1-lam)*a+lam*A(ind);
     end;
 
     % Check for convergence
@@ -330,20 +356,28 @@ else
 end;
 
 % new similarity matrix
-ind = sub2ind([N,N], (1:N)', tmpidx);
 
-mask_clusters = false(N,N);
-mask_clusters(ind) = true;
-mask_clusters = mask_clusters + mask_clusters';
+RA = R + A;
+ind_ra = sub2ind([N,N], (1:N)', tmpidx);
+ra_sim = RA(ind_ra);
 
-s_new = s(:,3).*mask_clusters(:);
-S_new = reshape(s_new, N, N);
-S = reshape(s(:,3), N, N);
-S_new_mean= mean(S_new,2);
-S_new = S.*(~mask_clusters) + mask_clusters.*repmat(S_new_mean,1,N);
-s_new = S_new(:);
+pairwise_sim = bsxfun(@plus, ra_sim.', ra_sim);
+s_new = pairwise_sim(:);
 
-clear S_new S S_new_mean;
+clear ind RA ind_ra ra_sim pairwise_sim;
+% ind = sub2ind([N,N], (1:N)', tmpidx);
+% mask_clusters = false(N,N);
+% mask_clusters(ind) = true;
+% mask_clusters = mask_clusters + mask_clusters';
+
+% s_new = s(:,3).*mask_clusters(:);
+% S_new = reshape(s_new, N, N);
+% S = reshape(s(:,3), N, N);
+% S_new_mean= mean(S_new,2);
+% S_new = S.*(~mask_clusters) + mask_clusters.*repmat(S_new_mean,1,N);
+% s_new = S_new(:);
+% 
+% clear S_new S S_new_mean;
 
 if details
     netsim(i+1)=tmpnetsim; netsim=netsim(1:i+1);
